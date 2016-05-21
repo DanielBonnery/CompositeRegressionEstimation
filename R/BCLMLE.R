@@ -1,6 +1,7 @@
 #imput:
 # list of arrays
 # 
+if(FALSE){
 nmonth=2
 gamma=rchisq(3^nmonth,1)
 gammaAf<-function(gamma){array(gamma,rep(3,round(log(length(gamma))/log(3))))}
@@ -275,4 +276,5 @@ thetahat<-function(Totals,TT,Approx=FALSE,method="L-BFGS-B",itnmax=NULL){
                         gamma=1.001),
                Totals=Totals,TT=TT,Approx=Approx)}
   
+}
 }
