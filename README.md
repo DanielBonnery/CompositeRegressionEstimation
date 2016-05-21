@@ -1,14 +1,14 @@
----
-output: html_document
----
 # Working document 
 
-`pubBonneryLahiriTran2016` is an R package that contains the source code to reproduce the simulations of [""]() by Bonnery, Lahiri and Tran
-
+`CompositeRegressionEstimation` is an R package that allows to compute estimators for longitudinal survey:
+* Composite Regression ["Fuller, Wayne A., and J. N. K. Rao. "A regression composite estimator with application to the Canadian Labour Force Survey." Survey Methodology 27.1 (2001): 45-52."](http://www.statcan.gc.ca/pub/12-001-x/2001001/article/5853-eng.pdf)estimator contains the source code to reproduce the simulations of [""]() by Bonnery, Lahiri and Tran
+* Yansaneh Fuller
+* AK estimator
+* 
 ## Install package
 
 ```r
-devtools::install_github("DanielBonnery/pubBonneryLahiriTran2016")
+devtools::install_github("DanielBonnery/CompositeRegressionEstimation")
 ```
 
 
