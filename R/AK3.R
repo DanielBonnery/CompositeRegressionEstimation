@@ -208,7 +208,7 @@ bestAK3<-function(Sigma,Scomppop,
                   itnmax=100,
                   what=list(level=varAK3ratmean4,change=varAK3diffratmean4,compromise=varAK3compratmean4)){
   lapply(what,function(fn){
-    oo<-optimx(startval,
+    oo<-optimx::optimx(startval,
                fn=fn,itnmax=itnmax,method="Nelder-Mead",
                Sigma=Sigma,Scomppop=Scomppop);
     ak4to6(c(oo$p1,oo$p2,oo$p3,oo$p4))})}
