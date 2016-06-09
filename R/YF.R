@@ -1,4 +1,4 @@
-CoeffYF<-function(Sigma,nmonth=dim(Signa)[[2]]){
+CoeffYF<-function(Sigma,nmonth=dim(Sigma)[[2]]){
   Sigg<-array(aperm(Sigma,c(3,2,1,6,5,4)),rep(nmonth*8*3,2))
   XX<-t(matrix(rep(diag(3),8),3,24))
   X<-as.matrix(Matrix::.bdiag(lapply(1:nmonth,function(i){XX})))
