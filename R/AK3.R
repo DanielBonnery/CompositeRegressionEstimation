@@ -6,11 +6,9 @@ AK3 <-
     #dfest<-WSrg(list.tables,weight="pwsswgt",list.y="pumlr")
     if(is.null(coeff)){
       coeff<-CoeffAK3CPSl(dim(dfest)[1],ak,simplify=FALSE)}
-    asaa=array(apply(dfest,3,function(m1){
-      apply(coeff,c(3,4),function(m2){sum(dfest*m2)})}),
-      c(dim(dfest)[1],length(ak),dim(dfest)[3]))
-    dmnmsak<-if(is.null(names(ak))){sapply(ak,function(x){paste0("AK3",x[1],"-",x[2])})}else{names(ak)}
-    dimnames(asaa)=list(dimnames(dfest)[[1]],dmnmsak,dimnames(dfest)[[3]])
+    asaa = plyr::aaply(coeff, 1:3, function(m2) {sum(aperm(dfest,3:1) * m2)},.drop=FALSE)
+    dimnames(asaa)[[1]]<-if(is.null(names(ak))){sapply(ak,function(x){paste0("AK3","-",paste(x[c(1:2,4:5)],sep=","))})}else{names(ak)}
+    Hmisc::label(asaa)<-"AK estimates for coeffs ak, employment status i2, month m2." 
     return(aperm(asaa,c(1,3,2)))}
 
 #ak: a list of vectors of size 6.
@@ -18,6 +16,7 @@ CoeffAK3CPSl<-function(nmonth,ak,simplify=TRUE,statuslabel=c("0","1","_1")){
   coeff<-
     plyr::laply(ak,function(x){CoeffAK3CPS(nmonth=nmonth,x,simplify=simplify,statuslabel=statuslabel)},.drop=FALSE)
   names(dimnames(coeff))[1]<-c("ak")
+  dimnames(coeff)[1]<-names(ak)
   Hmisc::label(coeff)<-"Coefficient matrix W[ak,i2,m2,i1,mis1,m1] such that AK estimate for coefficients ak, month m2 and employment status i2 is sum(W[ak,i2,m2,,,])*Y[,,]) where Y[i1,mis1,m1] is direct estimate on mis mis1 for emp stat i1 at month m1"
 return(coeff)    }
 #ak: a  vector of size 6.
