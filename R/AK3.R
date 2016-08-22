@@ -1,8 +1,15 @@
+KCPSunemployed<-function(){.4}
+KCPSemployed<-function(){.7}
+ACPSunemployed<-function(){.3}
+ACPSemployed<-function(){.4}
+
+
+AKCPS<-function(){c(a1=ACPSunemployed(),a2=ACPSemployed(),a3=0,k1=KCPSunemployed(),k2=KCPSemployed(),k3=0)}
 #dfest
 AK3 <-
   function(dfest,
            coeff=NULL,
-           ak=list(c(a1=0.2,a2=0.3,a3=0,k1=.2,k2=.3,k3=0))){
+           ak=list(AKCPS())){
     #dfest<-WSrg(list.tables,weight="pwsswgt",list.y="pumlr")
     if(is.null(coeff)){
       coeff<-CoeffAK3CPSl(dim(dfest)[1],ak,simplify=FALSE)}

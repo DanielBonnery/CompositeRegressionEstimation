@@ -1,6 +1,6 @@
 AK2 <-
   function(dfest,coeff=NULL,
-           ak=list(c(0,0))){
+           ak=AKCPS()){
     #dfest<-WSrg(list.tables,weight="pwsswgt",list.y="pumlr")
     if(is.null(coeff)){
       coeff<-CoeffAK2(dim(dfest)[1],ak)}
@@ -39,13 +39,7 @@ CoeffAK2<-function(nmonth,ak,simplify=TRUE){
   
   return(coeff)
 }
-if(FALSE){
-  charge("ak2CPS");ak2CPS
-  charge("akCPS");akCPS
-  coeff2<-CoeffAK2(85,ak2CPS,simplify=TRUE)
-  coeff3<-CoeffAK3(85,akCPS[2],simplify=TRUE)
-  max(abs(coeff2-coeff3))  
-}
+
 CoeffAK2diff<-function(nmonth,ak){
   coeff<-CoeffAK2(nmonth,ak)
   coeff[,,2:nmonth,]<-coeff[,,2:nmonth,]-coeff[,,1:(nmonth-1),]
