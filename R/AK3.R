@@ -16,7 +16,7 @@ AK3 <-
 #ak: a list of vectors of size 6.
 CoeffAK3CPSl<-function(nmonth,ak,simplify=TRUE,statuslabel=c("0","1","_1")){
   aperm(
-    plyr::laply(ak,function(x){CoeffAK3CPS(nmonth=nmonth,x,simplify=simplify,statuslabel=statuslabel)}),
+    plyr::laply(ak,function(x){CoeffAK3CPS(nmonth=nmonth,x,simplify=simplify,statuslabel=statuslabel)},.drop=FALSE),
     if(simplify){c(2:3,1)}else{c(2:4,1,5:6)})}
 #ak: a  vector of size 6.
 CoeffAK3CPS<-function(nmonth,ak,simplify=TRUE,statuslabel=c("0","1","_1")){
