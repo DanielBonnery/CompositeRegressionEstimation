@@ -13,10 +13,9 @@ AK3 <-
 
 #ak: a list of vectors of size 6.
 CoeffAK3CPSl<-function(nmonth,ak,simplify=TRUE,statuslabel=c("0","1","_1")){
-  coeff<-
-    plyr::laply(ak,function(x){CoeffAK3CPS(nmonth=nmonth,x,simplify=simplify,statuslabel=statuslabel)},.drop=FALSE)
+  coeff<-plyr::laply(ak,function(x){CoeffAK3CPS(nmonth=nmonth,x,simplify=simplify,statuslabel=statuslabel)},.drop=FALSE)
   names(dimnames(coeff))[1]<-c("ak")
-  dimnames(coeff)[[1]]<-names(ak)
+  if(!is.null(names(ak))){dimnames(coeff)[[1]]<-names(ak)}
   Hmisc::label(coeff)<-"Coefficient matrix W[ak,i2,m2,i1,mis1,m1] such that AK estimate for coefficients ak, month m2 and employment status i2 is sum(W[ak,i2,m2,,,])*Y[,,]) where Y[i1,mis1,m1] is direct estimate on mis mis1 for emp stat i1 at month m1"
 return(coeff)    }
 #ak: a  vector of size 6.
