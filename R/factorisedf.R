@@ -27,4 +27,4 @@ factorisedf <-function(df,list.y){
               toconvert=toconvert,
               apasconvertir=setdiff(list.y,toconvert),
               nfdf=names(fdf),          
-              nfdf2=names(fdf2)))}
+              nfdf2=setdiff(names(fdf),toconvert)))}
