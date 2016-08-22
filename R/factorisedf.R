@@ -18,8 +18,8 @@ factorisedf <-function(df,list.y){
         fdf[,paste0(varn,"_n",leve)]<-0
         fdf[,paste0(varn,"_n",leve[unique(df[,varn])])]<-1
       }else{fdf[,paste0(varn,"_n",unique(df[,varn]))]<-1}}
-    fdf<-fdf[,setdiff(names(fdf),names(fdf)[grep("_nNA",names(fdf))])]
-    names(fdf)<-gsub("-","_",names(fdf))}else{fdf=df[,character(0)]}
+    fdf<-fdf[,setdiff(names(fdf),names(fdf)[grep("_nNA",names(fdf))]),drop=FALSE]
+    names(fdf)<-gsub("-","_",names(fdf))}else{fdf=df[,character(0),drop=FALSE]}
   
   return(list(fdf=fdf,#all columns from df + fdf
               fdf2=fdf,#same
