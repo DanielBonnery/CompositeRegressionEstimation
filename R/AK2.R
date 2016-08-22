@@ -3,7 +3,7 @@ AK2 <-
            ak=list(c(0,0))){
     #dfest<-WSrg(list.tables,weight="pwsswgt",list.y="pumlr")
     if(is.null(coeff)){
-      coeff<-CoeffAK(dim(dfest)[1],ak)}
+      coeff<-CoeffAK2(dim(dfest)[1],ak)}
     asaa=array(apply(dfest,3,function(m1){
       apply(coeff,c(3,4),function(m2){sum(m1*m2)})}),
       c(dim(dfest)[1],length(ak),dim(dfest)[3]))
