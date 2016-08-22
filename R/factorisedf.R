@@ -10,16 +10,16 @@ factorisedf <-function(df,list.y){
     for(varn in toconvert_n){
       df[,varn]<-paste("_n",factor(df[,varn],exclude=NULL),sep="")
       formulaa=as.formula(paste(c(" ~ 0  ", varn), collapse=" + "))
-      conversion=cbind(conversion,model.matrix(formulaa, df))}
+      fdf=cbind(fdf,model.matrix(formulaa, df))}
     for(varn in toconvert_1){
       if(is.factor(df[,varn])){
         leve<-levels(df[,varn])
         uni<-leveunique(df[,varn])
-        conversion[,paste0(varn,"_n",leve)]<-0
-        conversion[,paste0(varn,"_n",leve[unique(df[,varn])])]<-1
-      }else{conversion[,paste0(varn,"_n",unique(df[,varn]))]<-1}}
-    conversion<-conversion[,setdiff(names(fdf),names(fdf)[grep("_nNA",names(fdf))])]
-    names(conversion)<-gsub("-","_",names(conversion))}else{fdf=df[,character(0)]}
+        fdf[,paste0(varn,"_n",leve)]<-0
+        fdf[,paste0(varn,"_n",leve[unique(df[,varn])])]<-1
+      }else{fdf[,paste0(varn,"_n",unique(df[,varn]))]<-1}}
+    fdf<-fdf[,setdiff(names(fdf),names(fdf)[grep("_nNA",names(fdf))])]
+    names(fdf)<-gsub("-","_",names(fdf))}else{fdf=df[,character(0)]}
   
   return(list(fdf=fdf,#all columns from df + fdf
               fdf2=fdf,#same
