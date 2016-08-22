@@ -15,40 +15,46 @@ AK3 <-
 
 #ak: a list of vectors of size 6.
 CoeffAK3CPSl<-function(nmonth,ak,simplify=TRUE,statuslabel=c("0","1","_1")){
-  aperm(
-    plyr::laply(ak,function(x){CoeffAK3CPS(nmonth=nmonth,x,simplify=simplify,statuslabel=statuslabel)},.drop=FALSE),
-    if(simplify){c(2:3,1)}else{c(2:4,1,5:6)})}
+  coeff<-
+    plyr::laply(ak,function(x){CoeffAK3CPS(nmonth=nmonth,x,simplify=simplify,statuslabel=statuslabel)},.drop=FALSE)
+  names(dimnames(coeff))[1]<-c("ak")
+  Hmisc::label(coeff)<-"Coefficient matrix W[ak,i2,m2,i1,mis1,m1] such that AK estimate for coefficients ak, month m2 and employment status i2 is sum(W[ak,i2,m2,,,])*Y[,,]) where Y[i1,mis1,m1] is direct estimate on mis mis1 for emp stat i1 at month m1"
+return(coeff)    }
 #ak: a  vector of size 6.
+
 CoeffAK3CPS<-function(nmonth,ak,simplify=TRUE,statuslabel=c("0","1","_1")){
-  coeff<-array(0,c(nmonth,8,nmonth,3,3))
-  dimnames(coeff)[[4]]<-statuslabel
-  dimnames(coeff)[[5]]<-statuslabel
+  coeff<-array(0,c(3,nmonth,3,8,nmonth))
+  dimnames(coeff)[[1]]<-statuslabel
+  dimnames(coeff)[[3]]<-statuslabel
   S<-c(2:4,6:8)
   Sbar<-c(1,5)
   for (u in 1:3){
     coeff[1,,1,u,u]<-1
     a=ak[u];k=ak[3+u];
     for(i in 2:nmonth){
-      coeff[,,i,u,u]<-coeff[,,(i-1),u,u]*k
-      coeff[i,,i,u,u]<-(1-k)
-      coeff[i-1,S-1,i,u,u]<-coeff[i-1,S-1,i,u,u]-k*4/3
-      coeff[i,S,i,u,u]<-coeff[i,S,i,u,u]+k*4/3-8*a/3
-      coeff[i,Sbar,i,u,u]<-coeff[i,Sbar,i,u,u]+8*a} }
+      coeff[u,i,u,,]<-coeff[u,(i-1),u,,]*k
+      coeff[u,i,u,,i]<-(1-k)
+      coeff[u,i,u,S-1,i-1]<-coeff[u,i,u,S-1,i-1]-k*4/3
+      coeff[u,i,u,S,i]<-coeff[u,i,u,S,i]+k*4/3-8*a/3
+      coeff[u,i,u,Sbar,i]<-coeff[u,i,u,Sbar,i]+8*a} }
   coeff<-coeff/8
+  names(dimnames(coeff))<-c("i2","m2","i1","mis1","m1")
+  Hmisc::label(coeff)<-"Coefficient matrix W[i2,m2,i1,mis1,m1] such that Ak estimate for month m2 and employment status i2 is sum(W[i2,m2,,,])*Y[,,]) where Y[i1,mis1,m1] is direct estimate on mis mis1 for emp stat i1 at month m1"
   if(simplify){  
-    coeff=array(aperm(coeff,c(4,3,5,2,1)),c(nmonth*3,nmonth*8*3))
+    coeff=array(coeff,c(nmonth*3,nmonth*8*3))
   }
   return(coeff)}
 
 
 
+
 CoeffAK3diff<-function(nmonth,ak,simplify=TRUE){
   coeff<-CoeffAK3CPSl(nmonth,ak,simplify=FALSE)
-  coeff[,,2:nmonth,,,]<-coeff[,,2:nmonth,,,,drop=FALSE]-coeff[,,1:(nmonth-1),,,,drop=FALSE]
-  coeff[,,1,,,]<-0
+  coeff[,,,,2:nmonth,]<-coeff[,,,,2:nmonth,,drop=FALSE]-coeff[,,,,1:(nmonth-1),,drop=FALSE]
+  coeff[,,,,1,]<-0
   if(simplify){
-    coeff=array(aperm(coeff,c(5,3,6,2,1,4)),c(nmonth*3,nmonth*8*3,length(ak)))
-    dimnames(coeff)[3]<-list(names(ak))}
+    coeff=array(coeff,c(length(ak),nmonth*3,nmonth*8*3))
+    dimnames(coeff)[1]<-list(names(ak))}
   coeff
 }
 
