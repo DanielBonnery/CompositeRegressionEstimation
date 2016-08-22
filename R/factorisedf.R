@@ -23,7 +23,7 @@ factorisedf <-function(df,list.y){
     names(fdf)<-gsub("-","_",names(fdf))}else{fdf=df}
   
   return(list(fdf=fdf,#all columns from df + conversion
-              fdf2=fdf[,setdiff(names(fdf,toconvert))],#all columns from df + conversion -toconvert
+              fdf2=fdf[,setdiff(names(fdf),toconvert)],#all columns from df + conversion -toconvert
               toconvert=toconvert,
               apasconvertir=setdiff(list.y,toconvert),
               nfdf=names(fdf),          
