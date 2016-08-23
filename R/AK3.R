@@ -34,7 +34,7 @@ CoeffAK3CPS<-function(nmonth,ak,simplify=TRUE,statuslabel=c("0","1","_1")){
   S<-c(2:4,6:8)
   Sbar<-c(1,5)
   for (u in 1:3){
-    coeff[1,,1,u,u]<-1
+    coeff[u,1,u,,1]<-1
     a=ak[u];k=ak[3+u];
     for(i in 2:nmonth){
       coeff[u,i,u,,]<-coeff[u,(i-1),u,,]*k
