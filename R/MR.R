@@ -1,9 +1,9 @@
 MR <- function(list.tables,
                w,
                id,
-               list.xMR,
-               list.x1, #computed
-               list.x2, #external
+               list.xMR=NULL,
+               list.x1=NULL, #computed
+               list.x2=NULL, #external
                list.y=NULL,
                calibmethod="linear",
                Alpha=.5,
@@ -67,9 +67,9 @@ MR <- function(list.tables,
     df2f.x2<-factorisedf(list.tables[[i]],list.x2);
     df1 <- cbind((list.tables[[i-1]])[,c(id,w),drop=FALSE],df1f.y$fdf)
     df2 <- cbind((list.tables[[i]])[,c(id,w,unique(c(list.y,list.x1,list.x2,list.xMR))),drop=FALSE],
-                 df2f.y$fdf[setdiff(df2f.y$nfdf,names(df))],
-                 df2f.x1$fdf[setdiff(df2f.x1$nfdf,c(names(df),df2f.y$nfdf))],
-                 df2f.x2$fdf[setdiff(df2f.x2$nfdf2,c(names(df),df2f.y$nfdf,df1f.y$nfdf2))])
+                 df2f.y$fdf[setdiff(df2f.y$nfdf,c(id,w,unique(c(list.y,list.x1,list.x2,list.xMR))))],
+                 df2f.x1$fdf[setdiff(df2f.x1$nfdf,c(c(id,w,unique(c(list.y,list.x1,list.x2,list.xMR))),df2f.y$nfdf))],
+                 df2f.x2$fdf[setdiff(df2f.x2$nfdf2,c(c(id,w,unique(c(list.y,list.x1,list.x2,list.xMR))),df2f.y$nfdf,df1f.y$nfdf2))])
     listtot.xMR <- union(listtot.xMR,union(df2f.y$nfdf,setdiff(list.xMR,df2f.y$aconvertir)))
     listtot.xMR<-union(listtot.xMR,union(df2f.y$nfdf,df1f.y$nfdf))
     for(y in setdiff(listtot.xMR,names(df2))){df2[,y]<-0}
