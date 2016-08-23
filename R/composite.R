@@ -76,7 +76,7 @@ function(list.tables,
       Coef[c("Total_1",  "Total_0",  "Totalinter_0",  "Totalinter_1",  "Totaldiff_0")])
 	
     colnames(dft.y)<-listtot.y
-    dfEstT<-rbind(dfEstT[,listtot.y],dft.y[,listtot.y])
+    dfEstT<-rbind(dfEstT[,listtot.y,drop=FALSE],dft.y[,listtot.y,drop=FALSE])
   }
   rownames(dfEstT)<-names(list.tables)  
   return(dfEstT)}
