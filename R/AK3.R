@@ -12,7 +12,7 @@ AK3 <-
            ak=list(AKCPS())){
     #dfest<-WSrg(list.tables,weight="pwsswgt",list.y="pumlr")
     if(is.null(coeff)){
-      coeff<-CoeffAK3CPSl(dim(dfest)[3],ak,simplify=FALSE)}
+      coeff<-CoeffAK3CPSl(dim(dfest)[1],ak,simplify=FALSE)}
     asaa = abind::adrop(plyr::aaply(coeff, 1:3, function(m2) {sum(aperm(dfest,3:1) * m2)},.drop=FALSE),drop=4)
     dimnames(asaa)[[1]]<-if(is.null(names(ak))){sapply(ak,function(x){paste0("AK3","-",paste(x[c(1:2,4:5)],collapse=","))})}else{names(ak)}
     Hmisc::label(asaa)<-"AK estimates for coeffs ak, employment status i2, month m2." 
