@@ -6,14 +6,17 @@ KCPSunemployed<-function(){.4}
 #' 
 #' @return .7
 KCPSemployed<-function(){.7}
+
 #' Gives K coefficient for unemployed used by the Census
 #' 
 #' @return .3
 ACPSunemployed<-function(){.3}
+
 #' Gives K coefficient for unemployed used by the Census
 #' 
 #' @return .4
 ACPSemployed<-function(){.4}
+
 #' Gives K coefficient for unemployed used by the Census
 #' 
 #' @return The vector c(a1=ACPSunemployed(),a2=ACPSemployed(),a3=0,k1=KCPSunemployed(),k2=KCPSemployed(),k3=0)
@@ -27,10 +30,10 @@ AK3 <-
     #dfest<-WSrg(list.tables,weight="pwsswgt",list.y="pumlr")
     if(is.null(coeff)){
       coeff<-CoeffAK3CPSl(dim(dfest)[1],ak,simplify=FALSE)}
-    asaa = abind::adrop(plyr::aaply(coeff, 1:3, function(m2) {sum(aperm(dfest,3:1) * m2)},.drop=FALSE),drop=4)
-    dimnames(asaa)[[1]]<-if(is.null(names(ak))){sapply(ak,function(x){paste0("AK3","-",paste(x[c(1:2,4:5)],collapse=","))})}else{names(ak)}
-    Hmisc::label(asaa)<-"AK estimates for coeffs ak, employment status i2, month m2." 
-    return(aperm(asaa,c(1,3,2)))}
+    Estimates_AK = abind::adrop(plyr::aaply(coeff, 1:3, function(m2) {sum(aperm(dfest,3:1) * m2)},.drop=FALSE),drop=4)
+    dimnames(Estimates_AK)[[1]]<-if(is.null(names(ak))){sapply(ak,function(x){paste0("AK3","-",paste(x[c(1:2,4:5)],collapse=","))})}else{names(ak)}
+    Hmisc::label(Estimates_AK)<-"AK estimates for coeffs ak, employment status i2, month m2." 
+    return(aperm(Estimates_AK,c(1,3,2)))}
 
 #ak: a list of vectors of size 6.
 CoeffAK3CPSl<-function(nmonth,ak,simplify=TRUE,statuslabel=c("0","1","_1")){
@@ -93,13 +96,30 @@ varAK3<-function(ak,Sigma){
   dimnames(XX)<-rep(dimnames(Sigma)[c(3,1)],2)
   aperm(XX,c(2,4,1,3))}
 
-
+#' Gives the variance of the consecutive differences of AK estimators from the A,K coefficients and the variance covariance matrix of the month in sample estimates
+#' 
+#' @param ak A set of 3 A, K coefficients, of the form c(a1=.3,a2=.4,a3=0,k1=.4,k2=.7,k3=0).
+#' @param Sigma An array of dimension 3 x 8 (number of rotation groups) x number of months x 3 x 8 (number of rotation groups) x number of months.
+#' @return The variance of the consecutive differences of the AK estimators from the A,K coefficients and the variance covariance matrix .
+#' @examples
+#' varAK3diff(ak=c(a1=.3,a2=.4,a3=0,k1=.4,k2=.7,k3=0), Sigma=array(drop(stats::rWishart(1,df=3*10*8,diag(3*10*8))),rep(c(10,8,3),2)))
+#' add(10, 1)
 varAK3diff<-function(ak,Sigma){
   nmonth<-dim(Sigma)[[1]]
   coeff<-CoeffAK3diff(nmonth,list(ak))[,,1]
   XX=array(coeff%*%(array(aperm(Sigma,c(3:1,6:4)),rep(c(nmonth*8*3),2)))%*%t(coeff),rep(c(3,nmonth),2))
   dimnames(XX)<-rep(dimnames(Sigma)[c(3,1)],2)
   aperm(XX,c(2,4,1,3))}
+
+
+#' Gives the variance of the unemployment rate estimates derived from  AK estimators from the A,K coefficients and the variance covariance matrix of the month in sample estimates
+#' 
+#' @param ak A set of 3 A, K coefficients, of the form c(a1=.3,a2=.4,a3=0,k1=.4,k2=.7,k3=0).
+#' @param Scomppop An array of dimension number of months x 3.
+#' @param Sigma An array of dimension 3 x 8 (number of rotation groups) x number of months x 3 x 8 (number of rotation groups) x number of months.
+#' @return The variance of the the unemployment rate estimates derived from the AK estimators from the A,K coefficients and the variance covariance matrix .
+#' @examples
+#' varAK3rat(ak=c(a1=.3,a2=.4,a3=0,k1=.4,k2=.7,k3=0), Sigma=array(drop(stats::rWishart(1,df=3*10*8,diag(3*10*8))),rep(c(10,8,3),2)))
 
 varAK3rat<-function(ak,Sigma,Scomppop,what=c(unemployed="0",employed="1")){
   nmonth<-dim(Sigma)[1]
@@ -111,6 +131,14 @@ varAK3rat<-function(ak,Sigma,Scomppop,what=c(unemployed="0",employed="1")){
   VV<-sapply(1:nmonth,function(i){V[,i]%*%mati%*%sigma[i,i,what,what]%*%t(V[,i]%*%mati)})/(Y^2)
 }
 
+#' Gives the variance of the unemployment rate estimates derived from  AK estimators from the A,K coefficients and the variance covariance matrix of the month in sample estimates
+#' 
+#' @param ak A set of 3 A, K coefficients, of the form c(a1=.3,a2=.4,a3=0,k1=.4,k2=.7,k3=0).
+#' @param Scomppop An array of dimension number of months x 3.
+#' @param Sigma An array of dimension 3 x 8 (number of rotation groups) x number of months x 3 x 8 (number of rotation groups) x number of months.
+#' @return The variance of the the unemployment rate estimates derived from the AK estimators from the A,K coefficients and the variance covariance matrix .
+#' @examples
+#' varAK3diffrat(ak=c(a1=.3,a2=.4,a3=0,k1=.4,k2=.7,k3=0), Sigma=array(drop(stats::rWishart(1,df=3*10*8,diag(3*10*8))),rep(c(10,8,3),2)))
 varAK3diffrat<-function(ak,Sigma,Scomppop){
   nmonth<-dim(Sigma)[1]
   what=c(paste0("pumlrR_n",0:1))

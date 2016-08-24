@@ -1,19 +1,22 @@
 Package: CompositeRegressionEstimation
 Type: Package
 Title: X
-Version: 1.0 
+Version: 1.0
 Date: 2016-05-21
 Author: D. Bonnery
 Maintainer: D. Bonnery  <dbonnery@umd.edu>
-Imports: ggplot2,
-	abind,
-	optimx,
-	Matrix,
-	Hmisc,
-	MASS,
-	filehash
-Suggests: 
+Imports:
+    ggplot2,
+    abind,
+    optimx,
+    Matrix,
+    Hmisc,
+    MASS,
+    filehash
+Suggests:
+    
 Description: Data
 License: GPL (>= 2)
 LazyLoad: yes
 LazyData: true
+RoxygenNote: 5.0.1
