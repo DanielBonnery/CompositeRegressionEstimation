@@ -1,11 +1,25 @@
+#' Gives K coefficient for unemployed used by the Census
+#' 
+#' @return .4
 KCPSunemployed<-function(){.4}
+#' Gives K coefficient for unemployed used by the Census
+#' 
+#' @return .7
 KCPSemployed<-function(){.7}
+#' Gives K coefficient for unemployed used by the Census
+#' 
+#' @return .3
 ACPSunemployed<-function(){.3}
+#' Gives K coefficient for unemployed used by the Census
+#' 
+#' @return .4
 ACPSemployed<-function(){.4}
-
-
+#' Gives K coefficient for unemployed used by the Census
+#' 
+#' @return The vector c(a1=ACPSunemployed(),a2=ACPSemployed(),a3=0,k1=KCPSunemployed(),k2=KCPSemployed(),k3=0)
 AKCPS<-function(){c(a1=ACPSunemployed(),a2=ACPSemployed(),a3=0,k1=KCPSunemployed(),k2=KCPSemployed(),k3=0)}
-#dfest
+
+
 AK3 <-
   function(dfest,
            coeff=NULL,
@@ -54,20 +68,27 @@ CoeffAK3CPS<-function(nmonth,ak,simplify=TRUE,statuslabel=c("0","1","_1")){
 
 
 CoeffAK3diff<-function(nmonth,ak,simplify=TRUE){
-  coeff<-CoeffAK3CPSl(nmonth,ak,simplify=FALSE)
-  coeff[,,,,2:nmonth,]<-coeff[,,,,2:nmonth,,drop=FALSE]-coeff[,,,,1:(nmonth-1),,drop=FALSE]
-  coeff[,,,,1,]<-0
+  coeff<-CoeffAK3CPS(nmonth,ak,simplify=FALSE)
+  coeff[,2:nmonth,,,]<-coeff[,2:nmonth,,,,drop=FALSE]-coeff[,1:(nmonth-1),,,,drop=FALSE]
+  coeff<-coeff[,-1,,,,drop=FALSE]
   if(simplify){
-    coeff=array(coeff,c(length(ak),nmonth*3,nmonth*8*3))
+    coeff=array(coeff,c(length(ak),(nmonth-1)*3,(nmonth-1)*8*3))
     dimnames(coeff)[1]<-list(names(ak))}
   coeff
 }
 
 
-
+#' Gives the variance of the AK estimators from the A,K coefficients and the variance covariance matrix of the month in sample estimates
+#' 
+#' @param ak A set of 3 A, K coefficients, of the form c(a1=.3,a2=.4,a3=0,k1=.4,k2=.7,k3=0).
+#' @param Sigma An array of dimension 3 x 8 (number of rotation groups) x number of months x 3 x 8 (number of rotation groups) x number of months.
+#' @return The variance of the AK estimators from the A,K coefficients and the variance covariance matrix .
+#' @examples
+#' varAK3(ak=c(a1=.3,a2=.4,a3=0,k1=.4,k2=.7,k3=0), Sigma=array(drop(stats::rWishart(1,df=3*10*8,diag(3*10*8))),rep(c(10,8,3),2)))
+#' add(10, 1)
 varAK3<-function(ak,Sigma){
   nmonth<-dim(Sigma)[1]
-  coeff<-CoeffAK3CPSl(nmonth,list(ak))[,,1]
+  coeff<-CoeffAK3CPS(nmonth,ak)
   XX=array(coeff%*%(array(aperm(Sigma,c(3:1,6:4)),rep(c(nmonth*8*3),2)))%*%t(coeff),rep(c(3,nmonth),2))
   dimnames(XX)<-rep(dimnames(Sigma)[c(3,1)],2)
   aperm(XX,c(2,4,1,3))}

@@ -44,8 +44,8 @@ function(list.tables,
     names(df_0)<-c(keeps,df_0f$nfdf)
     if(creegroupvar){
 	groupvar <- "groupvar"
-	groups_1<-c(1)
-	groups_0<-c(1)
+	groups_1<-1
+	groups_0<-1
 	df_0<-merge("$<-"(df_1[id],groupvar,1),df_0,by=id,all.y=TRUE)
 	df_1<-merge("$<-"(df_0[id],groupvar,1),df_1,by=id,all.y=TRUE)}
     #if(!is.null(groupvar)){keeps=c(id,w,groupvar)}
