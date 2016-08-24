@@ -1,36 +1,42 @@
 #' Gives K coefficient for unemployed used by the Census
 #' 
 #' @return .4
-KCPSunemployed<-function(){.4}
+CPS_K_u<-function(){.4}
 #' Gives K coefficient for unemployed used by the Census
 #' 
 #' @return .7
-KCPSemployed<-function(){.7}
+CPS_K_e<-function(){.7}
 
 #' Gives K coefficient for unemployed used by the Census
 #' 
 #' @return .3
-ACPSunemployed<-function(){.3}
+CPS_A_u<-function(){.3}
 
 #' Gives K coefficient for unemployed used by the Census
 #' 
 #' @return .4
-ACPSemployed<-function(){.4}
+CPS_A_e<-function(){.4}
 
 #' Gives K coefficient for unemployed used by the Census
 #' 
-#' @return The vector c(a1=ACPSunemployed(),a2=ACPSemployed(),a3=0,k1=KCPSunemployed(),k2=KCPSemployed(),k3=0)
-AKCPS<-function(){c(a1=ACPSunemployed(),a2=ACPSemployed(),a3=0,k1=KCPSunemployed(),k2=KCPSemployed(),k3=0)}
+#' @return The vector c(a1=CPS_A_u(),a2=CPS_A_e(),a3=0,k1=CPS_K_u(),k2=CPS_K_e(),k3=0)
+CPS_AK<-function(){c(a1=CPS_A_u(),a2=CPS_A_e(),a3=0,k1=CPS_K_u(),k2=CPS_K_e(),k3=0)}
 
-
+#' Gives the variance of the AK estimators from the A,K coefficients and the variance covariance matrix of the month in sample estimates
+#' 
+#' @param mistotals An array of dimension  nmonth x 8 x 3. mistotals[i,j,k] is the month in sample direct estimate for month i, month in sample j rotation group, and variable k.
+#' @param coeff An array of coefficients W[ak,i2,m2,i1,mis1,m1] such that AK estimate for coefficients ak, month m2 and employment status i2 is sum(W[ak,i2,m2,,,])*Y[,,]) where mistotals[i1,mis1,m1] is direct estimate on mis mis1 for emp stat i1 at month m1.
+#' @param ak: an ak coefficients vector or a  list of ak coefficients.
+#' @return The variance of the AK estimators from the A,K coefficients and the variance covariance matrix .
+#' @examples
+#' varAK3(ak=c(a1=.3,a2=.4,a3=0,k1=.4,k2=.7,k3=0), Sigma=array(drop(stats::rWishart(1,df=3*10*8,diag(3*10*8))),rep(c(10,8,3),2)))
 AK3 <-
-  function(dfest,
-           coeff=NULL,
-           ak=list(AKCPS())){
-    #dfest<-WSrg(list.tables,weight="pwsswgt",list.y="pumlr")
-    if(is.null(coeff)){
-      coeff<-CoeffAK3CPSl(dim(dfest)[1],ak,simplify=FALSE)}
-    Estimates_AK = abind::adrop(plyr::aaply(coeff, 1:3, function(m2) {sum(aperm(dfest,3:1) * m2)},.drop=FALSE),drop=4)
+  function(mistotals,
+           coeff=CoeffAK3CPSl(dim(mistotals)[1],ak,simplify=FALSE),
+           ak=CPS_AK()){
+    #mistotals<-WSrg(list.tables,weight="pwsswgt",list.y="pumlr")
+      if(!is.list(ak)){ak<-list(ak)}
+    Estimates_AK = abind::adrop(plyr::aaply(coeff, 1:3, function(m2) {sum(aperm(mistotals,3:1) * m2)},.drop=FALSE),drop=4)
     dimnames(Estimates_AK)[[1]]<-if(is.null(names(ak))){sapply(ak,function(x){paste0("AK3","-",paste(x[c(1:2,4:5)],collapse=","))})}else{names(ak)}
     Hmisc::label(Estimates_AK)<-"AK estimates for coeffs ak, employment status i2, month m2." 
     return(aperm(Estimates_AK,c(1,3,2)))}
