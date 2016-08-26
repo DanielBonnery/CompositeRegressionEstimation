@@ -26,9 +26,9 @@ m2a<-function(M,a=dim(M),b=numeric(0)){
 #' @param W An array of dimension a_1 x ... x a_n x b_1 x ... x b_p
 #' @return Y the array of dimension a_1 x ... x a_n Y[i_1,...,i_n]=sum(W[i_1,...,i_n,,...,] )
 #' @examples
-#' W=array(1:(prod(2:5)),2:5);X=array(1:(prod(4:5)),4:5); W%x%X;try(W[,,,-1]%x%X);X%x%X; sum(X*X);X%x%t(X);sum(c(X)*c(t(X)))
-#' X=array(1:(prod(4:6)),4:6); "%x%"(W,X,j=2);
-#' W%x%X%x%t(X);
+#' W=array(1:(prod(2:5)),2:5);X=array(1:(prod(4:5)),4:5); W%.%.;try(W[,,,-1]%.%.);X%.%.; sum(X*X);X%.%t(X);sum(c(X)*c(t(X)))
+#' X=array(1:(prod(4:6)),4:6); "%.%"(W,X,j=2);
+#' W%.%.%.%t(X);
 
 "%.%" <-
   function(W,X,j=NULL,k=0){
@@ -52,18 +52,18 @@ m2a<-function(M,a=dim(M),b=numeric(0)){
 #' @param W An array of dimension a_1 x ... x a_n x b_1 x ... x b_p
 #' @return Y the array of dimension a_1 x ... x a_n Y[i_1,...,i_n]=sum(W[i_1,...,i_n,,...,] )
 #' @examples
-#' W=array(1:(prod(2:5)),2:5);X=array(1:(prod(4:5)),4:5); W%x%X;try(W[,,,-1]%x%X);X%x%X; sum(X*X);X%x%t(X);sum(c(X)*c(t(X)))
-#' X=array(1:(prod(4:6)),4:6); "%x%"(W,X,j=2);
-#' W%x%X%x%t(X);
+#' W=array(1:(prod(2:5)),2:5);X=array(1:(prod(4:5)),4:5); W%.%.;try(W[,,,-1]%.%.);X%.%.; sum(X*X);X%.%t(X);sum(c(X)*c(t(X)))
+#' X=array(1:(prod(4:6)),4:6); "%.%"(W,X,j=2);
+#' W%.%.%.%t(X);
 
 array.prod<-function(...,j=NULL,k=0){
-  "%.k%"<-function(W,X){"%x%"(W,X,j=j)}
-  apply(..., 1, function(x) Reduce("%xk%", x,accumulate = FALSE))
+  "%.k%"<-function(W,X){"%.%"(W,X,j=j)}
+  apply(..., 1, function(x) Reduce("%.k%", x,accumulate = FALSE))
 }
 
-"%.k1%"<-function(W,X){"%x%"(W,X,k=1)}
-"%.k2%"<-function(W,X){"%x%"(W,X,k=2)}
-"%.k3%"<-function(W,X){"%x%"(W,X,k=3)}
+"%.k1%"<-function(W,X){"%.%"(W,X,k=1)}
+"%.k2%"<-function(W,X){"%.%"(W,X,k=2)}
+"%.k3%"<-function(W,X){"%.%"(W,X,k=3)}
 
 #' Computes a matrix that is a linear combinaison of the rotation group mis estimates
 #' 
@@ -71,9 +71,9 @@ array.prod<-function(...,j=NULL,k=0){
 #' @param W An array of dimension a_1 x ... x a_n x b_1 x ... x b_p
 #' @return Y the array of dimension a_1 x ... x a_n Y[i_1,...,i_n]=sum(W[i_1,...,i_n,,...,] )
 #' @examples
-#' W=array(1:(prod(2:5)),2:5);X=array(1:(prod(4:5)),4:5); W%x%X;try(W[,,,-1]%x%X);X%x%X; sum(X*X);X%x%t(X);sum(c(X)*c(t(X)))
-#' X=array(1:(prod(4:6)),4:6); "%x%"(W,X,j=2);
-#' W%x%X%x%t(X);
+#' W=array(1:(prod(2:5)),2:5);X=array(1:(prod(4:5)),4:5); W%.%.;try(W[,,,-1]%.%.);X%.%.; sum(X*X);X%.%t(X);sum(c(X)*c(t(X)))
+#' X=array(1:(prod(4:6)),4:6); "%.%"(W,X,j=2);
+#' W%.%.%.%t(X);
 
 empirical.var<-function(A,MARGIN,n){
   plyr::aaply(A,MARGIN,function(A.){m2a(var(a2m(A.,n)),dim(A.)[-(0:n)])})
@@ -110,7 +110,7 @@ W}
 
 AK_est<-function(Y,S,a,k){
   Y<-as.array(Y)
-  W.ak(dim(Y)[1],S,a,k) %x2% Y}
+  W.ak(dim(Y)[1],S,a,k) %.2% Y}
 
 
 
