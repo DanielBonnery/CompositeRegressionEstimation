@@ -26,7 +26,7 @@ m2a<-function(M,a=dim(M),b=numeric(0)){
 #' @param W An array of dimension a_1 x ... x a_n x b_1 x ... x b_p
 #' @return Y the array of dimension a_1 x ... x a_n Y[i_1,...,i_n]=sum(W[i_1,...,i_n,,...,] )
 #' @examples
-#' W=array(1:(prod(2:5)),2:5);X=array(1:(prod(4:5)),4:5); W%.%.;try(W[,,,-1]%.%.);X%.%.; sum(X*X);X%.%t(X);sum(c(X)*c(t(X)))
+#' W=array(1:(prod(2:5)),2:5);X=array(1:(prod(4:5)),4:5); W%.%.;try(W[,,,-1]%.%.);X%.%X; sum(X*X);X%.%t(X);sum(c(X)*c(t(X)))
 #' X=array(1:(prod(4:6)),4:6); "%.%"(W,X,j=2);
 #' W%.%.%.%t(X);
 
@@ -79,7 +79,7 @@ empirical.var<-function(A,MARGIN,n){
   plyr::aaply(A,MARGIN,function(A.){m2a(var(a2m(A.,n)),dim(A.)[-(0:n)])})
 }
 
-W %.k2% X
+#W %.k2% X
 
 
 W.ak<-function(nmonths,ngroups,S,a,k){
