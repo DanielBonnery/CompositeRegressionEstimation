@@ -79,7 +79,7 @@ empirical.var<-function(A,MARGIN,n){
   plyr::aaply(A,MARGIN,function(A.){m2a(var(a2m(A.,n)),dim(A.)[-(0:n)])})
 }
 
-W %x2% X
+W %.2% X
 
 
 W.ak<-function(nmonths,ngroups,S,a,k){
