@@ -1,3 +1,24 @@
+if(FALSE){
+setClass("tensor", representation(A="array",alongA="integer",
+                                  alongB="integer"), prototype=
+           list(A=array(), 
+                alongA=integer(),
+                alongB=integer()),
+         validity=function(object){
+           if(is.list(object)){
+             if(length(object)==3){
+               if(is.array(object)[[1]]&is.integer(object[[2]])&is.integer(object[[3]])){
+                 if(is.array(object[[1]])){if(identical(names(object),c("A","alongA","alongB"))){
+                   identical(dim(object),c(object[[2]],object[[3]]))}
+                   else{FALSE}}
+                 else{FALSE}}
+               else{FALSE}}
+             else{FALSE}}
+           else{FALSE}
+           })
+as.tensor<-function(A){list(A=array(A,dim(A)),alongA=dim(A),alongB=integer(0))}
+as.tensor(matrix(1:20,2))
+}
 #' Convert an array to an array of dimension 2 or 1
 #' 
 #' @param A An array of dimensions (a_1 x ... x a_{dim(A)})
@@ -7,7 +28,7 @@
 #' A=array(rnorm(prod(2:5)),2:5);M=a2m(A,2);dim(A);dim(M);dim(a2m(A))
 a2m<-function(A,n=length(dim(A))){
   p=length(dim(A))-n
-  array(A,c(if(n==0){numeric(0)}else{prod(dim(A)[1:n])},if(p==0){numeric(0)}else{prod(dim(A)[(n+1):(n+p)])}))}
+  array(A,c(if(n==0){integer(0)}else{prod(dim(A)[1:n])},if(p==0){ingeger(0)}else{prod(dim(A)[(n+1):(n+p)])}))}
 
 #' Convert  a matrix to an array 
 #' 
@@ -349,7 +370,7 @@ bestAK3grille<-function(Sigma,Scomppop,
   lapply(ak3all,function(ak){})
   
   lapply(what,function(fn){
-    oo<-optimx(startval,
+    oo<-optimx::optimx(startval,
                fn=fn,itnmax=itnmax,method="Nelder-Mead",
                Sigma=Sigma,Scomppop=Scomppop);
     ak4to6(c(oo$p1,oo$p2,oo$p3,oo$p4))})}
@@ -360,10 +381,10 @@ bestAK3grille<-function(Sigma,Scomppop,
 bestAK3sep<-function(Sigma,
                      startval=c(0.3,0.4,0.4,0.7),
                      itnmax=100){
-  oo0 <-optimx(startval[c(1,3)],fn=varAK3_n0mean2    ,itnmax=itnmax,method="Nelder-Mead",Sigma=Sigma);
-  oo0d<-optimx(startval[c(1,3)],fn=varAK3diff_n0mean2,itnmax=itnmax,method="Nelder-Mead",Sigma=Sigma);
-  oo1 <-optimx(startval[c(1,3)],fn=varAK3_n1mean2    ,itnmax=itnmax,method="Nelder-Mead",Sigma=Sigma);
-  oo0c<-optimx(startval[c(1,3)],
+  oo0 <-optimx::optimx(startval[c(1,3)],fn=varAK3_n0mean2    ,itnmax=itnmax,method="Nelder-Mead",Sigma=Sigma);
+  oo0d<-optimx::optimx(startval[c(1,3)],fn=varAK3diff_n0mean2,itnmax=itnmax,method="Nelder-Mead",Sigma=Sigma);
+  oo1 <-optimx::optimx(startval[c(1,3)],fn=varAK3_n1mean2    ,itnmax=itnmax,method="Nelder-Mead",Sigma=Sigma);
+  oo0c<-optimx::optimx(startval[c(1,3)],
                fn=varAK3_n0mean2comp,itnmax=itnmax,method="Nelder-Mead",
                Sigma=Sigma);
   list(levelsep     =c(oo0$p1 ,oo1$p1,0,oo0$p2 ,oo1$p2,0),
@@ -380,7 +401,7 @@ bestAK3contraint<-function(Sigma,Scomppop,
                                      changec=varAK3diffratmean4contraint,
                                      compromisec=varAK3compratmean4contraint)){
   lapply(what,function(fn){
-    oo<-optimx(startval,
+    oo<-optimx::optimx(startval,
                fn=fn,itnmax=itnmax,method="Nelder-Mead",
                Sigma=Sigma,Scomppop=Scomppop);
     ak4to6(c(oo$p1,oo$p2,oo$p3,oo$p4))})}
