@@ -16,7 +16,7 @@ CoeffYF<-function(Sigma,nmonth=dim(Sigma)[[1]]){
 #' 
 #' @param Sigma a p x p matrix
 #' @param X an n x p  matrix
-#' @param Xplus: the general inverse of X
+#' @param Xplus: a general inverse of X
 #' @return the coefficients matrix $W$ such that $WY$ is the best unbiased linear estimator of $\beta$ where $E[Y]=X\beta$
 #' @examples
 #' A=array(rnorm(prod(2:5)),2:5);M=a2m(A,2);dim(A);dim(M);dim(a2m(A))
