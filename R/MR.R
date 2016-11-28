@@ -163,7 +163,6 @@ MR <- function(list.tables,
     names(dimnames(dfEstT))<-c("m","y","Alpha")
     dimnames(dfEstT)[[1]]<-names(list.tables)
     Hmisc::label(dfEstT)<-"MR(alpha) estimate for variable at time"
-    
   return(list(dfEst=dfEstT,weightdisp=weightdisp,AAA=if(analyse){AAA}else{NULL}))}
 
   
