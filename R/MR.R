@@ -8,7 +8,7 @@ MR <- function(list.tables,
                calibmethod="linear",
                Alpha=.5,
                theta=3/4,
-               list.dft.x2,
+               list.dft.x2=NULL,
                dft0.xMR=NULL,
                mu0=NULL,
                Singh=TRUE,
@@ -128,7 +128,7 @@ MR <- function(list.tables,
       #computation of calibration weights for GREG
       d<-as.vector(df3[,w], "numeric")
       dft<-amettrea0(dft,setdiff(list.cal2,colnames(dft)))
-      gg<-calib(Xs=Xs,d=d,total=as.vector(dft[,list.cal2], "numeric"),q=rep(1,length(df3[,w])),
+      gg<-sampling::calib(Xs=Xs,d=d,total=as.vector(dft[,list.cal2], "numeric"),q=rep(1,length(df3[,w])),
                 method=c(calibmethod),description=FALSE,max_iter=500)
       W<-d*gg
       df3[,paste("W.",alphac,sep='')] <- W
@@ -159,6 +159,11 @@ MR <- function(list.tables,
       weightdisp[,,i-1]<-weightdispi
     
   }
+    dfEstT<-do.call(abind::abind,c(dfEstT[Alphac],list(along=3)))
+    names(dimnames(dfEstT))<-c("m","y","Alpha")
+    dimnames(dfEstT)[[1]]<-names(list.tables)
+    Hmisc::label(dfEstT)<-"MR(alpha) estimate for variable at time"
+    
   return(list(dfEst=dfEstT,weightdisp=weightdisp,AAA=if(analyse){AAA}else{NULL}))}
 
   

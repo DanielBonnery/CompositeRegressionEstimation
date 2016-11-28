@@ -1,5 +1,3 @@
-
-
 #' Computes a matrix that is a linear combinaison of the rotation group mis estimates
 #' 
 #' @param X An array of dimension b_1 x ... x b_p
@@ -11,7 +9,7 @@
 #' W%.%.%.%t(X);
 
 empirical.var<-function(A,MARGIN,n){
-  plyr::aaply(A,MARGIN,function(A.){m2a(var(a2m(A.,n)),dim(A.)[-(0:n)])})
+  plyr::aaply(A,MARGIN,function(A.){TensorDB::m2a(var(TensorDB::a2m(A.,n)),dim(A.)[-(0:n)])})
 }
 
 #W %.k2% X
