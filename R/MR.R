@@ -59,7 +59,7 @@ MR <- function(list.tables,
   if(analyse){AAA=list()}
   #Loop: for every table (every T), starting from the second table
   for (i in 2:LL){
-    print(i)
+    #print(i)
     weightdispi=numeric(0)
     df1f.y<-factorisedf(list.tables[[i-1]],list.xMR);
     df2f.y<-factorisedf(list.tables[[i]],list.xMR);
@@ -116,7 +116,7 @@ MR <- function(list.tables,
     dft.x2=list.dft.x2[[i]] # for x2, totals are provided as an entry
     
     for(alphac in Alphac){
-      print(alphac)
+      #print(alphac)
       dft<-cbind(dft.x1,
                  dft.x2,
                  dft.xMR[[alphac]])
