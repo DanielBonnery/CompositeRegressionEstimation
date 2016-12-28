@@ -1,3 +1,12 @@
+#' Compute weighted sums
+#'
+#' @param list.tables A list of dataframes
+#' @param weight either a real number of a character string indicating the name of the weight variable.
+#' @return list.y: list of variables whose weighted sum needs to be computed. It can be factor or character variables.
+#' @examples
+#' WS(list(cars),"dist","speed")
+
+
 WS <-
 function(list.tables,weight=1,list.y=NULL){
   L<-lapply(list.tables,function(df){
