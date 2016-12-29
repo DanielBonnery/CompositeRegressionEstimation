@@ -6,7 +6,7 @@
 #' @param y a string indicating the name of a factor variable common to all tables of list.tables.
 #' @return a list of three arrays. 
 #' @examples
-#' WS(list(cars),"dist","speed")
+#' douuble(list.tables=lapply(1:10,function(x){cbind(id=1:nrow(Orange),Orange)[sample(nrow(Orange),30),]}),w="circumference",id="id",y="Tree")
 
 douuble <- function(list.tables,
                w,
@@ -25,20 +25,14 @@ douuble <- function(list.tables,
     df1<-merge(list.tables[[i-1]][keep],list.tables[[i]][keep],by=id,all.y=TRUE)
     df0<-df0[is.na(df0[[y.y]]),]
     df1<-df1[is.na(df1[[y.x]]),]
-    NN=aggregate(df[w.y],sum,by=list(factor(df[[y.x]]),factor(df[[y.y]])))    
-    N01<-reshape2::acast(NN,Group.1~Group.2,value.var=w.y, fill = 0)
-    NN0<-if(nrow(df0)==0){plyr::aaply(levels(df1[[y.x]]),1,function(x){0})}else{aggregate(df0[w.x],sum,by=list(factor(df0[[y.x]])))}
-    NN1<-if(nrow(df0)==0){plyr::aaply(levels(df1[[y.y]]),1,function(x){0})}else{aggregate(df1[w.y],sum,by=list(factor(df1[[y.y]])))}
-    N0=NN0[w.x];rownames(N0)<-NN0$Group.1
-    N1=NN1[w.y];rownames(N1)<-NN1$Group.1
-    
-    list(
-    N01=N01,N0=N0,N1=N1)
-  })
-
-  N01<-plyr::alply(doubble,function(x){x$N01})
-  N0<-plyr::alply(doubble,function(x){x$N0})
-  N1<-plyr::alply(doubble,function(x){x$N1})
+    list(N01=reshape2::acast(df,as.formula(paste0(y.x,"~",y.y)),fun.aggregate=sum,value.var=w.y, fill = 0, drop = FALSE),
+    N0=reshape2::acast(df0,as.formula(paste0("1~",y.x)),fun.aggregate=sum,value.var=w.x, fill = 0, drop = FALSE),
+    N1=reshape2::acast(df1,as.formula(paste0("1~",y.y)),fun.aggregate=sum,value.var=w.y, fill = 0, drop = FALSE))
+    })
+names(doubble)<-names(list.tables)[2:LL]
+  N01<-plyr::laply(doubble,function(x){x$N01})
+  N0<-plyr::laply(doubble,function(x){x$N0})
+  N1<-plyr::laply(doubble,function(x){x$N1})
   
   Hmisc::label(N01)<-paste0("Weighted (weight is: ",w,") count for ",y, "(t-1)=i and ", y,"(t)=j")
   names(dimnames(N01))<-c("t","i","j")

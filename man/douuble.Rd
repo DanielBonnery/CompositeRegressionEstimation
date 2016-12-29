@@ -22,6 +22,6 @@ a list of three arrays.
 Compute weighted sums
 }
 \examples{
-WS(list(cars),"dist","speed")
+douuble(list.tables=lapply(1:10,function(x){cbind(id=1:nrow(Orange),Orange)[sample(nrow(Orange),30),]}),w="circumference",id="id",y="Tree")
 }
 
