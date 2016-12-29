@@ -26,13 +26,13 @@ douuble <- function(list.tables,
     df1<-df1[is.na(df1[[y.x]]),]
     NN=aggregate(df[[w.y]],sum,by=list(factor(df[[y.x]]),factor(df[[y.y]])))    
     N01<-matrix(0,3,3)
-    for (i in 1:nrow(NN)){N01[NN$Group.1[i],NN$Group.2[i]]<-NN[pwsswgt.y][i]}
+    for (i in 1:nrow(NN)){N01[NN$Group.1[i],NN$Group.2[i]]<-NN[[w.y]][i]}
     rownames(N01)<-levels(NN$Group.1)
     colnames(N01)<-levels(NN$Group.2)
     NN0=aggregate(df0[[w.x]],sum,by=list(factor(df0[[y.x]])))
     NN1=aggregate(df1[[w.y]],sum,by=list(factor(df1[[y.y]])))
-    N0=NN0[pwsswgt.x];names(N0)<-NN0$Group.1
-    N1=NN1[pwsswgt.y];names(N1)<-NN1$Group.1
+    N0=NN0[w.x];names(N0)<-NN0$Group.1
+    N1=NN1[w.y];names(N1)<-NN1$Group.1
     
     list(
     N01=N01,N0=N0,N1=N1)
@@ -84,7 +84,7 @@ triple <- function(list.tables,
     for (j in 1:nrow(NN09)){N09[NN$Group.1[j],NN09$Group.2[j]]<-NN09[pwsswgt][j]}}
     
     NN1=aggregate(df[S_0,][w],sum,by=list(factor(df$pumlrR_0)))
-    N1=NN1[pwsswgt];names(N1)<-nnames
+    N1=NN1[w];names(N1)<-nnames
     
     list(N01=N01,N09=N09,N1=N1)
   })
