@@ -1,17 +1,43 @@
-#Sigma: an array  
-
+#' Compute Yansaneh-Fuller X matrix for CPS
+#'
+#' @param nmonth an integer
+#' @return a matrix. 
+#' @examples
+#' CPS_X_matrix(10)
 CPS_X_matrix<-function(nmonth){XX<-t(matrix(rep(diag(3),8),3,24))
   X<-as.matrix(Matrix::.bdiag(lapply(1:nmonth,function(i){XX})))}
+#' Compute the Moore penrose general inverse of a the Yansaneh Fuller X matrix for CPS
+#'
+#' @param nmonth an integer
+#' @return a matrix. 
+#' @examples
+#' CPS_Xplus_matrix(10)
 CPS_Xplus_matrix<-function(X){t(X)/8}  
 
-CPS_X_array<-function(nmonth){
-array(CPS_X_matrix(nmonth),c(nmonth,3,nmonth,8,3))}
+#' Compute Yansaneh-Fuller X matrix for CPS, array version
+#'
+#' @param nmonth an integer
+#' @return a matrix. 
+#' @examples
+#' CPS_X_matrix(10)
+
+CPS_X_array<-function(nmonth){array(CPS_X_matrix(nmonth),c(nmonth,3,nmonth,8,3))}
+#' Compute the Moore penrose general inverse of a the Yansaneh Fuller X matrix for CPS, array version
+#'
+#' @param nmonth an integer
+#' @return a matrix. 
+#' @examples
+#' CPS_Xplus_matrix(10)
 CPS_Xplus_array<-function(X){t(X)/8}  
 
 
 
-
-  
+#' Compute Yansaneh-Fuller coefficient for CPS, matrix version
+#'
+#' @param Sigma a Variance covariance array
+#' @return a matrix. 
+#' @examples
+#' CoeffYF(var())
 CoeffYF<-function(Sigma,nmonth=dim(Sigma)[[1]]){
   Sigg<-array(aperm(Sigma,c(3,2,1,6,5,4)),rep(nmonth*8*3,2))
   X<-CPS_X_matrix(nmonth)
@@ -20,7 +46,6 @@ CoeffYF<-function(Sigma,nmonth=dim(Sigma)[[1]]){
   gi<-MASS::ginv(M%*%Sigg%*%M)
   W<-Xplus%*%(diag(nmonth*8*3)-M)%*%(diag(nmonth*8*3)-Sigg%*%gi)
   return(W)}
-
 #' Compute the coefficients for Multivariate Blue
 #' 
 #' @param Sigma a p x p matrix
@@ -29,12 +54,9 @@ CoeffYF<-function(Sigma,nmonth=dim(Sigma)[[1]]){
 #' @return the coefficients matrix $W$ such that $WY$ is the best unbiased linear estimator of $\beta$ where $E[Y]=X\beta$
 #' @examples
 #' A=array(rnorm(prod(2:5)),2:5);M=a2m(A,2);dim(A);dim(M);dim(a2m(A))
-
 CoeffYF.matrix<-function(Sigma,X,Xplus=MASS::ginv(X)){
   M<-diag(nrow(X))-X%*%Xplus
   Xplus%*%(diag(nrow(X))-M)%*%(diag(nrow(X))-Sigma%*%(MASS::ginv(M%*%Sigma%*%M)))}
-
-
 CoeffYF.array<-function(Sigma,X,Xplus=NULL){
   dS=length(dimnames(Sigma))/2
   dX=length(dimnames(X))-dS
@@ -49,10 +71,17 @@ CoeffYF.array<-function(Sigma,X,Xplus=NULL){
 
 CoeffYF.tensor<-function(Sigma,X,Xplus=ginv(t2m(X))){
   CC<-array(CoeffYF.matrix(t2m(Sigma),t2m(X),Xplus))
-  CC<-
-  as.tensor(CC,alongA=)
+  CC<-as.tensor(CC,alongA=)
   }
 
+#' Compute the coefficients for Multivariate Blue
+#' 
+#' @param Sigma a p x p matrix
+#' @param X an n x p  matrix
+#' @param Xplus: a general inverse of X
+#' @return the coefficients matrix $W$ such that $WY$ is the best unbiased linear estimator of $\beta$ where $E[Y]=X\beta$
+#' @examples
+#' A=array(rnorm(prod(2:5)),2:5);M=a2m(A,2);dim(A);dim(M);dim(a2m(A))
 
 CoeffS2<-function(nmonth){
   XX<-t(matrix(rep(diag(3),8),3,24))
