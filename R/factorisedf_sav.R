@@ -2,13 +2,15 @@
 #'
 #' @param dfr A dataframe
 #' @param list.y character vector containing the names of the variables to be converted.
-#' @return a dataframe
+#' @return list of variables whose weighted sum needs to be computed. It can be factor or character variables.
 #' @examples
-#' factorisedf(Orange,names(Orange))
+#' WS(list(cars),"dist","speed")
 
 
 factorisedf <-function(dfr,list.y){
-    toconvert <- list.y[sapply(as.data.frame(dfr[, list.y,drop = FALSE]), function(x){any(is.element(class(x),c("factor", "character")))})]
+    do.call(cbind,
+            lapply(list.y,function(x){model.matrix(as.formula(paste0("~",x,"+0")))}))
+    toconvert <- list.y[sapply(as.data.frame(dfr[, list.y,drop = FALSE]), class) %in% (c("factor", "character"))]
     toconvert_n <- toconvert[sapply(as.data.frame(dfr[, toconvert, drop = FALSE]), function(l) {length(unique(l))}) > 1]
     toconvert_1 <- setdiff(toconvert, toconvert_n)
     numericv<-setdiff(list.y,toconvert)
