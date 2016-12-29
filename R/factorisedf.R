@@ -16,7 +16,7 @@ factorisedf <-function(dfr,list.y){
     fdf=dfr[,numericv,drop=FALSE]
     
     for(varn in toconvert_n){
-      dfr[,varn]<-paste("_n",factor(dfr[,varn],exclude=NULL),sep="")
+      dfr[,varn]<-paste("_n",factor(as.data.frame(dfr)[,varn],exclude=NULL),sep="")
       formulaa=as.formula(paste(c(" ~ 0  ", varn), collapse=" + "))
       fdf=cbind(fdf,model.matrix(formulaa, dfr))}
     for(varn in toconvert_1){
