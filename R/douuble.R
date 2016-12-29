@@ -24,7 +24,7 @@ douuble <- function(list.tables,
     df1<-merge(list.tables[[i-1]][keep],list.tables[[i]][keep],by=id,all.y=TRUE)
     df0<-df0[is.na(df0[[y.y]]),]
     df1<-df1[is.na(df1[[y.x]]),]
-    NN=aggregate(df[[w.y]],sum,by=list(factor(df[[y.x]]),factor(df[[y.y]])))    
+    NN=aggregate(df[w.y],sum,by=list(factor(df[[y.x]]),factor(df[[y.y]])))    
     N01<-matrix(0,3,3)
     for (i in 1:nrow(NN)){N01[NN$Group.1[i],NN$Group.2[i]]<-NN[[w.y]][i]}
     rownames(N01)<-levels(NN$Group.1)
