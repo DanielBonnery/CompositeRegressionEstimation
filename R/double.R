@@ -26,7 +26,7 @@ douuble <- function(list.tables,
     df0<-df0[is.na(df0[[y.y]]),]
     df1<-df1[is.na(df1[[y.x]]),]
     NN=aggregate(df[w.y],sum,by=list(factor(df[[y.x]]),factor(df[[y.y]])))    
-    N01<-reshape2::acast(NN,Group.1~Group.2,value.var="circumference.y", fill = 0)
+    N01<-reshape2::acast(NN,Group.1~Group.2,value.var=w.y, fill = 0)
     NN0<-if(nrow(df0)==0){plyr::aaply(levels(df1[[y.x]]),1,function(x){0})}else{aggregate(df0[w.x],sum,by=list(factor(df0[[y.x]])))}
     NN1<-if(nrow(df0)==0){plyr::aaply(levels(df1[[y.y]]),1,function(x){0})}else{aggregate(df1[w.y],sum,by=list(factor(df1[[y.y]])))}
     N0=NN0[w.x];rownames(N0)<-NN0$Group.1
