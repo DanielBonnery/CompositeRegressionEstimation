@@ -29,19 +29,22 @@ douuble <- function(list.tables,
     N0=reshape2::acast(df0,as.formula(paste0("1~",y.x)),fun.aggregate=sum,value.var=w.x, fill = 0, drop = FALSE),
     N1=reshape2::acast(df1,as.formula(paste0("1~",y.y)),fun.aggregate=sum,value.var=w.y, fill = 0, drop = FALSE))
     })
-names(doubble)<-names(list.tables)[2:LL]
   N01<-plyr::laply(doubble,function(x){x$N01})
   N0<-plyr::laply(doubble,function(x){x$N0})
   N1<-plyr::laply(doubble,function(x){x$N1})
   
   Hmisc::label(N01)<-paste0("Weighted (weight is: ",w,") count for ",y, "(t-1)=i and ", y,"(t)=j")
   names(dimnames(N01))<-c("t","i","j")
+  names(N01)[[1]]<-names(list.tables)[2:LL]
   
   Hmisc::label(N0)<-paste0("Weighted (weight is: ",w,") count for ",y, "(t-1)=i and not in the sample at t")
   names(dimnames(N0))<-c("t","i")
-
+  names(N0)[[1]]<-names(list.tables)[2:LL]
+  
   Hmisc::label(N1)<-paste0("Weighted (weight is: ",w,") count for ",y, "(t)=i and not in the sample at t-1")
   names(dimnames(N1))<-c("t","i")
+  names(N1)[[1]]<-names(list.tables)[2:LL]
+  
   return(list(N01=N01,N0=N0,N1=N1))
   
   }
