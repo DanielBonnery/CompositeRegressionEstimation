@@ -22,15 +22,15 @@ douuble <- function(list.tables,
     df<-merge(list.tables[[i-1]][keep],list.tables[[i]][keep],by=id,all=FALSE)
     df0<-merge(list.tables[[i-1]][keep],list.tables[[i]][keep],by=id,all.x=TRUE)
     df1<-merge(list.tables[[i-1]][keep],list.tables[[i]][keep],by=id,all.y=TRUE)
-    df0<-df0[is.na(df0[y.y]),]
-    df1<-df1[is.na(df1[y.x]),]
-    NN=aggregate(df[w.y],sum,by=list(factor(df[y.x]),factor(df[y.y])))    
+    df0<-df0[is.na(df0[[y.y]]),]
+    df1<-df1[is.na(df1[[y.x]]),]
+    NN=aggregate(df[[w.y]],sum,by=list(factor(df[[y.x]]),factor(df[[y.y]])))    
     N01<-matrix(0,3,3)
     for (i in 1:nrow(NN)){N01[NN$Group.1[i],NN$Group.2[i]]<-NN[pwsswgt.y][i]}
     rownames(N01)<-levels(NN$Group.1)
     colnames(N01)<-levels(NN$Group.2)
-    NN0=aggregate(df0[w.x],sum,by=list(factor(df0[y.x])))
-    NN1=aggregate(df1[w.y],sum,by=list(factor(df1[y.y])))
+    NN0=aggregate(df0[[w.x]],sum,by=list(factor(df0[[y.x]])))
+    NN1=aggregate(df1[[w.y]],sum,by=list(factor(df1[[y.y]])))
     N0=NN0[pwsswgt.x];names(N0)<-NN0$Group.1
     N1=NN1[pwsswgt.y];names(N1)<-NN1$Group.1
     
