@@ -29,10 +29,10 @@ douuble <- function(list.tables,
     for (i in 1:nrow(NN)){N01[NN$Group.1[i],NN$Group.2[i]]<-NN[[w.y]][i]}
     rownames(N01)<-levels(NN$Group.1)
     colnames(N01)<-levels(NN$Group.2)
-    NN0=aggregate(df0[[w.x]],sum,by=list(factor(df0[[y.x]])))
-    NN1=aggregate(df1[[w.y]],sum,by=list(factor(df1[[y.y]])))
-    N0=NN0[w.x];names(N0)<-NN0$Group.1
-    N1=NN1[w.y];names(N1)<-NN1$Group.1
+    NN0=aggregate(df0[w.x],sum,by=list(factor(df0[[y.x]])))
+    NN1=aggregate(df1[w.y],sum,by=list(factor(df1[[y.y]])))
+    N0=NN0[w.x];rownames(N0)<-NN0$Group.1
+    N1=NN1[w.y];rownames(N1)<-NN1$Group.1
     
     list(
     N01=N01,N0=N0,N1=N1)
