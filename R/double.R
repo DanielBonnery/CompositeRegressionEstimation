@@ -2,9 +2,14 @@
 #'
 #' @param list.tables A list of dataframes, order matters.
 #' @param w either  a real number of a character string indicating the name of the weight variable.
+<<<<<<< HEAD
 #' @param id primary key of the tables, used to merge tables together.
 #' @param y a string indicating the name of a factor variable common to all tables of list.tables.
 #' @return a list of three arrays. 
+=======
+#' @param id: primary key of the tables, used to merge tables together.
+#' @return a dataframe. 
+>>>>>>> ee1b3858ff947a00d20a4e875cc52ac97d234a05
 #' @examples
 #' WS(list(cars),"dist","speed")
 
@@ -19,22 +24,36 @@ douuble <- function(list.tables,
   y.y<-paste0(y,".y")
   w.x<-paste0(w,".x")
   w.y<-paste0(w,".y")
+<<<<<<< HEAD
   doubble<-lapply(2:LL,function(i){
+=======
+  doubble=lapply(2:LL,function(i){
+>>>>>>> ee1b3858ff947a00d20a4e875cc52ac97d234a05
     df<-merge(list.tables[[i-1]][keep],list.tables[[i]][keep],by=id,all=FALSE)
     df0<-merge(list.tables[[i-1]][keep],list.tables[[i]][keep],by=id,all.x=TRUE)
     df1<-merge(list.tables[[i-1]][keep],list.tables[[i]][keep],by=id,all.y=TRUE)
     df0<-df0[is.na(df0[[y.y]]),]
     df1<-df1[is.na(df1[[y.x]]),]
     NN=aggregate(df[w.y],sum,by=list(factor(df[[y.x]]),factor(df[[y.y]])))    
+<<<<<<< HEAD
     N01<-reshape2::acast(NN,Group.1~Group.2,value.var="circumference.y", fill = 0)
     NN0<-if(nrow(df0)==0){plyr::aaply(levels(df1[[y.x]]),1,function(x){0})}else{aggregate(df0[w.x],sum,by=list(factor(df0[[y.x]])))}
     NN1<-if(nrow(df0)==0){plyr::aaply(levels(df1[[y.y]]),1,function(x){0})}else{aggregate(df1[w.y],sum,by=list(factor(df1[[y.y]])))}
+=======
+    N01<-matrix(0,3,3)
+    for (i in 1:nrow(NN)){N01[NN$Group.1[i],NN$Group.2[i]]<-NN[[w.y]][i]}
+    rownames(N01)<-levels(NN$Group.1)
+    colnames(N01)<-levels(NN$Group.2)
+    NN0=aggregate(df0[w.x],sum,by=list(factor(df0[[y.x]])))
+    NN1=aggregate(df1[w.y],sum,by=list(factor(df1[[y.y]])))
+>>>>>>> ee1b3858ff947a00d20a4e875cc52ac97d234a05
     N0=NN0[w.x];rownames(N0)<-NN0$Group.1
     N1=NN1[w.y];rownames(N1)<-NN1$Group.1
     
     list(
     N01=N01,N0=N0,N1=N1)
   })
+<<<<<<< HEAD
   
   N01<-plyr::alply(doubble,function(x){x$N01})
   N0<-plyr::alply(doubble,function(x){x$N0})
@@ -51,6 +70,10 @@ douuble <- function(list.tables,
   return(list(N01=N01,N0=N0,N1=N1))
   
   }
+=======
+  #eval(parse(text=Sauve("doubble","serv")))
+  return(doubble)}
+>>>>>>> ee1b3858ff947a00d20a4e875cc52ac97d234a05
 
 
 
