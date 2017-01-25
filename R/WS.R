@@ -6,11 +6,13 @@
 #' @return a dataframe. 
 #' @examples
 #' WS(plyr::dlply(CRE_data,.variables=~time),"Sampling.weight",c("Hobby","Status","State"));
+#' WS(plyr::dlply(CRE_data,.variables=~time),"Sampling.weight",character(0));
 
 
 WS <-
 function(list.tables,weight=1,list.y=NULL,sep="_n"){
-  L<-lapply(list.tables,function(df){
+  L<-if(identical(list.y,character(0))){lapply(list.tables,function(df){numeric(0)})}else{
+  lapply(list.tables,function(df){
     #procedure
     list.y2<-list.y
     if(is.null(list.y)){list.y2<-names(df)[sapply(df,is.numeric)]}
@@ -30,11 +32,11 @@ function(list.tables,weight=1,list.y=NULL,sep="_n"){
     amettrea0<-setdiff(unlist(lapply(
       list.y2[unlist(lapply(df[list.y2],is.factor))],
       function(var){
-        paste(var,chartr("-.","__",levels(df[,var])),sep=sep)})),colnames(dft))
+        paste(var,chartr("-. ","___",levels(df[,var])),sep=sep)})),colnames(dft))
     zeros<-matrix(0,1,length(amettrea0));colnames(zeros)<-amettrea0
     dft<-cbind(dft,zeros)
       return(dft)
-  })
+  })}
     variables<-unique(unlist(lapply(L,colnames)))
     L<-lapply(L,function(df){
       amettrea0<-setdiff(variables,colnames(df))

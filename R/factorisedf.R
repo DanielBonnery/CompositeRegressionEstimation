@@ -22,13 +22,15 @@ factorisedf <-function(dfr,list.y){
     for(varn in toconvert_1){
       if(is.factor(dfr[,varn])){
         leve<-levels(dfr[,varn])
+        leve<-gsub(" ","_",leve)
         uni<-leveunique(dfr[,varn])
         fdf[,paste0(varn,"_n",leve)]<-0
         fdf[,paste0(varn,"_n",leve[unique(dfr[,varn])])]<-1
       }else{fdf[,paste0(varn,"_n",unique(dfr[,varn]))]<-1}}
     fdf<-fdf[,setdiff(names(fdf),names(fdf)[grep("_nNA",names(fdf))]),drop=FALSE]
     names(fdf)<-gsub("-","_",names(fdf))
-  
+    names(fdf)<-gsub(" ","_",names(fdf))
+    
   return(list(fdf=fdf,#all columns from df + fdf
               fdf2=fdf,#same
               aconvertir=toconvert,

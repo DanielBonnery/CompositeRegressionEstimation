@@ -16,7 +16,8 @@
 #' @param analyse
 #' @return a dataframe. 
 #' @examples
-#' MR(plyr::dlply(CRE_data,.variables=~time),w="Sampling.weight",id="Identifier",c("Hobby","Status","State"));
+#' MR(list.tables<-plyr::dlply(CRE_data,.variables=~time),w="Sampling.weight",list.xMR="Status",id="Identifier",list.y=c("Hobby","Status","State"))$dfEst;
+ 
 
 MR <- function(list.tables,
                w,
@@ -26,7 +27,7 @@ MR <- function(list.tables,
                list.x2=NULL, #external
                list.y=NULL,
                calibmethod="linear",
-               Alpha=.5,
+               Alpha=.75,
                theta=3/4,
                list.dft.x2=NULL,
                dft0.xMR=NULL,
@@ -132,7 +133,7 @@ MR <- function(list.tables,
                     paste,sep='.'))  
     df3<-merge(df2,df[,keep],by=id)
     mu<-list()
-    dft.x1<-WS(list(df2),list.y=listtot.x1,weight=w)#computation of totals for x1
+    dft.x1<-WS(list.tables=list(df2),list.y=listtot.x1,weight=w)#computation of totals for x1
     dft.x2=list.dft.x2[[i]] # for x2, totals are provided as an entry
     
     for(alphac in Alphac){
@@ -180,9 +181,9 @@ MR <- function(list.tables,
     
   }
     dfEstT<-do.call(abind::abind,c(dfEstT[Alphac],list(along=3)))
-    names(dimnames(dfEstT))<-c("m","y","Alpha")
+    names(dimnames(dfEstT))<-c("t","y","Alpha")
     dimnames(dfEstT)[[1]]<-names(list.tables)
-    Hmisc::label(dfEstT)<-"MR(alpha) estimate for variable at time"
+    Hmisc::label(dfEstT)<-"MR(alpha) estimate for variable y at time t"
   return(list(dfEst=dfEstT,weightdisp=weightdisp,AAA=if(analyse){AAA}else{NULL}))}
 
   
