@@ -1,20 +1,22 @@
-#' Computes a matrix that is a linear combinaison of the rotation group mis estimates
+#' Empirical variance of a collection of arrays.
 #' 
-#' @param X An array of dimension b_1 x ... x b_p
-#' @param W An array of dimension a_1 x ... x a_n x b_1 x ... x b_p
-#' @return Y the array of dimension a_1 x ... x a_n Y[i_1,...,i_n]=sum(W[i_1,...,i_n,,...,] )
+#' @param A An array of dimension d_1 x ... d_p
+#' @param MARGIN a vector of integers
+#' @param n the array of dimension a_1 x ... x a_n Y[i_1,...,i_n]=sum(W[i_1,...,i_n,,...,] )
+#' @return 
 #' @examples
-#' W=array(1:(prod(2:5)),2:5);X=array(1:(prod(4:5)),4:5); W%.%.;try(W[,,,-1]%.%.);X%.%.; sum(X*X);X%.%t(X);sum(c(X)*c(t(X)))
-#' X=array(1:(prod(4:6)),4:6); "%.%"(W,X,j=2);
-#' W%.%.%.%t(X);
-
+#' empirical.var()
 empirical.var<-function(A,MARGIN,n){
   plyr::aaply(A,MARGIN,function(A.){TensorDB::m2a(var(TensorDB::a2m(A.,n)),dim(A.)[-(0:n)])})
 }
-
-#W %.k2% X
-
-
+#' general AK weights as a function of a and k parameters.
+#' 
+#' @param nmonths an integer, indicating number of months
+#' @param ngroups : number of groups
+#' @param S a vector of  integers indicating the indices of the rotation group in the sample
+#' @return an array of AK coefficients  W[m2,m1,mis1] such that Ak estimate for month m2  is sum(W[i2,,])*Y) where Y[m1,mis1] is direct estimate on mis mis1 for emp stat i1 at month m1.
+#' @examples
+#' 
 W.ak<-function(nmonths,ngroups,S,a,k){
   W<-array(0,c(nmonth,nmonth,ngroups))
   Sbar<-setdiff(1:ngroups,S)
@@ -40,6 +42,15 @@ W.multi.ak<-function(nmonths,ngroups,S,ak){
     W[,i,,,,i]<-W.ak(nmonths,ngroups,S,ak[[i]]["a"],ak[[i]]["k"])
   }
 W}
+#' 
+#' 
+#' @param Y an array of dimensions
+#' @param S
+#' @param a
+#' @param k
+#' @return 
+#' @examples
+#' 
 
 AK_est<-function(Y,S,a,k){
   Y<-as.array(Y)
@@ -93,8 +104,17 @@ CPS_AK_est <-
     Hmisc::label(Estimates_AK)<-"AK estimates for coeffs ak, employment status i2, month m2." 
     return(aperm(Estimates_AK,c(1,3,2)))}
 
-#ak: a list of vectors of size 6.
-CPS_AK_coeff.array.fl<-function(nmonth,ak,simplify=TRUE,statuslabel=c("0","1","_1")){
+#' Empirical variance of a collection of arrays.
+#' 
+#' @param nmonth a strictly positive integer
+#' @param ak, a list of numeric vectors of length 6.
+#' @param simplify
+#' @param statuslabel : a character vector of dimension 3 indicating the label for unemployed, employed, not in the labor force. 
+#' @return 
+#' @examples
+#' CPS_AK_coeff.array.fl()
+CPS_AK_coeff.array.fl<-function(nmonth,ak=list(c(a_1=0,a_2=0,a_3=0,k_1=0,k_2=0,k_3=0)),simplify=TRUE,
+                                statuslabel=c("0","1","_1")){
   coeff<-plyr::laply(ak,function(x){CPS_AK_coeff.array.f(nmonth=nmonth,x,simplify=simplify,statuslabel=statuslabel)},.drop=FALSE)
   names(dimnames(coeff))[1]<-c("ak")
   if(!is.null(names(ak))){dimnames(coeff)[[1]]<-names(ak)}
@@ -248,6 +268,7 @@ varAK3_n0mean2comp    <-function(ak,Sigma){varAK3_n0mean(ak2_n0to6(ak),Sigma)+va
 ak2_n0to6<-function(ak){c(ak[1],0,0,ak[2],0,0)}
 ak2_n1to6<-function(ak){c(0,ak[1],0,0,ak[2],0)}
 
+#from a vector (a1,a2,k1,k2), returns (a1,a2,0,k1,k2,0) 
 ak4to6<-function(ak){c(ak[1:2],0,ak[3:4],0)}
 ak6to4<-function(ak){ak[c(1,2,4,5)]}
 

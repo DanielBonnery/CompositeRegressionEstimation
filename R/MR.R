@@ -1,3 +1,23 @@
+#' Regression Composite estimation
+#'
+#' @param list.tables A list of dataframes
+#' @param w either a real number of a character string indicating the name of the weight variable.
+#' @param id an identifier
+#' @param list.y: list of variables whose weighted sum needs to be computed. It can be factor or character variables.
+#' @param list.xMR list of variables used to compute proxy composite regression variable
+#' @param list.x1 list of auxiliary variables used in the cablibration, whose calibrated weighted total has to be equal to initially weithed total
+#' @param list.x2 id list of auxiliary variables used in the cablibration, whose calibrated weighted total has to be equal to initially weithed total 
+#' @param list.dft.x2 id list of auxiliary variables used in the cablibration, whose calibrated weighted total has to be equal to initially weithed total 
+#' @param Alpha a vector of alpha values. if alpha="01", this will compute MR3
+#' @param theta 
+#' @param mu0
+#' @param Singh
+#' @param dispweight
+#' @param analyse
+#' @return a dataframe. 
+#' @examples
+#' MR(plyr::dlply(CRE_data,.variables=~time),w="Sampling.weight",id="Identifier",c("Hobby","Status","State"));
+
 MR <- function(list.tables,
                w,
                id,
