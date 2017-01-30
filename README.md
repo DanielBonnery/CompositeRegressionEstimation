@@ -10,13 +10,15 @@
 ```r
 devtools::install_github("DanielBonnery/CompositeRegressionEstimation")
 ```
-
-
 ## Demonstration code
+This package has been used for the paper submitted by D. Bonnery, P. Lahiri and Y. Cheng on real data (CPS data).
+One can consult the github page to see demo code.
+
+Below is given a basic demonstration code on a simulated dataset
 
 ```r
-library(dataASPEP)
-library(pubBonneryLahiriTran2016)
-library(ggplot2)
+library(CompositeRegressionEstimation)
+data(CRE_data)
+example(MR)
 ```
 
