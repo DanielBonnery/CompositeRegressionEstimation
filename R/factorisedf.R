@@ -8,6 +8,7 @@
 
 
 factorisedf <-function(dfr,list.y){
+    if(is.null(list.y)){list(nfdf=names(dfr),fdf=dfr)}else{
     toconvert <- list.y[sapply(as.data.frame(dfr[, list.y,drop = FALSE]), function(x){any(is.element(class(x),c("factor", "character")))})]
     toconvert_n <- toconvert[sapply(as.data.frame(dfr[, toconvert, drop = FALSE]), function(l) {length(unique(l))}) > 1]
     toconvert_1 <- setdiff(toconvert, toconvert_n)
@@ -36,4 +37,4 @@ factorisedf <-function(dfr,list.y){
               aconvertir=toconvert,
               apasconvertir=setdiff(list.y,toconvert),
               nfdf=names(fdf),          
-              nfdf2=setdiff(names(fdf),toconvert)))}
+              nfdf2=setdiff(names(fdf),toconvert)))}}

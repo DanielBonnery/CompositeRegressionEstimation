@@ -11,18 +11,17 @@ empirical.var<-function(A,MARGIN,n){
 }
 #' general AK weights as a function of a and k parameters.
 #' 
-#' @param nmonths an integer, indicating number of months
+#' @param nmonth an integer, indicating number of months
 #' @param ngroups : number of groups
 #' @param S a vector of  integers indicating the indices of the rotation group in the sample
-#' @return an array of AK coefficients  W[m2,m1,mis1] such that Ak estimate for month m2  is sum(W[i2,,])*Y) where Y[m1,mis1] is direct estimate on mis mis1 for emp stat i1 at month m1.
+#' @return an array of AK coefficients  W[m2,m1,mis1] such that Ak estimate for month m2  is sum(W[y2,,])*Y) where Y[m1,mis1] is direct estimate on mis mis1 for emp stat y1 at month m1.
 #' @examples
 #' 
-W.ak<-function(nmonths,ngroups,S,a,k){
+W.ak<-function(nmonth,ngroups=8,S=c(2:4,6:8),a,k){
   W<-array(0,c(nmonth,nmonth,ngroups))
   Sbar<-setdiff(1:ngroups,S)
   wS<-length(S)/ngroups
-  wSbar<-length(Sbar)=length(S)/length(Sbar)
-  w(Sbar)<-length(Sbar)
+  wsbar<-length(S)/length(Sbar)
     W[1,,1]<-1
     for(i in 2:nmonth){
       W[i,,]<-W[(i-1),,]*k
@@ -31,15 +30,16 @@ W.ak<-function(nmonths,ngroups,S,a,k){
       W[i,i,S]<-W[i,i,S]+k/wS-ngroups*a/wsbar
       W[i,i,Sbar]<-W[i,i,Sbar]+ngroups*a} 
   W<-W/ngroups
+  dimnames(W)<-sapply(dim(W),seq_len)
   names(dimnames(W))<-c("m2","m1","mis1")
-  Hmisc::label(W)<-"Coefficient matrix W[m2,m1,mis1] such that Ak estimate for month m2  is sum(W[i2,,])*Y) where Y[m1,mis1] is direct estimate on mis mis1 for emp stat i1 at month m1"
+  Hmisc::label(W)<-"Coefficient matrix W[m2,m1,mis1] such that Ak estimate for month m2  is sum(W[y2,,])*Y) where Y[m1,mis1] is direct estimate on mis mis1 for emp stat y1 at month m1"
   return(W)}
 
-W.multi.ak<-function(nmonths,ngroups,S,ak){
+W.multi.ak<-function(nmonth,ngroups,S,ak){
   n<-length(ak)
   W<-array(0,c(nmonth,n,nmonth,ngroups,n))
   for(i in 1:n){
-    W[,i,,,,i]<-W.ak(nmonths,ngroups,S,ak[[i]]["a"],ak[[i]]["k"])
+    W[,i,,,,i]<-W.ak(nmonth,ngroups,S,ak[[i]]["a"],ak[[i]]["k"])
   }
 W}
 #' 
@@ -52,9 +52,13 @@ W}
 #' @examples
 #' 
 
-AK_est<-function(Y,S,a,k){
+AK_est<-function(Y,S=c(2:4,6:8),a,k){
   Y<-as.array(Y)
-  W.ak(dim(Y)[1],S,a,k) %.k2% Y}
+  TensorDB::"%.%"(A=W.ak(dim(Y)[1],dim(Y)[2],S,a,k),
+                  B=Y,
+                  I_A=list(c=integer(0),n="m2",p=c("m1","mis1")),
+                  I_B=list(c=integer(0),p=c("Month","Months in sample"),q="Variable"))
+  }
 
 
 
@@ -87,7 +91,7 @@ CPS_AK<-function(){c(a1=CPS_A_u(),a2=CPS_A_e(),a3=0,k1=CPS_K_u(),k2=CPS_K_e(),k3
 #' Gives the variance of the AK estimators from the A,K coefficients and the variance covariance matrix of the month in sample estimates
 #' 
 #' @param mistotals An array of dimension  nmonth x 8 x 3. mistotals[i,j,k] is the month in sample direct estimate for month i, month in sample j rotation group, and variable k.
-#' @param coeff An array of coefficients W[ak,i2,m2,i1,mis1,m1] such that AK estimate for coefficients ak, month m2 and employment status i2 is sum(W[ak,i2,m2,,,])*Y[,,]) where mistotals[i1,mis1,m1] is direct estimate on mis mis1 for emp stat i1 at month m1.
+#' @param coeff An array of coefficients W[ak,y2,m2,y1,mis1,m1] such that AK estimate for coefficients ak, month m2 and employment status y2 is sum(W[ak,y2,m2,,,])*Y[,,]) where mistotals[y1,mis1,m1] is direct estimate on mis mis1 for emp stat y1 at month m1.
 #' @param ak: an ak coefficients vector or a  list of ak coefficients.
 #' @return The variance of the AK estimators from the A,K coefficients and the variance covariance matrix .
 #' @examples
@@ -101,7 +105,7 @@ CPS_AK_est <-
     Estimates_AK = abind::adrop(plyr::aaply(coeff, 1:3, function(m2) {sum(aperm(mistotals,3:1) * m2)},.drop=FALSE),drop=4)
     #
     dimnames(Estimates_AK)[[1]]<-if(is.null(names(ak))){sapply(ak,function(x){paste0("AK3","-",paste(x[c(1:2,4:5)],collapse=","))})}else{names(ak)}
-    Hmisc::label(Estimates_AK)<-"AK estimates for coeffs ak, employment status i2, month m2." 
+    Hmisc::label(Estimates_AK)<-"AK estimates for coeffs ak, employment status y2, month m2." 
     return(aperm(Estimates_AK,c(1,3,2)))}
 
 #' Empirical variance of a collection of arrays.
@@ -118,7 +122,7 @@ CPS_AK_coeff.array.fl<-function(nmonth,ak=list(c(a_1=0,a_2=0,a_3=0,k_1=0,k_2=0,k
   coeff<-plyr::laply(ak,function(x){CPS_AK_coeff.array.f(nmonth=nmonth,x,simplify=simplify,statuslabel=statuslabel)},.drop=FALSE)
   names(dimnames(coeff))[1]<-c("ak")
   if(!is.null(names(ak))){dimnames(coeff)[[1]]<-names(ak)}
-  Hmisc::label(coeff)<-"Coefficient matrix W[ak,i2,m2,i1,mis1,m1] such that AK estimate for coefficients ak, month m2 and employment status i2 is sum(W[ak,i2,m2,,,])*Y[,,]) where Y[i1,mis1,m1] is direct estimate on mis mis1 for emp stat i1 at month m1"
+  Hmisc::label(coeff)<-"Coefficient matrix W[ak,y2,m2,y1,mis1,m1] such that AK estimate for coefficients ak, month m2 and employment status y2 is sum(W[ak,y2,m2,,,])*Y[,,]) where Y[y1,mis1,m1] is direct estimate on mis mis1 for emp stat y1 at month m1"
 return(coeff)    }
 #ak: a  vector of size 6.
 
@@ -138,8 +142,8 @@ CPS_AK_coeff.array.f<-function(nmonth,ak,simplify=TRUE,statuslabel=c("0","1","_1
       coeff[u,i,u,S,i]<-coeff[u,i,u,S,i]+k*4/3-8*a/3
       coeff[u,i,u,Sbar,i]<-coeff[u,i,u,Sbar,i]+8*a} }
   coeff<-coeff/8
-  names(dimnames(coeff))<-c("i2","m2","i1","mis1","m1")
-  Hmisc::label(coeff)<-"Coefficient matrix W[i2,m2,i1,mis1,m1] such that Ak estimate for month m2 and employment status i2 is sum(W[i2,m2,,,])*Y[,,]) where Y[i1,mis1,m1] is direct estimate on mis mis1 for emp stat i1 at month m1"
+  names(dimnames(coeff))<-c("y2","m2","y1","mis1","m1")
+  Hmisc::label(coeff)<-"Coefficient matrix W[y2,m2,y1,mis1,m1] such that Ak estimate for month m2 and employment status y2 is sum(W[y2,m2,,,])*Y[,,]) where Y[y1,mis1,m1] is direct estimate on mis mis1 for emp stat y1 at month m1"
   if(simplify){  
     coeff=array(coeff,c(nmonth*3,nmonth*8*3))
   }
