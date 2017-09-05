@@ -2,24 +2,20 @@
 % Please edit documentation in R/AK3.R
 \name{empirical.var}
 \alias{empirical.var}
-\title{Computes a matrix that is a linear combinaison of the rotation group mis estimates}
+\title{Empirical variance of a collection of arrays.}
 \usage{
 empirical.var(A, MARGIN, n)
 }
 \arguments{
-\item{X}{An array of dimension b_1 x ... x b_p}
+\item{A}{An array of dimension d_1 x ... d_p}
 
-\item{W}{An array of dimension a_1 x ... x a_n x b_1 x ... x b_p}
-}
-\value{
-Y the array of dimension a_1 x ... x a_n Y[i_1,...,i_n]=sum(W[i_1,...,i_n,,...,] )
+\item{MARGIN}{a vector of integers}
+
+\item{n}{the array of dimension a_1 x ... x a_n Y[i_1,...,i_n]=sum(W[i_1,...,i_n,,...,] )}
 }
 \description{
-Computes a matrix that is a linear combinaison of the rotation group mis estimates
+Empirical variance of a collection of arrays.
 }
 \examples{
-W=array(1:(prod(2:5)),2:5);X=array(1:(prod(4:5)),4:5); W\%.\%.;try(W[,,,-1]\%.\%.);X\%.\%.; sum(X*X);X\%.\%t(X);sum(c(X)*c(t(X)))
-X=array(1:(prod(4:6)),4:6); "\%.\%"(W,X,j=2);
-W\%.\%.\%.\%t(X);
+empirical.var()
 }
-

@@ -12,4 +12,3 @@ The vector c(a1=CPS_A_u(),a2=CPS_A_e(),a3=0,k1=CPS_K_u(),k2=CPS_K_e(),k3=0)
 \description{
 Gives K coefficient for unemployed used by the Census
 }
-

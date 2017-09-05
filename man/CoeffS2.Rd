@@ -22,4 +22,3 @@ Compute the coefficients for Multivariate Blue
 \examples{
 A=array(rnorm(prod(2:5)),2:5);M=a2m(A,2);dim(A);dim(M);dim(a2m(A))
 }
-

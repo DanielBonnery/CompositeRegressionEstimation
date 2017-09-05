@@ -12,4 +12,3 @@ CPS_K_u()
 \description{
 Gives K coefficient for unemployed used by the Census
 }
-

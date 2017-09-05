@@ -20,4 +20,3 @@ Gives the variance of the AK estimators from the A,K coefficients and the varian
 \examples{
 varAK3(ak=c(a1=.3,a2=.4,a3=0,k1=.4,k2=.7,k3=0), Sigma=array(drop(stats::rWishart(1,df=3*10*8,diag(3*10*8))),rep(c(10,8,3),2)))
 }
-

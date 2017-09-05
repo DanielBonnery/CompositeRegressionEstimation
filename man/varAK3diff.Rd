@@ -21,4 +21,3 @@ Gives the variance of the consecutive differences of AK estimators from the A,K 
 varAK3diff(ak=c(a1=.3,a2=.4,a3=0,k1=.4,k2=.7,k3=0), Sigma=array(drop(stats::rWishart(1,df=3*10*8,diag(3*10*8))),rep(c(10,8,3),2)))
 add(10, 1)
 }
-

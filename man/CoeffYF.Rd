@@ -18,4 +18,3 @@ Compute Yansaneh-Fuller coefficient for CPS, matrix version
 \examples{
 CoeffYF(var())
 }
-

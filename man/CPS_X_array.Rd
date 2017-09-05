@@ -18,4 +18,3 @@ Compute Yansaneh-Fuller X matrix for CPS, array version
 \examples{
 CPS_X_matrix(10)
 }
-

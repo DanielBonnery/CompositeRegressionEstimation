@@ -24,4 +24,3 @@ Compute weighted sums
 \examples{
 douuble(list.tables=lapply(1:10,function(x){cbind(id=1:nrow(Orange),Orange)[sample(nrow(Orange),30),]}),w="circumference",id="id",y="Tree")
 }
-

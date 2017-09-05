@@ -23,4 +23,3 @@ Gives the variance of an array Y that is a linear transformation AX  of an array
  Sigma=array(drop(stats::rWishart(1,df=prod(b),diag(prod(b)))),rep(b,2));
  var_lin(A,Sigma)
 }
-

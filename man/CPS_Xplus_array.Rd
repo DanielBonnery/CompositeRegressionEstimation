@@ -18,4 +18,3 @@ Compute the Moore penrose general inverse of a the Yansaneh Fuller X matrix for 
 \examples{
 CPS_Xplus_matrix(10)
 }
-

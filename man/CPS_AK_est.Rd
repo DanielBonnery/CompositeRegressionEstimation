@@ -10,7 +10,7 @@ CPS_AK_est(mistotals, coeff = CPS_AK_coeff.array.fl(dim(mistotals)[1], ak,
 \arguments{
 \item{mistotals}{An array of dimension  nmonth x 8 x 3. mistotals[i,j,k] is the month in sample direct estimate for month i, month in sample j rotation group, and variable k.}
 
-\item{coeff}{An array of coefficients W[ak,i2,m2,i1,mis1,m1] such that AK estimate for coefficients ak, month m2 and employment status i2 is sum(W[ak,i2,m2,,,])*Y[,,]) where mistotals[i1,mis1,m1] is direct estimate on mis mis1 for emp stat i1 at month m1.}
+\item{coeff}{An array of coefficients W[ak,y2,m2,y1,mis1,m1] such that AK estimate for coefficients ak, month m2 and employment status y2 is sum(W[ak,y2,m2,,,])*Y[,,]) where mistotals[y1,mis1,m1] is direct estimate on mis mis1 for emp stat y1 at month m1.}
 
 \item{ak:}{an ak coefficients vector or a  list of ak coefficients.}
 }
@@ -23,4 +23,3 @@ Gives the variance of the AK estimators from the A,K coefficients and the varian
 \examples{
 varAK3(ak=c(a1=.3,a2=.4,a3=0,k1=.4,k2=.7,k3=0), Sigma=array(drop(stats::rWishart(1,df=3*10*8,diag(3*10*8))),rep(c(10,8,3),2)))
 }
-
