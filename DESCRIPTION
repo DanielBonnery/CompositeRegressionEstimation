@@ -2,7 +2,7 @@ Package: CompositeRegressionEstimation
 Type: Package
 Title: X
 Version: 1.0 
-Date: 2017-08-31
+Date: 2017-09-04
 Author: D. Bonnery
 Maintainer: D. Bonnery  <dbonnery@umd.edu>
 Imports: ggplot2,
@@ -15,6 +15,13 @@ Imports: ggplot2,
 Suggests: 
 Description: Data
 Remotes: DanielBonnery/TensorDB
+Depends: TensorDB,
+	sampling,
+	abind,
+	optimx,
+	Hmisc,
+	MASS,
+	filehash
 License: GPL (>= 2)
 LazyLoad: yes
 LazyData: true

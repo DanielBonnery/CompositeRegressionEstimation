@@ -142,8 +142,8 @@ CPS_AK_coeff.array.f<-function(nmonth,ak,simplify=TRUE,statuslabel=c("0","1","_1
       coeff[u,i,u,S,i]<-coeff[u,i,u,S,i]+k*4/3-8*a/3
       coeff[u,i,u,Sbar,i]<-coeff[u,i,u,Sbar,i]+8*a} }
   coeff<-coeff/8
-  names(dimnames(coeff))<-c("y2","m2","y1","mis1","m1")
-  Hmisc::label(coeff)<-"Coefficient matrix W[y2,m2,y1,mis1,m1] such that Ak estimate for month m2 and employment status y2 is sum(W[y2,m2,,,])*Y[,,]) where Y[y1,mis1,m1] is direct estimate on mis mis1 for emp stat y1 at month m1"
+  names(dimnames(coeff))<-c("y2","m2","y1","h1","m1")
+  Hmisc::label(coeff)<-"Coefficient matrix W[y2,m2,y1,h1,m1] such that Ak estimate for month m2 and employment status y2 is sum(W[y2,m2,,,])*Y[,,]) where Y[y1,mis1,m1] is direct estimate on mis mis1 for emp stat y1 at month m1"
   if(simplify){  
     coeff=array(coeff,c(nmonth*3,nmonth*8*3))
   }

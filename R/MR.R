@@ -96,7 +96,7 @@ MR <- function(list.tables,
     for(y in setdiff(listtot.xMR,names(df2))){df2[,y]<-0}
     for(y in setdiff(listtot.xMR,names(df1))){df1[,y]<-0}
     listtot.x1<-df2f.x1$nfdf2
-    listtot.x2<-df2f.x2$nfdf
+    listtot.x2<-if(is.null(list.x2)){character(0)}else{df2f.x2$nfdf}
     
     
     df1$Overlap<-1
