@@ -11,7 +11,9 @@ editor_options:
 * AK estimator
 
 #  General usage
+
 ## Install package
+
 
 ```r
 devtools::install_github("DanielBonnery/CompositeRegressionEstimation")
