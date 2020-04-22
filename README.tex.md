@@ -1,7 +1,5 @@
 ---
 title: "Composite Regression for Repeated Surveys"
-editor_options: 
-  chunk_output_type: console
 ---
 
 `CompositeRegressionEstimation` is an R package that allows to compute estimators for longitudinal survey:
