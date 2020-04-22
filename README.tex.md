@@ -1,6 +1,5 @@
 ---
 title: "Composite Regression for Repeated Surveys"
-output: html_document
 editor_options: 
   chunk_output_type: console
 ---
@@ -12,7 +11,7 @@ editor_options:
 
 #  General usage
 
-## Install package
+## Install
 
 
 ```r
@@ -31,6 +30,8 @@ example(MR)
 ```
 
 ## Manual
+R package pdf manual can be found there:
+["CompositeRegressionEstimation.pdf"](https://github.com/DanielBonnery/CompositeRegressionEstimation/blob/master/CompositeRegressionEstimation.pdf)
 
 # Repeated surveys
 
