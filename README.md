@@ -31,11 +31,11 @@ The output of a repeated survey is in general a sequence of datasets,
 one dataset for each iteration of the survey. Each dataset may contain variables that can be described by the same dictionnary, or there may be changes. The sampling units also usually differ from one dataset to the other, due to non response or due to a deliberate choice not to sample the same units.
 Some repeated surveys use rotation groups and a rotation patterns.
 
-Let $m\in\{1,\ldots,M\}$ be an index of the time, and let $S_m$ be the set of sampling units at time $m$. The samples $S_m$ are subsets of a larger population $U$.
+Let <img src="/tex/2c70fa955a339de8af08310418c6eed8.svg?invert_in_darkmode&sanitize=true" align=middle width=113.45099864999999pt height=24.65753399999998pt/> be an index of the time, and let <img src="/tex/62ec7ed78c340ea1a37fdfba227dca78.svg?invert_in_darkmode&sanitize=true" align=middle width=21.74477414999999pt height=22.465723500000017pt/> be the set of sampling units at time <img src="/tex/0e51a2dede42189d77627c4d742822c3.svg?invert_in_darkmode&sanitize=true" align=middle width=14.433101099999991pt height=14.15524440000002pt/>. The samples <img src="/tex/62ec7ed78c340ea1a37fdfba227dca78.svg?invert_in_darkmode&sanitize=true" align=middle width=21.74477414999999pt height=22.465723500000017pt/> are subsets of a larger population <img src="/tex/6bac6ec50c01592407695ef84f457232.svg?invert_in_darkmode&sanitize=true" align=middle width=13.01596064999999pt height=22.465723500000017pt/>.
 
-For each unit $k$ in $S_m$, usually the dataset contains:
-the values $Y_{m,k}$ of a variable of interest $Y$ for unit $k$ and the period $m$.
-It also contains $w_{m,k}$ a sampling weight.
+For each unit <img src="/tex/63bb9849783d01d91403bc9a5fea12a2.svg?invert_in_darkmode&sanitize=true" align=middle width=9.075367949999992pt height=22.831056599999986pt/> in <img src="/tex/62ec7ed78c340ea1a37fdfba227dca78.svg?invert_in_darkmode&sanitize=true" align=middle width=21.74477414999999pt height=22.465723500000017pt/>, usually the dataset contains:
+the values <img src="/tex/3e1f9049f99eb672a49fe1d55167afd2.svg?invert_in_darkmode&sanitize=true" align=middle width=32.37841364999999pt height=22.465723500000017pt/> of a variable of interest <img src="/tex/91aac9730317276af725abd8cef04ca9.svg?invert_in_darkmode&sanitize=true" align=middle width=13.19638649999999pt height=22.465723500000017pt/> for unit <img src="/tex/63bb9849783d01d91403bc9a5fea12a2.svg?invert_in_darkmode&sanitize=true" align=middle width=9.075367949999992pt height=22.831056599999986pt/> and the period <img src="/tex/0e51a2dede42189d77627c4d742822c3.svg?invert_in_darkmode&sanitize=true" align=middle width=14.433101099999991pt height=14.15524440000002pt/>.
+It also contains <img src="/tex/498af25a5ecc1ca5ac220f89ab585e76.svg?invert_in_darkmode&sanitize=true" align=middle width=34.60352114999999pt height=14.15524440000002pt/> a sampling weight.
 
 
 ## Estimation 
@@ -46,8 +46,8 @@ The output of a survey are often used to produce estimators of totals over the p
 
 ### Linear estimates
 
-Consider a sequence of monthly samples $(S_m)_{m\in\{1,\ldots,M\}$. 
-In the CPS, a sample $S_m$ is the union of 8 rotation groups: 
+Consider a sequence of monthly samples <img src="/tex/1f16910a8f500187ed9170ab67731097.svg?invert_in_darkmode&sanitize=true" align=middle width=109.18842989999997pt height=24.65753399999998pt/>. 
+In the CPS, a sample <img src="/tex/62ec7ed78c340ea1a37fdfba227dca78.svg?invert_in_darkmode&sanitize=true" align=middle width=21.74477414999999pt height=22.465723500000017pt/> is the union of 8 rotation groups: 
 $S_m=S_{m,1}\cup S_{m,2}\cup S_{m,3}\cup S_{m,4}\cup S_{m,5}\cup S_{m,6}\cup S_{m,7}\cup S_{m,8}},
 where two consecutive samples are always such that 
 \eqn{S_{m,2}=S_{m-1,1}},
