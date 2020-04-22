@@ -1,5 +1,7 @@
 ---
 title: "Composite Regression for Repeated Surveys"
+author: Daniel Bonnery
+output: md_document
 ---
 
 `CompositeRegressionEstimation` is an R package that allows to compute estimators for longitudinal survey:
