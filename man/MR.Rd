@@ -4,10 +4,24 @@
 \alias{MR}
 \title{Regression Composite estimation}
 \usage{
-MR(list.tables, w, id, list.xMR = NULL, list.x1 = NULL, list.x2 = NULL,
-  list.y = NULL, calibmethod = "linear", Alpha = 0.75, theta = 3/4,
-  list.dft.x2 = NULL, dft0.xMR = NULL, mu0 = NULL, Singh = TRUE,
-  dispweight = FALSE, analyse = FALSE)
+MR(
+  list.tables,
+  w,
+  id,
+  list.xMR = NULL,
+  list.x1 = NULL,
+  list.x2 = NULL,
+  list.y = NULL,
+  calibmethod = "linear",
+  Alpha = 0.75,
+  theta = 3/4,
+  list.dft.x2 = NULL,
+  dft0.xMR = NULL,
+  mu0 = NULL,
+  Singh = TRUE,
+  dispweight = FALSE,
+  analyse = FALSE
+)
 }
 \arguments{
 \item{list.tables}{A list of dataframes}
@@ -24,9 +38,17 @@ MR(list.tables, w, id, list.xMR = NULL, list.x1 = NULL, list.x2 = NULL,
 
 \item{Alpha}{a vector of alpha values. if alpha="01", this will compute MR3}
 
-\item{theta}{}
+\item{theta}{a numerical value}
 
 \item{list.dft.x2}{id list of auxiliary variables used in the cablibration, whose calibrated weighted total has to be equal to initially weithed total}
+
+\item{mu0}{a numerical value}
+
+\item{Singh}{a boolean}
+
+\item{dispweight}{a boolean}
+
+\item{analyse}{a boolean}
 
 \item{list.y:}{list of variables whose weighted sum needs to be computed. It can be factor or character variables.}
 }

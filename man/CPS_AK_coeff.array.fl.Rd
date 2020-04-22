@@ -4,15 +4,24 @@
 \alias{CPS_AK_coeff.array.fl}
 \title{Empirical variance of a collection of arrays.}
 \usage{
-CPS_AK_coeff.array.fl(nmonth, ak = list(c(a_1 = 0, a_2 = 0, a_3 = 0, k_1 = 0,
-  k_2 = 0, k_3 = 0)), simplify = TRUE, statuslabel = c("0", "1", "_1"))
+CPS_AK_coeff.array.fl(
+  nmonth,
+  ak = list(c(a_1 = 0, a_2 = 0, a_3 = 0, k_1 = 0, k_2 = 0, k_3 = 0)),
+  simplify = TRUE,
+  statuslabel = c("0", "1", "_1")
+)
 }
 \arguments{
 \item{nmonth}{a strictly positive integer}
 
 \item{ak, }{a list of numeric vectors of length 6.}
 
+\item{simplify}{a boolean}
+
 \item{statuslabel}{: a character vector of dimension 3 indicating the label for unemployed, employed, not in the labor force.}
+}
+\value{
+
 }
 \description{
 Empirical variance of a collection of arrays.

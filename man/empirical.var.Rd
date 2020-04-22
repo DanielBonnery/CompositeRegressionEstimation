@@ -13,6 +13,9 @@ empirical.var(A, MARGIN, n)
 
 \item{n}{the array of dimension a_1 x ... x a_n Y[i_1,...,i_n]=sum(W[i_1,...,i_n,,...,] )}
 }
+\value{
+
+}
 \description{
 Empirical variance of a collection of arrays.
 }

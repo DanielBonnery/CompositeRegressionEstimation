@@ -4,8 +4,11 @@
 \alias{CPS_AK_est}
 \title{Gives the variance of the AK estimators from the A,K coefficients and the variance covariance matrix of the month in sample estimates}
 \usage{
-CPS_AK_est(mistotals, coeff = CPS_AK_coeff.array.fl(dim(mistotals)[1], ak,
-  simplify = FALSE), ak = CPS_AK())
+CPS_AK_est(
+  mistotals,
+  coeff = CPS_AK_coeff.array.fl(dim(mistotals)[1], ak, simplify = FALSE),
+  ak = CPS_AK()
+)
 }
 \arguments{
 \item{mistotals}{An array of dimension  nmonth x 8 x 3. mistotals[i,j,k] is the month in sample direct estimate for month i, month in sample j rotation group, and variable k.}

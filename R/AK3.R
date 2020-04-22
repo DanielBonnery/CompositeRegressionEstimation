@@ -42,13 +42,14 @@ W.multi.ak<-function(nmonth,ngroups,S,ak){
     W[,i,,,,i]<-W.ak(nmonth,ngroups,S,ak[[i]]["a"],ak[[i]]["k"])
   }
 W}
-#' 
+
+#' AK estimation on array of month in sample estimates
 #' 
 #' @param Y an array of dimensions
-#' @param S
-#' @param a
-#' @param k
-#' @return 
+#' @param S a vector of integers, subvector of 
+#' @param a a numeric value
+#' @param k a numeric value
+#' @return an array
 #' @examples
 #' 
 
@@ -112,7 +113,7 @@ CPS_AK_est <-
 #' 
 #' @param nmonth a strictly positive integer
 #' @param ak, a list of numeric vectors of length 6.
-#' @param simplify
+#' @param simplify a boolean
 #' @param statuslabel : a character vector of dimension 3 indicating the label for unemployed, employed, not in the labor force. 
 #' @return 
 #' @examples

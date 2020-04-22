@@ -1,8 +1,8 @@
 Package: CompositeRegressionEstimation
 Type: Package
 Title: X
-Version: 1.0 
-Date: 2017-09-08
+Version: 1.0
+Date: 2020-04-22
 Author: D. Bonnery
 Maintainer: D. Bonnery  <dbonnery@umd.edu>
 Imports: ggplot2,
@@ -25,3 +25,4 @@ Depends: TensorDB,
 License: GPL (>= 2)
 LazyLoad: yes
 LazyData: true
+RoxygenNote: 7.0.2
