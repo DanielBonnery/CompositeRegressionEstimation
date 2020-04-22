@@ -23,15 +23,43 @@ One can consult the pdf package documentation on the github page to see demo cod
 
 Below is given a basic demonstration code on a simulated dataset
 
+
 ```r
 library(CompositeRegressionEstimation)
 data(CRE_data)
 example(MR)
 ```
 
-```
-FALSE 
-FALSE MR> MR(list.tables<-plyr::dlply(CRE_data,.variables=~time),w="Sampling.weight",list.xMR="Status",id="Identifier",list.y=c("Hobby","Status","State"))<img src="/tex/949496cd4c9f01debd33e14f4f312a48.svg?invert_in_darkmode&sanitize=true" align=middle width=2289.913725pt height=3984.657534pt/>m\in\{1,\ldots,M\}<img src="/tex/849a8c8887f089028bf4f44ea1727484.svg?invert_in_darkmode&sanitize=true" align=middle width=202.16999055pt height=22.831056599999986pt/>S_m<img src="/tex/c12167e326e469693f4bdc61edde8f6f.svg?invert_in_darkmode&sanitize=true" align=middle width=232.03233569999998pt height=22.831056599999986pt/>m<img src="/tex/f8c1356074afd454dadab69fb8da0f21.svg?invert_in_darkmode&sanitize=true" align=middle width=93.26705024999998pt height=22.831056599999986pt/>S_m<img src="/tex/cddd273c92b413ac38a21f760836701a.svg?invert_in_darkmode&sanitize=true" align=middle width=226.8817188pt height=22.831056599999986pt/>U<img src="/tex/3b15d6ee4aea1e500b618658a256e694.svg?invert_in_darkmode&sanitize=true" align=middle width=87.48879974999998pt height=39.45205439999997pt/>k<img src="/tex/55f30cd7ff5056c4745de798b7563930.svg?invert_in_darkmode&sanitize=true" align=middle width=15.53010359999999pt height=21.68300969999999pt/>S_m<img src="/tex/8771b34e27563783f96876aaa2058260.svg?invert_in_darkmode&sanitize=true" align=middle width=284.6689592999999pt height=22.831056599999986pt/>Y_{m,k}<img src="/tex/5a3e92e00c81ccc691f59450d511513b.svg?invert_in_darkmode&sanitize=true" align=middle width=161.95870019999998pt height=22.831056599999986pt/>Y<img src="/tex/95fc7fa3bcc68d70ec7f81ba19435cbb.svg?invert_in_darkmode&sanitize=true" align=middle width=56.53489214999998pt height=22.831056599999986pt/>k<img src="/tex/3ecd60585fa9138a08fa59dd38e91bb6.svg?invert_in_darkmode&sanitize=true" align=middle width=96.15824459999997pt height=22.831056599999986pt/>m<img src="/tex/f5dad70db672105de9b102a2b04bcd5d.svg?invert_in_darkmode&sanitize=true" align=middle width=111.41888175pt height=22.831056599999986pt/>w_{m,k}<img src="/tex/47e96e910fadc5c64d16122a49b0f942.svg?invert_in_darkmode&sanitize=true" align=middle width=701.5531149pt height=276.1643841pt/>\sum_{k\in S_m} w_{k,m} Y_{k,m}$.
+## Manual
+R package pdf manual can be found there:
+["CompositeRegressionEstimation.pdf"](https://github.com/DanielBonnery/CompositeRegressionEstimation/blob/master/CompositeRegressionEstimation.pdf)
+
+# Repeated surveys
+
+### An example: the US Census Burea CPS survey.
+The R package `dataCPS` available there: ["github.com/DanielBonnery/dataCPS"](github.com/DanielBonnery/dataCPS) contains functions to download the CPS anonymised micro data from the Census Website.
+
+The output of a repeated survey is in general a sequence of datasets, 
+one dataset for each iteration of the survey. Each dataset may contain variables that can be described by the same dictionnary, or there may be changes. The sampling units also usually differ from one dataset to the other, due to non response or due to a deliberate choice not to sample the same units.
+Some repeated surveys use rotation groups and a rotation pattern.
+
+Let <img src="/tex/2c70fa955a339de8af08310418c6eed8.svg?invert_in_darkmode&sanitize=true" align=middle width=113.45099864999999pt height=24.65753399999998pt/> be an index of the time, and let <img src="/tex/62ec7ed78c340ea1a37fdfba227dca78.svg?invert_in_darkmode&sanitize=true" align=middle width=21.74477414999999pt height=22.465723500000017pt/> be the set of sampling units at time <img src="/tex/0e51a2dede42189d77627c4d742822c3.svg?invert_in_darkmode&sanitize=true" align=middle width=14.433101099999991pt height=14.15524440000002pt/>. The samples <img src="/tex/62ec7ed78c340ea1a37fdfba227dca78.svg?invert_in_darkmode&sanitize=true" align=middle width=21.74477414999999pt height=22.465723500000017pt/> are subsets of a larger population <img src="/tex/6bac6ec50c01592407695ef84f457232.svg?invert_in_darkmode&sanitize=true" align=middle width=13.01596064999999pt height=22.465723500000017pt/>.
+
+For each unit <img src="/tex/63bb9849783d01d91403bc9a5fea12a2.svg?invert_in_darkmode&sanitize=true" align=middle width=9.075367949999992pt height=22.831056599999986pt/> in <img src="/tex/62ec7ed78c340ea1a37fdfba227dca78.svg?invert_in_darkmode&sanitize=true" align=middle width=21.74477414999999pt height=22.465723500000017pt/>, usually the dataset contains:
+the values <img src="/tex/3e1f9049f99eb672a49fe1d55167afd2.svg?invert_in_darkmode&sanitize=true" align=middle width=32.37841364999999pt height=22.465723500000017pt/> of a variable of interest <img src="/tex/91aac9730317276af725abd8cef04ca9.svg?invert_in_darkmode&sanitize=true" align=middle width=13.19638649999999pt height=22.465723500000017pt/> for unit <img src="/tex/63bb9849783d01d91403bc9a5fea12a2.svg?invert_in_darkmode&sanitize=true" align=middle width=9.075367949999992pt height=22.831056599999986pt/> and the period <img src="/tex/0e51a2dede42189d77627c4d742822c3.svg?invert_in_darkmode&sanitize=true" align=middle width=14.433101099999991pt height=14.15524440000002pt/>.
+It also contains <img src="/tex/498af25a5ecc1ca5ac220f89ab585e76.svg?invert_in_darkmode&sanitize=true" align=middle width=34.60352114999999pt height=14.15524440000002pt/> a sampling weight.
+
+
+## Estimation 
+
+The output of a survey are often used to produce estimators of totals over the population of certain characteritics, or function of this same totals, 
+in a fixed population model for design-based inference.  
+
+### Linear estimates
+
+#### Direct estimate
+
+The direct estimator of the total is <img src="/tex/ad796610a1505cccc91fa1d60f0e35de.svg?invert_in_darkmode&sanitize=true" align=middle width=123.82880234999999pt height=24.657735299999988pt/>.
 
 
 ```r
