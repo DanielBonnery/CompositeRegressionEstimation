@@ -97,8 +97,10 @@ The following code
 MIS.est<-CompositeRegressionEstimation::WSrg(list.tables,rg = "hrmis",weight="pwsswgt",list.y = "pemlr")
 MIS.emp.rate<-plyr::aaply(MIS.est[,,c("pemlr_n1","pemlr_n2")],1:2,sum)/plyr::aaply(MIS.est[,,c("pemlr_n1","pemlr_n2","pemlr_n3","pemlr_n4")],1:2,sum);names(dimnames(MIS.emp.rate))<-c("Month","RotationGroup")
 library(ggplot2);ggplot(data=reshape2::melt(MIS.emp.rate),aes(x=Month,y=value,color=RotationGroup))+geom_line()+
-  ggtitle("Month-in-sample estimate of the monthly employment rate from the CPS public microdata in 2005")+
-  scale_x_continuous(breaks=200501:200512,labels=month.abb)+xlab("")+ylab("")
+  scale_x_continuous(breaks=200501:200512,labels=month.abb)+xlab("")+ylab("")+ 
+  labs(title = "Month-in-sample estimates", 
+       subtitle = "Monthly employment rate, year 2005", 
+       caption = "Computed from CPS public anonymized microdata.")
 ```
 
 <img src="figure/unnamed-chunk-2-1.png" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" width="100%" />
