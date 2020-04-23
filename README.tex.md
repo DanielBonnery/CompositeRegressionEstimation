@@ -184,8 +184,8 @@ For ${m=1}$, ${\hat{t}_{y_{.,1}}=\sum_{k\in S_1}w_{k,m}y_{k,m}}$.
  $${\hat{t}_{y_{.,m}}= (1-K) \times \left(\sum_{k\in S_{m}} w_{k,m} y_{k,m}\right)~+~K~\times~(\hat{t}_{y_{.,m-1}} + \Delta_m)~+~ A~\times\hat{\beta}_m}$$
  
 
-where \deqn{\Delta_m=\eta_0\times\sum_{k\in S_m\cap S_{m-1}}(w_{k,m} y_{k,m}-w_{k,m-1} y_{k,m-1})}
- and \deqn{\hat{\beta}_m=\left(\sum_{k\notin S_m\cap S_{m-1}}w_{k,m} y_{k,m}\right)~-~\eta_1~\times~\left(\sum_{k\in S_m\cap S_{m-1}}w_{k,m} y_{k,m}\right)}
+where $${\Delta_m=\eta_0\times\sum_{k\in S_m\cap S_{m-1}}(w_{k,m} y_{k,m}-w_{k,m-1} y_{k,m-1})}$$
+ and $${\hat{\beta}_m=\left(\sum_{k\notin S_m\cap S_{m-1}}w_{k,m} y_{k,m}\right)~-~\eta_1~\times~\left(\sum_{k\in S_m\cap S_{m-1}}w_{k,m} y_{k,m}\right)}$$
  
  For the CPS, ${\eta_0}$ is the ratio between the number of rotation groups in the sample and the number of overlaping rotation groups between two month, 
  which is a constant  ${\eta_0=4/3}$; ${\eta_1}$ is the ratio between the number of non overlaping rotation groups the number of overlaping rotation groups between two month, 
@@ -201,13 +201,64 @@ where \deqn{\Delta_m=\eta_0\times\sum_{k\in S_m\cap S_{m-1}}(w_{k,m} y_{k,m}-w_{
  When parametrising the function, the choice would be `group_1=c(1:3,5:7)` and `group0=c(2:4,6:8)`.
 
  Computing the estimators recursively is not very efficient. At the end, we get a linear combinaison of month in sample estimates
- The functions `AK3`, and `WSrg` compute the linear combination directly and more efficiently.
  
 
 ```
 CompositeRegressionEstimation::CPS_AK()
 ```
 
+
+ The functions `AK3`, computes the linear combination directly and more efficiently. the AK estimates are linear combinations of the month in sample estimates. The function `AK3` computes the coefficient matrix $W$ from the values of $A$, $K$, $\eta_0$, $\eta_1$ and performs the matrix product $W\times X$.
+The function 'coefAK' produces the coefficients.
+
+The CPS Census Bureau uses different values of A and K for different variables.
+For the employmed total, the values used are: $A=$, $K=$.
+For the unemployed total, the values used are: $A=$, $K=$.
+The functions `CPS_A_e`, `CPS_A_u`, `CPS_K_e`, `CPS_K_u`, `CPS_AK()` return these coefficients.
+
+```r
+CPS_A_e();CPS_A_u();
+```
+
+```
+## [1] 0.4
+```
+
+```
+## [1] 0.3
+```
+
+```r
+CPS_K_e();CPS_K_u();
+```
+
+```
+## [1] 0.7
+```
+
+```
+## [1] 0.4
+```
+
+```r
+CPS_AK()
+```
+
+```
+##  a1  a2  a3  k1  k2  k3 
+## 0.3 0.4 0.0 0.4 0.7 0.0
+```
+
+the function 
+
+
+```r
+CPS_AK_coeff.array.f(10)
+```
+
+```
+## Error in CPS_AK_coeff.array.f(10): argument "ak" is missing, with no default
+```
 
 #### Rough estimation of the month-in-sample estimate covariance matrix
 
