@@ -75,10 +75,10 @@ The following code creates a list of dataframes for the months of 2005 that are 
 period<-200501:200512
 list.tables<-lapply(data(list=paste0("cps",period),package="dataCPS"),get);names(list.tables)<-period
 list.tables<-lapply(list.tables,function(L){
-  L<img src="/tex/6c1dd9a7cf6d2b14ed0a37fc628474d1.svg?invert_in_darkmode&sanitize=true" align=middle width=341.43478379999993pt height=24.65753399999998pt/>pemlr,
-                                            "e"=c("pemlr_n1","pemlr_n2"),
-                                            "u"=c("pemlr_n3","pemlr_n4"),
-                                            "n"=c("pemlr_n5","pemlr_n6","pemlr_n7","pemlr_n_1"));
+  L<img src="/tex/8fb30cd7915a52e0fd4da9e5b93866b0.svg?invert_in_darkmode&sanitize=true" align=middle width=395.22497354999996pt height=24.65753399999998pt/>pemlr),
+                                            "e"=c("1","2"),
+                                            "u"=c("3","4"),
+                                            "n"=c("5","6","7","-1"));
   L})
 ```
 
@@ -101,21 +101,12 @@ In the following code, we compute the direct estimates of the counts in each emp
 ```r
 Direct.est<-CompositeRegressionEstimation::WS(list.tables,weight="pwsswgt",list.y = "employmentstatus")
 Direct.emp.rate<-with(as.data.frame(Direct.est),(employmentstatus_ne)/(employmentstatus_ne+employmentstatus_nu))
-```
-
-```
-## Error in eval(substitute(expr), data, enclos = parent.frame()): object 'employmentstatus_ne' not found
-```
-
-```r
 library(ggplot2);ggplot(data=data.frame(period=period,E=Direct.emp.rate),aes(x=period,y=E))+geom_line()+
   ggtitle("Direct estimate of the monthly employment rate from the CPS public microdata in 2005")+
   scale_x_continuous(breaks=200501:200512,labels=month.abb)+xlab("")+ylab("")
 ```
 
-```
-## Error in data.frame(period = period, E = Direct.emp.rate): object 'Direct.emp.rate' not found
-```
+<img src="figure/unnamed-chunk-2-1.png" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" width="100%" />
 
 #### Month in sample estimate
 
@@ -126,18 +117,7 @@ The following code
 ```r
 MIS.est<-CompositeRegressionEstimation::WSrg(list.tables,rg = "hrmis",weight="pwsswgt",list.y = "employmentstatus")
 names(dimnames(MIS.est))<-c("Month","RotationGroup","EmploymentStatus")
-MIS.emp.rate<-plyr::aaply(MIS.est[,,c("pemlr_n1","pemlr_n2")],1:2,sum)/plyr::aaply(MIS.est[,,c("pemlr_n1","pemlr_n2","pemlr_n3","pemlr_n4")],1:2,sum);names(dimnames(MIS.emp.rate))<-c("Month","RotationGroup")
-```
-
-```
-## Error in MIS.est[, , c("pemlr_n1", "pemlr_n2")]: subscript out of bounds
-```
-
-```
-## Error in names(dimnames(MIS.emp.rate)) <- c("Month", "RotationGroup"): object 'MIS.emp.rate' not found
-```
-
-```r
+MIS.emp.rate<-plyr::aaply(MIS.est[,,"employmentstatus_ne"],1:2,sum)/plyr::aaply(MIS.est[,,c("employmentstatus_ne","employmentstatus_nu")],1:2,sum);names(dimnames(MIS.emp.rate))<-c("Month","RotationGroup")
 library(ggplot2);ggplot(data=reshape2::melt(MIS.emp.rate),aes(x=Month,y=value,color=RotationGroup))+geom_line()+
   scale_x_continuous(breaks=200501:200512,labels=month.abb)+xlab("")+ylab("")+ 
   labs(title = "Month-in-sample estimates", 
@@ -145,9 +125,7 @@ library(ggplot2);ggplot(data=reshape2::melt(MIS.emp.rate),aes(x=Month,y=value,co
        caption = "Computed from CPS public anonymized microdata.")
 ```
 
-```
-## Error in reshape2::melt(MIS.emp.rate): object 'MIS.emp.rate' not found
-```
+<img src="figure/unnamed-chunk-3-1.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" width="100%" />
 
 #### Linear combinaisons of the month-in-sample estimates
 
