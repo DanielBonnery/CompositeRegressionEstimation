@@ -153,9 +153,25 @@ We use <img src="/tex/d3615153e21981003e4ebb11168a5cc7.svg?invert_in_darkmode&sa
 
 The values to estimate are the elements of the <img src="/tex/7c674d837975ddc779079888281b9cff.svg?invert_in_darkmode&sanitize=true" align=middle width=46.050115649999995pt height=22.465723500000017pt/>-sized array <img src="/tex/6113a4c2abf45f7818f3d5e58b17b6ca.svg?invert_in_darkmode&sanitize=true" align=middle width=820.0904612999999pt height=24.657735299999988pt/>. We denote by <img src="/tex/9f7c9b1c4f87b770604d8d1c7e206d53.svg?invert_in_darkmode&sanitize=true" align=middle width=16.43875364999999pt height=41.64378900000001pt/> the vectorisation of the array <img src="/tex/91aac9730317276af725abd8cef04ca9.svg?invert_in_darkmode&sanitize=true" align=middle width=13.19638649999999pt height=22.465723500000017pt/>.
 
-We consider estimates of <img src="/tex/9f7c9b1c4f87b770604d8d1c7e206d53.svg?invert_in_darkmode&sanitize=true" align=middle width=16.43875364999999pt height=41.64378900000001pt/>
-of the form  <img src="/tex/d516d32413c72655e7d935d133cb7a10.svg?invert_in_darkmode&sanitize=true" align=middle width=92.69456624999998pt height=45.02964839999999pt/>
+In R, the function to vectorize an array is the function `c`
 
+```r
+A<-array(1:12,c(3,2,2));c(A)
+```
+
+```
+##  [1]  1  2  3  4  5  6  7  8  9 10 11 12
+```
+
+
+We consider estimates of <img src="/tex/9f7c9b1c4f87b770604d8d1c7e206d53.svg?invert_in_darkmode&sanitize=true" align=middle width=16.43875364999999pt height=41.64378900000001pt/>
+of the form  <img src="/tex/e01e4b580defdbd55ba4c6b09b1ffb3d.svg?invert_in_darkmode&sanitize=true" align=middle width=92.69454479999999pt height=45.02964839999999pt/>, 
+where <img src="/tex/b44848922a59328b4ef74c94bdf966a0.svg?invert_in_darkmode&sanitize=true" align=middle width=17.80826024999999pt height=41.64378900000001pt/> is a matrix of dimension <img src="/tex/ae1907bd1d43388b78617cae84cfa316.svg?invert_in_darkmode&sanitize=true" align=middle width=126.94161974999999pt height=41.64378900000001pt/>).
+
+Which is equivalent to estimators of the form <img src="/tex/5097776bc1f30a7da974ffb5596313f6.svg?invert_in_darkmode&sanitize=true" align=middle width=52.80813779999999pt height=22.465723500000017pt/> where the <img src="/tex/84c95f91a742c9ceb460a83f9b5090bf.svg?invert_in_darkmode&sanitize=true" align=middle width=17.80826024999999pt height=22.465723500000017pt/> is a <img src="/tex/9204b1b54cbff660169ee2b1f9b3ba8d.svg?invert_in_darkmode&sanitize=true" align=middle width=154.13265944999998pt height=24.65753399999998pt/> matrix, where an element <img src="/tex/0915cde0aa1d2e0f9dd73778329423e3.svg?invert_in_darkmode&sanitize=true" align=middle width=32.64358184999999pt height=22.465723500000017pt/> of <img src="/tex/84c95f91a742c9ceb460a83f9b5090bf.svg?invert_in_darkmode&sanitize=true" align=middle width=17.80826024999999pt height=22.465723500000017pt/> is indexed by two vector <img src="/tex/2ec6e630f199f589a2402fdf3e0289d5.svg?invert_in_darkmode&sanitize=true" align=middle width=8.270567249999992pt height=14.15524440000002pt/> and <img src="/tex/d5c18a8ca1894fd3a7d25f242cbe8890.svg?invert_in_darkmode&sanitize=true" align=middle width=7.928106449999989pt height=14.15524440000002pt/> and of length the number of dimensions of the array <img src="/tex/91aac9730317276af725abd8cef04ca9.svg?invert_in_darkmode&sanitize=true" align=middle width=13.19638649999999pt height=22.465723500000017pt/> and the dimensions of the array <img src="/tex/cbfb1b2a33b28eab8a3e59464768e810.svg?invert_in_darkmode&sanitize=true" align=middle width=14.908688849999992pt height=22.465723500000017pt/> respectively. 
+
+The function `TensorDB::"%.%"` of the 'TensorDB' allows to perform the array multiplication as described above.
+The package uses named arrays with names dimensions (`names(dimnames(A))` is not `NULL`).
 
 ### Recursive linear estimates
 
@@ -249,15 +265,25 @@ CPS_AK()
 ## 0.3 0.4 0.0 0.4 0.7 0.0
 ```
 
-the function 
+the option `W.ak` with parameters 
+
+```r
+W.ak()
+```
+
+```
+## Error in array(0, c(nmonth, nmonth, ngroup)): promise already under evaluation: recursive default argument reference or earlier problems?
+```
+
+
+the function `CPS_AK_coeff.array.f` with the parameters
+
+`simplify=FALSE` produces the array of dimension 
 
 
 ```r
-CPS_AK_coeff.array.f(10)
-```
-
-```
-## Error in CPS_AK_coeff.array.f(10): argument "ak" is missing, with no default
+W=CPS_AK_coeff.array.f(4,ak=CPS_AK(),simplify=FALSE)
+dimnames(W);dim(W)
 ```
 
 #### Rough estimation of the month-in-sample estimate covariance matrix
