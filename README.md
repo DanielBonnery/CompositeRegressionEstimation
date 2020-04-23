@@ -184,8 +184,8 @@ For <img src="/tex/448378a33e519f8bf89301552c0a348c.svg?invert_in_darkmode&sanit
  <p align="center"><img src="/tex/6518d014d587aa82df63c2831dfca370.svg?invert_in_darkmode&sanitize=true" align=middle width=536.46001035pt height=50.18295645pt/></p>
  
 
-where \deqn{\Delta_m=\eta_0\times\sum_{k\in S_m\cap S_{m-1}}(w_{k,m} y_{k,m}-w_{k,m-1} y_{k,m-1})}
- and \deqn{\hat{\beta}_m=\left(\sum_{k\notin S_m\cap S_{m-1}}w_{k,m} y_{k,m}\right)~-~\eta_1~\times~\left(\sum_{k\in S_m\cap S_{m-1}}w_{k,m} y_{k,m}\right)}
+where <p align="center"><img src="/tex/81dd682ea0449547e2543021d5275dc3.svg?invert_in_darkmode&sanitize=true" align=middle width=361.99945814999995pt height=40.045914149999994pt/></p>
+ and <p align="center"><img src="/tex/0c649883f5f4faec4a6a2d3814c35465.svg?invert_in_darkmode&sanitize=true" align=middle width=479.02636814999994pt height=59.1786591pt/></p>
  
  For the CPS, <img src="/tex/b396510f188ae3cee621c2a36bcb2985.svg?invert_in_darkmode&sanitize=true" align=middle width=14.714708249999989pt height=14.15524440000002pt/> is the ratio between the number of rotation groups in the sample and the number of overlaping rotation groups between two month, 
  which is a constant  <img src="/tex/3e0fccc50f84b4c25e62fc568fcf153e.svg?invert_in_darkmode&sanitize=true" align=middle width=62.11188059999999pt height=24.65753399999998pt/>; <img src="/tex/4a09d1898adc7637934a77010e40aea5.svg?invert_in_darkmode&sanitize=true" align=middle width=14.714708249999989pt height=14.15524440000002pt/> is the ratio between the number of non overlaping rotation groups the number of overlaping rotation groups between two month, 
@@ -201,13 +201,64 @@ where \deqn{\Delta_m=\eta_0\times\sum_{k\in S_m\cap S_{m-1}}(w_{k,m} y_{k,m}-w_{
  When parametrising the function, the choice would be `group_1=c(1:3,5:7)` and `group0=c(2:4,6:8)`.
 
  Computing the estimators recursively is not very efficient. At the end, we get a linear combinaison of month in sample estimates
- The functions `AK3`, and `WSrg` compute the linear combination directly and more efficiently.
  
 
 ```
 CompositeRegressionEstimation::CPS_AK()
 ```
 
+
+ The functions `AK3`, computes the linear combination directly and more efficiently. the AK estimates are linear combinations of the month in sample estimates. The function `AK3` computes the coefficient matrix <img src="/tex/84c95f91a742c9ceb460a83f9b5090bf.svg?invert_in_darkmode&sanitize=true" align=middle width=17.80826024999999pt height=22.465723500000017pt/> from the values of <img src="/tex/53d147e7f3fe6e47ee05b88b166bd3f6.svg?invert_in_darkmode&sanitize=true" align=middle width=12.32879834999999pt height=22.465723500000017pt/>, <img src="/tex/d6328eaebbcd5c358f426dbea4bdbf70.svg?invert_in_darkmode&sanitize=true" align=middle width=15.13700594999999pt height=22.465723500000017pt/>, <img src="/tex/1c6008f5bc971bdde74e1a5f31c04e45.svg?invert_in_darkmode&sanitize=true" align=middle width=14.714708249999989pt height=14.15524440000002pt/>, <img src="/tex/99540970492f8b54b28407a609d84199.svg?invert_in_darkmode&sanitize=true" align=middle width=14.714708249999989pt height=14.15524440000002pt/> and performs the matrix product <img src="/tex/5097776bc1f30a7da974ffb5596313f6.svg?invert_in_darkmode&sanitize=true" align=middle width=52.80813779999999pt height=22.465723500000017pt/>.
+The function 'coefAK' produces the coefficients.
+
+The CPS Census Bureau uses different values of A and K for different variables.
+For the employmed total, the values used are: <img src="/tex/aa1f7d354b356080efa3e3bb7e56e66c.svg?invert_in_darkmode&sanitize=true" align=middle width=29.68033034999999pt height=22.465723500000017pt/>, <img src="/tex/7c98bb40b74dbb4486fd69f3a388ce4a.svg?invert_in_darkmode&sanitize=true" align=middle width=32.48853134999999pt height=22.465723500000017pt/>.
+For the unemployed total, the values used are: <img src="/tex/aa1f7d354b356080efa3e3bb7e56e66c.svg?invert_in_darkmode&sanitize=true" align=middle width=29.68033034999999pt height=22.465723500000017pt/>, <img src="/tex/7c98bb40b74dbb4486fd69f3a388ce4a.svg?invert_in_darkmode&sanitize=true" align=middle width=32.48853134999999pt height=22.465723500000017pt/>.
+The functions `CPS_A_e`, `CPS_A_u`, `CPS_K_e`, `CPS_K_u`, `CPS_AK()` return these coefficients.
+
+```r
+CPS_A_e();CPS_A_u();
+```
+
+```
+## [1] 0.4
+```
+
+```
+## [1] 0.3
+```
+
+```r
+CPS_K_e();CPS_K_u();
+```
+
+```
+## [1] 0.7
+```
+
+```
+## [1] 0.4
+```
+
+```r
+CPS_AK()
+```
+
+```
+##  a1  a2  a3  k1  k2  k3 
+## 0.3 0.4 0.0 0.4 0.7 0.0
+```
+
+the function 
+
+
+```r
+CPS_AK_coeff.array.f(10)
+```
+
+```
+## Error in CPS_AK_coeff.array.f(10): argument "ak" is missing, with no default
+```
 
 #### Rough estimation of the month-in-sample estimate covariance matrix
 
