@@ -60,7 +60,9 @@ $S_m=S_{m,1}\cup S_{m,2}\cup \ldots\cup  S_{m,8}$.
 
 
 For each unit $k$ in $S_m$, usually the dataset contains:
-the values $y_{m,k}$ of a variable of interest $Y$ for unit $k$ and the period $m$.
+the values $y_{m,k}$ of a variable of interest $y$ for unit $k$ and the period $m$. In particular we are interested in the case where $y_{m,k}$ is a vector of indicator values, $y_{m,k}=(y_{m,k,e})_{e\in\{"employed","unemployed","nilf"\}}$:
+$y_{m,k}=(0,0,1)$ means that individual $k$ was not in the labor force at time $k$.
+
 It also contains $w_{m,k}$ a sampling weight.
 
 
@@ -149,10 +151,18 @@ Let $X$ be the vector of values in the data.frame.
 Elements of $X$ can be refered to by the line number or by a combinaison of month, rotation group, and employment status, as for example : $X_{200501,group 3,employed]$, or by a line number $\overrightarrow{X}_\ell$.
 We use $\overrightarrow{X}$ to designate the vector and $X$ to designate the array.
 
-The values to estimate are the elements of the $M\times 3-sized$ sized array $Y=(\sum_{k\in U} (y_{k,m}==e))_{m\in\{1,\ldots,M\},e\in\{"employed","unemployed","nilf"\}}$. We denote by $\overrightarrow{Y}$ the vectorisation of the array $Y$.
+The values to estimate are the elements of the $M\times 3-sized$ sized array $Y=(t_{y_{m,e}})_{m\in\{1,\ldots,M\},e\in\{"employed","unemployed","nilf"\}}=\sum_{k\in U} (y_{k,m,e}))_{m\in\{1,\ldots,M\},e\in\{"employed","unemployed","nilf"\}}$. We denote by $\overrightarrow{Y}$ the vectorisation of the array $Y$.
 
 We consider estimates of $\overrightarrow{Y}$
 of the form  $\widehat{\overrightarrow{Y}} =W\times \overrightarrow{X}$
+
+
+### Recursive estimation
+
+The function `CompositeRegressionEstimation::composite` 
+allows to compute linear combinations of the month in sample groups of the form
+
+$
 
 #### AK estimator
 
