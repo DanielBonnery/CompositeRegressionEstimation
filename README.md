@@ -60,7 +60,7 @@ surveyed again 4 consecutive months. As a consequence, for a given month, a samp
 
 
 For each unit <img src="/tex/63bb9849783d01d91403bc9a5fea12a2.svg?invert_in_darkmode&sanitize=true" align=middle width=9.075367949999992pt height=22.831056599999986pt/> in <img src="/tex/62ec7ed78c340ea1a37fdfba227dca78.svg?invert_in_darkmode&sanitize=true" align=middle width=21.74477414999999pt height=22.465723500000017pt/>, usually the dataset contains:
-the values <img src="/tex/3e1f9049f99eb672a49fe1d55167afd2.svg?invert_in_darkmode&sanitize=true" align=middle width=32.37841364999999pt height=22.465723500000017pt/> of a variable of interest <img src="/tex/91aac9730317276af725abd8cef04ca9.svg?invert_in_darkmode&sanitize=true" align=middle width=13.19638649999999pt height=22.465723500000017pt/> for unit <img src="/tex/63bb9849783d01d91403bc9a5fea12a2.svg?invert_in_darkmode&sanitize=true" align=middle width=9.075367949999992pt height=22.831056599999986pt/> and the period <img src="/tex/0e51a2dede42189d77627c4d742822c3.svg?invert_in_darkmode&sanitize=true" align=middle width=14.433101099999991pt height=14.15524440000002pt/>.
+the values <img src="/tex/5ba83d57b9bfbf937ad937b046d25c85.svg?invert_in_darkmode&sanitize=true" align=middle width=30.89444324999999pt height=14.15524440000002pt/> of a variable of interest <img src="/tex/91aac9730317276af725abd8cef04ca9.svg?invert_in_darkmode&sanitize=true" align=middle width=13.19638649999999pt height=22.465723500000017pt/> for unit <img src="/tex/63bb9849783d01d91403bc9a5fea12a2.svg?invert_in_darkmode&sanitize=true" align=middle width=9.075367949999992pt height=22.831056599999986pt/> and the period <img src="/tex/0e51a2dede42189d77627c4d742822c3.svg?invert_in_darkmode&sanitize=true" align=middle width=14.433101099999991pt height=14.15524440000002pt/>.
 It also contains <img src="/tex/498af25a5ecc1ca5ac220f89ab585e76.svg?invert_in_darkmode&sanitize=true" align=middle width=34.60352114999999pt height=14.15524440000002pt/> a sampling weight.
 
 
@@ -93,8 +93,8 @@ in a fixed population model for design-based inference.
 
 #### Direct estimate
 
-The direct estimator of the total is <img src="/tex/ad796610a1505cccc91fa1d60f0e35de.svg?invert_in_darkmode&sanitize=true" align=middle width=123.82880234999999pt height=24.657735299999988pt/>. The function `CompositeRegressionEstimation::WS` will produce
-the weighted estimates <img src="/tex/708822d2eb3b9d7274a246ea19c8e7c5.svg?invert_in_darkmode&sanitize=true" align=middle width=211.2724317pt height=24.657735299999988pt/>
+The direct estimator of the total is <img src="/tex/1be0457898a13c5f4f4a4c95d22b17ae.svg?invert_in_darkmode&sanitize=true" align=middle width=122.34483359999999pt height=24.657735299999988pt/>. The function `CompositeRegressionEstimation::WS` will produce
+the weighted estimates <img src="/tex/3ce530175fe262bc233a95b0c8b47e89.svg?invert_in_darkmode&sanitize=true" align=middle width=209.78846129999997pt height=24.657735299999988pt/>
 
 In the following code, we compute the direct estimates of the counts in each employment status category from the CPS public anonymised micro data in the year 2005, compute the corresponding unemployment rate time series and plot the result.
 
@@ -111,7 +111,7 @@ library(ggplot2);ggplot(data=data.frame(period=period,E=Direct.emp.rate),aes(x=p
 #### Month in sample estimate
 
 An estimate can be obtained from each month-in-sample rotation group. The month-in-sample estimates are estimates of a total of a study variable of the form:
-<img src="/tex/f2a239d5333f9405c19fdf85ee975a72.svg?invert_in_darkmode&sanitize=true" align=middle width=120.79207634999999pt height=24.657735299999988pt/>.
+<img src="/tex/794e6e1521fc2728f11f63433cf8056f.svg?invert_in_darkmode&sanitize=true" align=middle width=132.16510559999998pt height=24.657735299999988pt/>.
 The following code 
 
 ```r
@@ -129,18 +129,29 @@ library(ggplot2);ggplot(data=reshape2::melt(MIS.emp.rate),aes(x=Month,y=value,co
 
 #### Linear combinaisons of the month-in-sample estimates
 
-The month-in-sample estimates for each month and each rotation group can be stored in a file with four variables:
+The month-in-sample estimates for each month and each rotation group can be stored in a data.frame with four variables:
 the month, the group, the employment status and the value of the estimate.
 
 
 ```r
-kable(reshape2::melt(MIS.est)[1:5,])
+print(reshape2::melt(MIS.est[,,c("employmentstatus_ne" ,"employmentstatus_nn", "employmentstatus_nu")]))
 ```
 
-```
-## Error in kable(reshape2::melt(MIS.est)[1:5, ]): could not find function "kable"
-```
-Let <img src="/tex/cbfb1b2a33b28eab8a3e59464768e810.svg?invert_in_darkmode&sanitize=true" align=middle width=14.908688849999992pt height=22.465723500000017pt/> be the 
+|Row Number |Month  |Rotation Group |Employment Status   |<img src="/tex/cbfb1b2a33b28eab8a3e59464768e810.svg?invert_in_darkmode&sanitize=true" align=middle width=14.908688849999992pt height=22.465723500000017pt/>           |
+|:----------|:------|:--------------|:-------------------|:-------------|
+|1          |200501 |hrmis1         |employmentstatus_ne |17771771.5595 |
+|2          |200502 |hrmis1         |employmentstatus_ne |17501581.9912 |
+|3          |200503 |hrmis1         |employmentstatus_ne |17911922.4613 |
+|...        |...    |...            |...                 |...           |
+|288        |200512 |hrmis8         |employmentstatus_nu |846918.8885   |
+
+Let <img src="/tex/cbfb1b2a33b28eab8a3e59464768e810.svg?invert_in_darkmode&sanitize=true" align=middle width=14.908688849999992pt height=22.465723500000017pt/> be the vector of values in the data.frame.
+Elements of <img src="/tex/cbfb1b2a33b28eab8a3e59464768e810.svg?invert_in_darkmode&sanitize=true" align=middle width=14.908688849999992pt height=22.465723500000017pt/> can be refered to by the line number or by a combinaison of month, rotation group, and employment status, as for example : <img src="/tex/3fc66a72e2d17e020e9c41a3fa79f3c9.svg?invert_in_darkmode&sanitize=true" align=middle width=160.88719184999997pt height=22.465723500000017pt/>, or by a line number <img src="/tex/aef6b18063caff2c3750441e127e3e5a.svg?invert_in_darkmode&sanitize=true" align=middle width=21.941076299999988pt height=41.64378900000001pt/>.
+We use <img src="/tex/d3615153e21981003e4ebb11168a5cc7.svg?invert_in_darkmode&sanitize=true" align=middle width=16.43875364999999pt height=41.64378900000001pt/> to designate the vector and <img src="/tex/cbfb1b2a33b28eab8a3e59464768e810.svg?invert_in_darkmode&sanitize=true" align=middle width=14.908688849999992pt height=22.465723500000017pt/> to designate the array.
+
+The values to estimate are the elements of the <img src="/tex/d589f80ee85eb594b74fa100a4e0f23f.svg?invert_in_darkmode&sanitize=true" align=middle width=104.08773374999998pt height=22.831056599999986pt/> sized array <img src="/tex/efbf7a88a1b1a46061566f625f71fec7.svg?invert_in_darkmode&sanitize=true" align=middle width=477.6391026pt height=24.657735299999988pt/>.
+of the form <img src="/tex/5097776bc1f30a7da974ffb5596313f6.svg?invert_in_darkmode&sanitize=true" align=middle width=52.80813779999999pt height=22.465723500000017pt/>
+
 #### AK estimator
 
 ```
