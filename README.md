@@ -181,21 +181,21 @@ For <img src="/tex/448378a33e519f8bf89301552c0a348c.svg?invert_in_darkmode&sanit
 where \deqn{\Delta_m=\eta_0\times\sum_{k\in S_m\cap S_{m-1}}(w_{k,m} Y_{k,m}-w_{k,m-1} Y_{k,m-1})}
  and \deqn{\hat{\beta}_m=\left(\sum_{k\notin S_m\cap S_{m-1}}w_{k,m} Y_{k,m}\right)~-~\eta_1~\times~\left(\sum_{k\in S_m\cap S_{m-1}}w_{k,m} Y_{k,m}\right)}
  
- For the CPS, \eqn{\eta_0} is the ratio between the number of rotation groups in the sample and the number of overlaping rotation groups between two month, 
- which is a constant  \eqn{\eta_0=4/3}; \eqn{\eta_1} is the ratio between the number of non overlaping rotation groups the number of overlaping rotation groups between two month, 
- which is a constant of \eqn{1/3}.
+ For the CPS, <img src="/tex/b396510f188ae3cee621c2a36bcb2985.svg?invert_in_darkmode&sanitize=true" align=middle width=14.714708249999989pt height=14.15524440000002pt/> is the ratio between the number of rotation groups in the sample and the number of overlaping rotation groups between two month, 
+ which is a constant  <img src="/tex/3e0fccc50f84b4c25e62fc568fcf153e.svg?invert_in_darkmode&sanitize=true" align=middle width=62.11188059999999pt height=24.65753399999998pt/>; <img src="/tex/4a09d1898adc7637934a77010e40aea5.svg?invert_in_darkmode&sanitize=true" align=middle width=14.714708249999989pt height=14.15524440000002pt/> is the ratio between the number of non overlaping rotation groups the number of overlaping rotation groups between two month, 
+ which is a constant of <img src="/tex/be175353a87f6fc97908fcda28d4c44a.svg?invert_in_darkmode&sanitize=true" align=middle width=24.657628049999992pt height=24.65753399999998pt/>.
  
     
   In the case of the CPS, the rotation group one sample unit  belongs to in a particular month  is a function
  of the number of times it has been selected before, including this month, and so the rotation group of an individual in a particular month is called the "month in sample" variable.
     
- For the CPS, in month \eqn{m} the overlap \eqn{S_{m-1}\cap      S_{m}} correspond to the individuals in the sample \eqn{S_m} with a value of month in sample equal to 2,3,4, 6,7 or 8.
- The overlap \eqn{S_{m-1}\cap      S_{m}} correspond to the individuals in the sample \eqn{S_m} with a value of month in sample equal to 2,3,4, 6,7 or 8. as well as 
- individuals in the sample \eqn{S_{m-1}} with a value of month in sample equal to 1,2,3, 5,6 or 7. 
- When parametrising the function, the choice would be \code{group_1=c(1:3,5:7)} and \code{group0=c(2:4,6:8)}.
+ For the CPS, in month <img src="/tex/1e277ba1ce19c790851f457314abfa6b.svg?invert_in_darkmode&sanitize=true" align=middle width=14.433101099999991pt height=14.15524440000002pt/> the overlap <img src="/tex/32e587e0d40e3e2ee819ca369a5ca1e9.svg?invert_in_darkmode&sanitize=true" align=middle width=79.40270249999999pt height=22.465723500000017pt/> correspond to the individuals in the sample <img src="/tex/6a9d394a320bc4d2ceba77eb09821eb4.svg?invert_in_darkmode&sanitize=true" align=middle width=21.74477414999999pt height=22.465723500000017pt/> with a value of month in sample equal to 2,3,4, 6,7 or 8.
+ The overlap <img src="/tex/32e587e0d40e3e2ee819ca369a5ca1e9.svg?invert_in_darkmode&sanitize=true" align=middle width=79.40270249999999pt height=22.465723500000017pt/> correspond to the individuals in the sample <img src="/tex/6a9d394a320bc4d2ceba77eb09821eb4.svg?invert_in_darkmode&sanitize=true" align=middle width=21.74477414999999pt height=22.465723500000017pt/> with a value of month in sample equal to 2,3,4, 6,7 or 8. as well as 
+ individuals in the sample <img src="/tex/dcf2b9a28b9c3ca1536e4215e48a5629.svg?invert_in_darkmode&sanitize=true" align=middle width=38.57134214999999pt height=22.465723500000017pt/> with a value of month in sample equal to 1,2,3, 5,6 or 7. 
+ When parametrising the function, the choice would be `group_1=c(1:3,5:7)` and `group0=c(2:4,6:8)`.
 
  Computing the estimators recursively is not very efficient. At the end, we get a linear combinaison of month in sample estimates
- The functions \code{AK3}, and \code{WSrg} computes the linear combination directly and more efficiently.
+ The functions `AK3`, and `WSrg` compute the linear combination directly and more efficiently.
  
 
 ```
