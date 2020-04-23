@@ -167,6 +167,37 @@ This is a special case of a linear combination of the month-in-sample estimates.
 
 #### AK estimator
 
+
+The AK composite estimator is defined in ``CPS Technical Paper (2006). Design and Methodology of the Current Population Survey. Technical Report 66, U.S. Census Bureau. (2006), [section 10-11]'':
+
+<img src="/tex/a62fdbec44055391321be633bd067003.svg?invert_in_darkmode&sanitize=true" align=middle width=412.73748779999994pt height=114.2298828pt/>
+ 
+For <img src="/tex/448378a33e519f8bf89301552c0a348c.svg?invert_in_darkmode&sanitize=true" align=middle width=44.56994024999999pt height=21.18721440000001pt/>, <img src="/tex/a3561c8eaf619ce67be395ef03090707.svg?invert_in_darkmode&sanitize=true" align=middle width=169.68190469999996pt height=28.89761819999999pt/>.
+ 
+ For <img src="/tex/dfc1aff530546b0b16ab4aa699cf534f.svg?invert_in_darkmode&sanitize=true" align=middle width=44.56994024999999pt height=21.18721440000001pt/>, 
+ <p align="center"><img src="/tex/82dab466646f8c54bad708b2ab0e38ce.svg?invert_in_darkmode&sanitize=true" align=middle width=540.06497985pt height=50.18295645pt/></p>
+ 
+
+where \deqn{\Delta_m=\eta_0\times\sum_{k\in S_m\cap S_{m-1}}(w_{k,m} Y_{k,m}-w_{k,m-1} Y_{k,m-1})}
+ and \deqn{\hat{\beta}_m=\left(\sum_{k\notin S_m\cap S_{m-1}}w_{k,m} Y_{k,m}\right)~-~\eta_1~\times~\left(\sum_{k\in S_m\cap S_{m-1}}w_{k,m} Y_{k,m}\right)}
+ 
+ For the CPS, \eqn{\eta_0} is the ratio between the number of rotation groups in the sample and the number of overlaping rotation groups between two month, 
+ which is a constant  \eqn{\eta_0=4/3}; \eqn{\eta_1} is the ratio between the number of non overlaping rotation groups the number of overlaping rotation groups between two month, 
+ which is a constant of \eqn{1/3}.
+ 
+    
+  In the case of the CPS, the rotation group one sample unit  belongs to in a particular month  is a function
+ of the number of times it has been selected before, including this month, and so the rotation group of an individual in a particular month is called the "month in sample" variable.
+    
+ For the CPS, in month \eqn{m} the overlap \eqn{S_{m-1}\cap      S_{m}} correspond to the individuals in the sample \eqn{S_m} with a value of month in sample equal to 2,3,4, 6,7 or 8.
+ The overlap \eqn{S_{m-1}\cap      S_{m}} correspond to the individuals in the sample \eqn{S_m} with a value of month in sample equal to 2,3,4, 6,7 or 8. as well as 
+ individuals in the sample \eqn{S_{m-1}} with a value of month in sample equal to 1,2,3, 5,6 or 7. 
+ When parametrising the function, the choice would be \code{group_1=c(1:3,5:7)} and \code{group0=c(2:4,6:8)}.
+
+ Computing the estimators recursively is not very efficient. At the end, we get a linear combinaison of month in sample estimates
+ The functions \code{AK3}, and \code{WSrg} computes the linear combination directly and more efficiently.
+ 
+
 ```
 CompositeRegressionEstimation::CPS_AK()
 ```
