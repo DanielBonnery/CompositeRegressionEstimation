@@ -96,7 +96,7 @@ in a fixed population model for design-based inference.
 #### Direct estimate
 
 The direct estimator of the total is $\sum_{k\in S_m} w_{k,m} y_{k,m}$. The function `CompositeRegressionEstimation::WS` will produce
-the weighted estimates $(\sum_{k\in S_m} w_{k,m} y_{k,m})_{m\in\{1,\ldots,M\}}$
+the weighted estimates $\hat{t}^{\mathrm{Direct}}_{y_{m}}=(\sum_{k\in S_m} w_{k,m} y_{k,m})_{m\in\{1,\ldots,M\}}$
 
 In the following code, we compute the direct estimates of the counts in each employment status category from the CPS public anonymised micro data in the year 2005, compute the corresponding unemployment rate time series and plot the result.
 
@@ -151,18 +151,19 @@ Let $X$ be the vector of values in the data.frame.
 Elements of $X$ can be refered to by the line number or by a combinaison of month, rotation group, and employment status, as for example : $X_{200501,group 3,employed]$, or by a line number $\overrightarrow{X}_\ell$.
 We use $\overrightarrow{X}$ to designate the vector and $X$ to designate the array.
 
-The values to estimate are the elements of the $M\times 3-sized$ sized array $Y=(t_{y_{m,e}})_{m\in\{1,\ldots,M\},e\in\{"employed","unemployed","nilf"\}}=\sum_{k\in U} (y_{k,m,e}))_{m\in\{1,\ldots,M\},e\in\{"employed","unemployed","nilf"\}}$. We denote by $\overrightarrow{Y}$ the vectorisation of the array $Y$.
+The values to estimate are the elements of the $M\times 3$-sized array $Y=(t_{y_{m,e}})_{m\in\{1,\ldots,M\},e\in\{"employed","unemployed","nilf"\}}=\sum_{k\in U} (y_{k,m,e}))_{m\in\{1,\ldots,M\},e\in\{"employed","unemployed","nilf"\}}$. We denote by $\overrightarrow{Y}$ the vectorisation of the array $Y$.
 
 We consider estimates of $\overrightarrow{Y}$
 of the form  $\widehat{\overrightarrow{Y}} =W\times \overrightarrow{X}$
 
 
-### Recursive estimation
+### Recursive linear estimates
 
 The function `CompositeRegressionEstimation::composite` 
 allows to compute linear combinations of the month in sample groups of the form
 
-$
+$\hat{t}^{\text{Recursive}}_{y_{m,e}}=\left[\begin{array}{c} \hat{t}^{\text{Recursive}}_{Y_{.,m-1}}\\ \sum_{k\in S_{m}} w_{k,m} y_{k,m}\\\sum_{k\in S_{m-1}\cap      S_{m}} w_{k,m-1} y_{k,m-1}\\ \sum_{k\in S_{m-1}\cap      S_{m}} w_{k,m} y_{k,m}\\\sum_{k\in S_{m}\setminus S_{m-1}} w_{k,m} y_{k,m}\end{array}\right]^{\mathrm{T}}\times \left[\begin{array}{c}\alpha_{(-1)}\\\alpha_{0}\\\beta_{(-1)}\\\beta_0\\\gamma_0\end{array}\right]$
+This is a special case of a linear combination of the month-in-sample estimates.
 
 #### AK estimator
 
