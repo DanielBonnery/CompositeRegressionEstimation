@@ -4,14 +4,36 @@
 \alias{W.ak}
 \title{general AK weights as a function of a and k parameters.}
 \usage{
-W.ak(nmonth, ngroups = 8, S = c(2:4, 6:8), a, k)
+W.ak(
+  months,
+  groups,
+  S = c(2:4, 6:8),
+  S_1 = S - 1,
+  a,
+  k,
+  eta0 = length(groups)/length(S),
+  eta1 = eta0 - 1,
+  rescaled = F
+)
 }
 \arguments{
+\item{months}{an integer, indicating number of months}
+
+\item{groups}{a vector of character strings or numeric string}
+
+\item{S}{a vector of integers indicating the indices of the rotation group in the sample that overlap with the previous sample: groups[S] are the overlapping rotation groups}
+
+\item{S_1}{a vector of integers indicating the indices of the corresponding rotation group of S in the previous month}
+
+\item{a}{a numeric value}
+
+\item{k}{a numeric value}
+
+\item{rescaled}{a boolean (default FALSE) indicating whether these AK coefficient are to be applied to rescaled or not rescaled month in sample weighted sums}
+
 \item{nmonth}{an integer, indicating number of months}
 
-\item{ngroups}{: number of groups}
-
-\item{S}{a vector of  integers indicating the indices of the rotation group in the sample}
+\item{ngroup}{a vector of character strings or numeric string}
 }
 \value{
 an array of AK coefficients  W[m2,m1,mis1] such that Ak estimate for month m2  is sum(W[y2,,])*Y) where Y[m1,mis1] is direct estimate on mis mis1 for emp stat y1 at month m1.
@@ -20,5 +42,9 @@ an array of AK coefficients  W[m2,m1,mis1] such that Ak estimate for month m2  i
 general AK weights as a function of a and k parameters.
 }
 \examples{
-
+W<-W.ak(months=1:3,groups=1:8,a=.2,k=.5);dimnames(W) 
+W<-W.ak(months=2:4,groups=letters[1:8],a=.2,k=.5);dimnames(W);
+Y<-WSrg(list.tables,weight="pwsswgt",list.y="pemlr",rg="hrmis")
+dimnames(Y);month="m";group="mis";variable="y";
+A=W.ak(months = dimnames(Y)[[month]],groups = dimnames(Y)[[group]],S=c(2:4,6:8),a=.5,k=.5)
 }

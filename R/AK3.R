@@ -23,15 +23,22 @@ empirical.var<-function(A,MARGIN,n){
 #' @param rescaled a boolean (default FALSE) indicating whether these AK coefficient are to be applied to rescaled or not rescaled month in sample weighted sums 
 #' @return an array of AK coefficients  W[m2,m1,mis1] such that Ak estimate for month m2  is sum(W[y2,,])*Y) where Y[m1,mis1] is direct estimate on mis mis1 for emp stat y1 at month m1.
 #' @examples
-#' W.ak(nmonth=3,ngroup=8,a=.2,k=.5) 
-W.ak<-function(nmonth=length(months),
-               months=seq_len(nmonth),
-               ngroup=8,
-               groups=seq_len(ngroup),
+#' W<-W.ak(months=1:3,groups=1:8,a=.2,k=.5);dimnames(W) 
+#' W<-W.ak(months=2:4,groups=letters[1:8],a=.2,k=.5);dimnames(W);
+#' Y<-WSrg(list.tables,weight="pwsswgt",list.y="pemlr",rg="hrmis")
+#' dimnames(Y);month="m";group="mis";variable="y";
+#' A=W.ak(months = dimnames(Y)[[month]],groups = dimnames(Y)[[group]],S=c(2:4,6:8),a=.5,k=.5)
+
+W.ak<-function(months,
+               groups,
                S=c(2:4,6:8),
                S_1=S-1,
-               a,k,eta0=ngroup/length(S),eta1=eta0-1,
+               a,k,
+               eta0=length(groups)/length(S),
+               eta1=eta0-1,
                rescaled=F){
+  nmonth<-length(months)
+  ngroup<-length(groups)
   W<-array(0,c(nmonth,nmonth,ngroup))
   dimnames(W)<-list(m2=months,m1=months,rg1=groups)
   Hmisc::label(W)<-"Coefficient matrix W[m2,m1,mis1] such that Ak estimate for month m2  is sum(W[y2,,])*Y) where Y[m1,mis1] is direct estimate on mis mis1 for emp stat y1 at month m1"
@@ -55,17 +62,16 @@ W.ak<-function(nmonth=length(months),
 #' @param ak a list of 2-dimension vectors
 #' @return an array of AK coefficients  W[m2,m1,mis1] such that Ak estimate for month m2  is sum(W[y2,,])*Y) where Y[m1,mis1] is direct estimate on mis mis1 for emp stat y1 at month m1.
 #' @examples
-#' W.multi.ak(nmonth=3,ngroup=8,S=c(2:4,6:8),ak=list(c(a=.2,k=.5),c(a=.2,k=.4))) 
-W.multi.ak<-function(nmonth=length(months),
-                     months=seq_len(nmonth),
-                     ngroup=8,
-                     groups=seq_len(ngroup),
-                     S=c(2:4,6:8),
+#' W.multi.ak(months=1:3,groups=1:8,S=c(2:4,6:8),ak=list(c(a=.2,k=.5),c(a=.2,k=.4))) 
+W.multi.ak<-function(months,
+                     groups,
+                     S,
                      S_1=S-1,
-                     ak,eta0=ngroup/length(S),eta1=eta0-1,
+                     ak,eta0=length(groups)/length(S),eta1=eta0-1,
                      rescaled=F){
+  
   W<-plyr::laply(ak,function(AK){
-    W.ak(nmonth,ngroups,S,a=AK["a"],k=AK["k"],eta0=eta0,eta1=eta1)
+    W.ak(months,groups,S,a=AK["a"],k=AK["k"],eta0=eta0,eta1=eta1)
   })
 names(dimnames(W))[1]<-"ak"
 dimnames(W)[[1]]<-1:length(ak)
@@ -85,28 +91,36 @@ W}
 #' @return an array
 #' @examples
 #' library(dataCPS)
-#' list.tables<-lapply(data(list=paste0("cps",200501:200512),package="dataCPS"),get);
+#' period=200501:200512
+#' list.tables<-lapply(data(list=paste0("cps",period),package="dataCPS"),get);
+#' names(list.tables)<-period
 #' Y<-WSrg(list.tables,weight="pwsswgt",list.y="pemlr",rg="hrmis")
-#' dimnames(Y)
-#' AK_est(Y,month="m",group="mis",a=.5,k=.6) 
-#' names(list.tables)<-1:12
+#' dimnames(Y);month="m";group="mis";variable="y";
+#' S=c(2:4,6:8);eta0=1.3;eta1=.3
+#' A=W.ak(months = dimnames(Y)[[month]],groups = dimnames(Y)[[group]],S=c(2:4,6:8),a=.5,k=.5,eta0,eta1)
+#' a=.5;
+#' k=.5;
+#' ngroup=dim(Y)[group];eta0=ngroup/length(S);eta1=eta0-1;
+#' AK_est(Y,month="m",group="mis",a=.5,k=.6,eta0,eta1) 
 #' 
-#' Y<-plyr::daply(plyr::ldply(list.tables,,function(L){L[c("pemlr","pwsswgt","hrmis")]}),~.id+pemlr+hrmis,function(d){data.frame(y=sum(d$pwsswgt))})
+#' 
 
 AK_est<-function(Y,
                  month=names(dimnames(Y))[1],
                  group=names(dimnames(Y))[2],
                  variable=names(dimnames(Y))[3],
-                 S=c(2:4,6:8),
+                 S,
+                 S_1=S-1,
                  a,
                  k,
-                 ngroup=dim(Y)[group],
-                 eta0=ngroup/length(S),
+                 groups=dimnames(Y)[[group]],
+                 eta0=length(groups)/length(S),
                  eta1=eta0-1){
-  TensorDB::"%.%"(A=W.ak(nmonth = dim(Y)[which(names(dimnames(Y))==month)],
-                         ngroup = dim(Y)[which(names(dimnames(Y))==group)],S,a,k,eta0,eta1),
+  TensorDB::"%.%"(A=W.ak(months = dimnames(Y)[[month]],
+                         groups = dimnames(Y)[[group]],
+                         S,a,k,eta0,eta1),
                   B=Y,
-                  I_A=list(c=integer(0),n="m2",p=c("m1","mis1")),
+                  I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),
                   I_B=list(c=integer(0),p=c(month,group),q=variable),requiresameindices=F)}
 
 

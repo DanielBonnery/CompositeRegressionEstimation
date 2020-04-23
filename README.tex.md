@@ -272,7 +272,7 @@ W.ak()
 ```
 
 ```
-## Error in array(0, c(nmonth, nmonth, ngroup)): promise already under evaluation: recursive default argument reference or earlier problems?
+## Error in W.ak(): argument "months" is missing, with no default
 ```
 
 
