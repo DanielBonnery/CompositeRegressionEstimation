@@ -71,10 +71,113 @@ The R package `dataCPS` available there: ["github.com/DanielBonnery/dataCPS"](gi
 The following code creates a list of dataframes for the months of 2005 that are selection of variables from the CPS public use microdata. It creates a new employment status table with only 3 levels
 
 
+```r
+period<-200501:200512
+list.tables<-lapply(data(list=paste0("cps",period),package="dataCPS"),get);names(list.tables)<-period
+list.tables<-lapply(list.tables,function(L){
+  L<img src="/tex/6c1dd9a7cf6d2b14ed0a37fc628474d1.svg?invert_in_darkmode&sanitize=true" align=middle width=341.43478379999993pt height=24.65753399999998pt/>pemlr,
+                                            "e"=c("pemlr_n1","pemlr_n2"),
+                                            "u"=c("pemlr_n3","pemlr_n4"),
+                                            "n"=c("pemlr_n5","pemlr_n6","pemlr_n7","pemlr_n_1"));
+  L})
+```
 
 
 
+## Estimation 
+
+The output of a survey are often used to produce estimators of totals over the population of certain characteritics, or function of this same totals, 
+in a fixed population model for design-based inference.  
+
+### Linear estimates
+
+#### Direct estimate
+
+The direct estimator of the total is <img src="/tex/ad796610a1505cccc91fa1d60f0e35de.svg?invert_in_darkmode&sanitize=true" align=middle width=123.82880234999999pt height=24.657735299999988pt/>. The function `CompositeRegressionEstimation::WS` will produce
+the weighted estimates <img src="/tex/708822d2eb3b9d7274a246ea19c8e7c5.svg?invert_in_darkmode&sanitize=true" align=middle width=211.2724317pt height=24.657735299999988pt/>
+
+In the following code, we compute the direct estimates of the counts in each employment status category from the CPS public anonymised micro data in the year 2005, compute the corresponding unemployment rate time series and plot the result.
+
+```r
+Direct.est<-CompositeRegressionEstimation::WS(list.tables,weight="pwsswgt",list.y = "employmentstatus")
+Direct.emp.rate<-with(as.data.frame(Direct.est),(employmentstatus_ne)/(employmentstatus_ne+employmentstatus_nu))
+```
+
+```
+## Error in eval(substitute(expr), data, enclos = parent.frame()): object 'employmentstatus_ne' not found
+```
+
+```r
+library(ggplot2);ggplot(data=data.frame(period=period,E=Direct.emp.rate),aes(x=period,y=E))+geom_line()+
+  ggtitle("Direct estimate of the monthly employment rate from the CPS public microdata in 2005")+
+  scale_x_continuous(breaks=200501:200512,labels=month.abb)+xlab("")+ylab("")
+```
+
+```
+## Error in data.frame(period = period, E = Direct.emp.rate): object 'Direct.emp.rate' not found
+```
+
+#### Month in sample estimate
+
+An estimate can be obtained from each month-in-sample rotation group. The month-in-sample estimates are estimates of a total of a study variable of the form:
+<img src="/tex/f2a239d5333f9405c19fdf85ee975a72.svg?invert_in_darkmode&sanitize=true" align=middle width=120.79207634999999pt height=24.657735299999988pt/>.
+The following code 
+
+```r
+MIS.est<-CompositeRegressionEstimation::WSrg(list.tables,rg = "hrmis",weight="pwsswgt",list.y = "employmentstatus")
+names(dimnames(MIS.est))<-c("Month","RotationGroup","EmploymentStatus")
+MIS.emp.rate<-plyr::aaply(MIS.est[,,c("pemlr_n1","pemlr_n2")],1:2,sum)/plyr::aaply(MIS.est[,,c("pemlr_n1","pemlr_n2","pemlr_n3","pemlr_n4")],1:2,sum);names(dimnames(MIS.emp.rate))<-c("Month","RotationGroup")
+```
+
+```
+## Error in MIS.est[, , c("pemlr_n1", "pemlr_n2")]: subscript out of bounds
+```
+
+```
+## Error in names(dimnames(MIS.emp.rate)) <- c("Month", "RotationGroup"): object 'MIS.emp.rate' not found
+```
+
+```r
+library(ggplot2);ggplot(data=reshape2::melt(MIS.emp.rate),aes(x=Month,y=value,color=RotationGroup))+geom_line()+
+  scale_x_continuous(breaks=200501:200512,labels=month.abb)+xlab("")+ylab("")+ 
+  labs(title = "Month-in-sample estimates", 
+       subtitle = "Monthly employment rate, year 2005", 
+       caption = "Computed from CPS public anonymized microdata.")
+```
+
+```
+## Error in reshape2::melt(MIS.emp.rate): object 'MIS.emp.rate' not found
+```
+
+#### Linear combinaisons of the month-in-sample estimates
+
+The month-in-sample estimates for each month and each rotation group can be stored in a file with four variables:
+the month, the group, the employment status and the value of the estimate.
 
 
+```r
+kable(reshape2::melt(MIS.est)[1:5,])
+```
+
+```
+## Error in kable(reshape2::melt(MIS.est)[1:5, ]): could not find function "kable"
+```
+Let <img src="/tex/cbfb1b2a33b28eab8a3e59464768e810.svg?invert_in_darkmode&sanitize=true" align=middle width=14.908688849999992pt height=22.465723500000017pt/> be the 
+#### AK estimator
+
+```
+CompositeRegressionEstimation::CPS_AK()
+```
+
+
+#### Rough estimation of the month-in-sample estimate covariance matrix
+
+#### Empirical best AK estimator
+
+#### Empirical best YF estimator
+
+#### Empirical best linear estimator
+
+### Modified regression (Singh, Fuller-Rao)
 
 
