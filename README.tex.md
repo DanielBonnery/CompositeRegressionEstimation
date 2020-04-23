@@ -153,9 +153,25 @@ We use $\overrightarrow{X}$ to designate the vector and $X$ to designate the arr
 
 The values to estimate are the elements of the $M\times 3$-sized array $Y=(t_{y_{m,e}})_{m\in\{1,\ldots,M\},e\in\{"employed","unemployed","nilf"\}}=\sum_{k\in U} (y_{k,m,e}))_{m\in\{1,\ldots,M\},e\in\{"employed","unemployed","nilf"\}}$. We denote by $\overrightarrow{Y}$ the vectorisation of the array $Y$.
 
-We consider estimates of $\overrightarrow{Y}$
-of the form  $\widehat{\overrightarrow{Y}} =W\times \overrightarrow{X}$
+In R, the function to vectorize an array is the function `c`
 
+```r
+A<-array(1:12,c(3,2,2));c(A)
+```
+
+```
+##  [1]  1  2  3  4  5  6  7  8  9 10 11 12
+```
+
+
+We consider estimates of $\overrightarrow{Y}$
+of the form  $\widehat{\overrightarrow{Y}} ={\overrightarrow{W}}\times \overrightarrow{X}$, 
+where ${\overrightarrow{W}}$ is a matrix of dimension $(\mathrm{dim}(\overrightarrow{Y}),\mathrm{dim}(\overrightarrow{X})$).
+
+Which is equivalent to estimators of the form $W\times X$ where the $W$ is a $(\mathrm{dim}(Y))\times(\mathrm{dim}(X))$ matrix, where an element $W_{p,q}$ of $W$ is indexed by two vector $p$ and $q$ and of length the number of dimensions of the array $Y$ and the dimensions of the array $X$ respectively. 
+
+The function `TensorDB::"%.%"` of the 'TensorDB' allows to perform the array multiplication as described above.
+The package uses named arrays with names dimensions (`names(dimnames(A))` is not `NULL`).
 
 ### Recursive linear estimates
 
@@ -249,15 +265,25 @@ CPS_AK()
 ## 0.3 0.4 0.0 0.4 0.7 0.0
 ```
 
-the function 
+the option `W.ak` with parameters 
+
+```r
+W.ak()
+```
+
+```
+## Error in array(0, c(nmonth, nmonth, ngroup)): promise already under evaluation: recursive default argument reference or earlier problems?
+```
+
+
+the function `CPS_AK_coeff.array.f` with the parameters
+
+`simplify=FALSE` produces the array of dimension 
 
 
 ```r
-CPS_AK_coeff.array.f(10)
-```
-
-```
-## Error in CPS_AK_coeff.array.f(10): argument "ak" is missing, with no default
+W=CPS_AK_coeff.array.f(4,ak=CPS_AK(),simplify=FALSE)
+dimnames(W);dim(W)
 ```
 
 #### Rough estimation of the month-in-sample estimate covariance matrix

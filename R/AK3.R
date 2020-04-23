@@ -9,57 +9,105 @@
 empirical.var<-function(A,MARGIN,n){
   plyr::aaply(A,MARGIN,function(A.){TensorDB::m2a(var(TensorDB::a2m(A.,n)),dim(A.)[-(0:n)])})
 }
+
+#' general AK weights as a function of a and k parameters.
+#' 
+#' @param months an integer, indicating number of months
+#' @param nmonth an integer, indicating number of months
+#' @param ngroup  a vector of character strings or numeric string
+#' @param groups  a vector of character strings or numeric string
+#' @param a a numeric value
+#' @param k a numeric value
+#' @param S a vector of integers indicating the indices of the rotation group in the sample that overlap with the previous sample: groups[S] are the overlapping rotation groups
+#' @param S_1 a vector of integers indicating the indices of the corresponding rotation group of S in the previous month
+#' @param rescaled a boolean (default FALSE) indicating whether these AK coefficient are to be applied to rescaled or not rescaled month in sample weighted sums 
+#' @return an array of AK coefficients  W[m2,m1,mis1] such that Ak estimate for month m2  is sum(W[y2,,])*Y) where Y[m1,mis1] is direct estimate on mis mis1 for emp stat y1 at month m1.
+#' @examples
+#' W.ak(nmonth=3,ngroup=8,a=.2,k=.5) 
+W.ak<-function(nmonth=length(months),
+               months=seq_len(nmonth),
+               ngroup=8,
+               groups=seq_len(ngroup),
+               S=c(2:4,6:8),
+               S_1=S-1,
+               a,k,eta0=ngroup/length(S),eta1=eta0-1,
+               rescaled=F){
+  W<-array(0,c(nmonth,nmonth,ngroup))
+  dimnames(W)<-list(m2=months,m1=months,rg1=groups)
+  Hmisc::label(W)<-"Coefficient matrix W[m2,m1,mis1] such that Ak estimate for month m2  is sum(W[y2,,])*Y) where Y[m1,mis1] is direct estimate on mis mis1 for emp stat y1 at month m1"
+  Sbar<-setdiff(1:ngroup,S)
+    W[1,,1]<-1
+    for(i in 2:nmonth){
+      W[i,,]<-W[(i-1),,]*k
+      W[i,i,]<-(1-k)
+      W[i,i-1,S_1]<-W[i,i-1,S_1]-k*eta0
+      W[i,i,S]<-W[i,i,S]+k*eta0-a*eta1
+      W[i,i,Sbar]<-W[i,i,Sbar]+a} 
+  if(rescaled){W<-W/ngroup}
+  return(W)}
+
+
 #' general AK weights as a function of a and k parameters.
 #' 
 #' @param nmonth an integer, indicating number of months
 #' @param ngroups : number of groups
 #' @param S a vector of  integers indicating the indices of the rotation group in the sample
+#' @param ak a list of 2-dimension vectors
 #' @return an array of AK coefficients  W[m2,m1,mis1] such that Ak estimate for month m2  is sum(W[y2,,])*Y) where Y[m1,mis1] is direct estimate on mis mis1 for emp stat y1 at month m1.
 #' @examples
-#' 
-W.ak<-function(nmonth,ngroups=8,S=c(2:4,6:8),a,k){
-  W<-array(0,c(nmonth,nmonth,ngroups))
-  Sbar<-setdiff(1:ngroups,S)
-  wS<-length(S)/ngroups
-  wsbar<-length(S)/length(Sbar)
-    W[1,,1]<-1
-    for(i in 2:nmonth){
-      W[i,,]<-W[(i-1),,]*k
-      W[i,i,]<-(1-k)
-      W[i,i-1,S-1]<-W[i,i-1,S-1]-k/wS
-      W[i,i,S]<-W[i,i,S]+k/wS-ngroups*a/wsbar
-      W[i,i,Sbar]<-W[i,i,Sbar]+ngroups*a} 
-  W<-W/ngroups
-  dimnames(W)<-sapply(dim(W),seq_len)
-  names(dimnames(W))<-c("m2","m1","mis1")
-  Hmisc::label(W)<-"Coefficient matrix W[m2,m1,mis1] such that Ak estimate for month m2  is sum(W[y2,,])*Y) where Y[m1,mis1] is direct estimate on mis mis1 for emp stat y1 at month m1"
-  return(W)}
-
-W.multi.ak<-function(nmonth,ngroups,S,ak){
-  n<-length(ak)
-  W<-array(0,c(nmonth,n,nmonth,ngroups,n))
-  for(i in 1:n){
-    W[,i,,,,i]<-W.ak(nmonth,ngroups,S,ak[[i]]["a"],ak[[i]]["k"])
-  }
+#' W.multi.ak(nmonth=3,ngroup=8,S=c(2:4,6:8),ak=list(c(a=.2,k=.5),c(a=.2,k=.4))) 
+W.multi.ak<-function(nmonth=length(months),
+                     months=seq_len(nmonth),
+                     ngroup=8,
+                     groups=seq_len(ngroup),
+                     S=c(2:4,6:8),
+                     S_1=S-1,
+                     ak,eta0=ngroup/length(S),eta1=eta0-1,
+                     rescaled=F){
+  W<-plyr::laply(ak,function(AK){
+    W.ak(nmonth,ngroups,S,a=AK["a"],k=AK["k"],eta0=eta0,eta1=eta1)
+  })
+names(dimnames(W))[1]<-"ak"
+dimnames(W)[[1]]<-1:length(ak)
+Hmisc::label(W)<-"Coefficient matrix W[ak,m2,m1,mis1] such that AK estimate for value of AK choice number ak, month m2  is sum(W[ak,y2,,])*Y) where Y[m1,mis1] is direct estimate on mis mis1 for emp stat y1 at month m1"
 W}
 
 #' AK estimation on array of month in sample estimates
 #' 
-#' @param Y an array of dimensions
-#' @param S a vector of integers, subvector of 
+#' @param Y an array of named dimensions with 3 dimensions: 1 for the month, 1 for the month in sample, 1 for the variable name 
+#' @param month : name of the month dimension (by default the name of the first dimension of Y names(dimnames(dim(Y)))[1])
+#' @param group : name of the group dimenstion of Y (by default the name of the second dimension of Y names(dimnames(dim(Y)))[2]) 
+#' @param S a vector of integers, subvector of 1:ngroup, to be passed to W.ak, indicating the rotation group numbers this month that were present the previous months (for CPS, c(2:4,6:8))
 #' @param a a numeric value
 #' @param k a numeric value
+#' @param eta0 a  numeric value to be passed to W.ak
+#' @param eta1 a  numeric value to be passed to W.ak
 #' @return an array
 #' @examples
+#' library(dataCPS)
+#' list.tables<-lapply(data(list=paste0("cps",200501:200512),package="dataCPS"),get);
+#' Y<-WSrg(list.tables,weight="pwsswgt",list.y="pemlr",rg="hrmis")
+#' dimnames(Y)
+#' AK_est(Y,month="m",group="mis",a=.5,k=.6) 
+#' names(list.tables)<-1:12
 #' 
+#' Y<-plyr::daply(plyr::ldply(list.tables,,function(L){L[c("pemlr","pwsswgt","hrmis")]}),~.id+pemlr+hrmis,function(d){data.frame(y=sum(d$pwsswgt))})
 
-AK_est<-function(Y,S=c(2:4,6:8),a,k){
-  Y<-as.array(Y)
-  TensorDB::"%.%"(A=W.ak(dim(Y)[1],dim(Y)[2],S,a,k),
+AK_est<-function(Y,
+                 month=names(dimnames(Y))[1],
+                 group=names(dimnames(Y))[2],
+                 variable=names(dimnames(Y))[3],
+                 S=c(2:4,6:8),
+                 a,
+                 k,
+                 ngroup=dim(Y)[group],
+                 eta0=ngroup/length(S),
+                 eta1=eta0-1){
+  TensorDB::"%.%"(A=W.ak(nmonth = dim(Y)[which(names(dimnames(Y))==month)],
+                         ngroup = dim(Y)[which(names(dimnames(Y))==group)],S,a,k,eta0,eta1),
                   B=Y,
                   I_A=list(c=integer(0),n="m2",p=c("m1","mis1")),
-                  I_B=list(c=integer(0),p=c("Month","Months in sample"),q="Variable"))
-  }
+                  I_B=list(c=integer(0),p=c(month,group),q=variable),requiresameindices=F)}
 
 
 

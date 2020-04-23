@@ -1,11 +1,30 @@
+#' Weighted sums by rotation groups
+#' @param list.tables a named list of data frames
+#' @param weight a character string  indicating the variable name or a numerical value 
+#' @param list.y a vector of character strings indicating the study variables
+#' @param rg a character string indicating the name of the rotation group.
+#' @return an array
+#' @examples
+#' library(dataCPS)
+#' period<-200501:200512
+#' list.tables<-lapply(data(list=paste0("cps",period),package="dataCPS"),get);
+#' names(list.tables)<-period
+#' Y<-WSrg(list.tables,"pwsswgt",list.y="pemlr",rg="hrmis")
+#' dimnames(Y);dim(Y)
+#' Y<-plyr::daply(plyr::ldply(list.tables,function(L){L[c("pemlr","pwsswgt","hrmis")]}),
+#' ~.id+pemlr+hrmis,function(d){data.frame(y=sum(d$pwsswgt))})[names(list.tables),,]
+#' dimnames(Y);dim(Y)
+#' system.time(plyr::daply(plyr::ldply(list.tables,,function(L){L[c("pemlr","pwsswgt","hrmis")]}),
+#' ~.id+pemlr+hrmis,function(d){data.frame(y=sum(d$pwsswgt))}))
+#' system.time(WSrg(list.tables,weight="pwsswgt",list.y="pemlr",rg="hrmis"))
 WSrg <-
-  function(list.tables,weight=1,list.y=NULL,rg="hrmis"){
+  function(list.tables,weight=1,list.y=NULL,rg="hrmis",rescale=F){
     #require(abind)
     #controls    
     #     if(max(!sapply(list.tables,is.data.frame))){stop("First argument(s) of WS must be  (a) data frame(s)", domain = NA)}
     
     #procedure
-    
+    if(is.null(names(list.tables))){names(list.tables)=1:length(list.tables)}
     L<-lapply(list.tables,function(df){
       #procedure
       list.y2<-list.y
@@ -45,6 +64,8 @@ WSrg <-
     L<-lapply(L,function(df){df[variables2,variables1]})
     
     dfEstT<- do.call("abind", c(L,along=0))
+    names(dimnames(dfEstT))<-c("m","mis","y")
     #rownames(dfEstT)<-names(list.tables)
     #names(dfEstT)<-c("T",fdf$apasconvertir,fdf$nfdf)
+    if(rescale){dfEstT<-dfEstT*dim(dfEstT)[2]}
     return(dfEstT)}
