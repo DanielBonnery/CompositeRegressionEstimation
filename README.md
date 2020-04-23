@@ -96,7 +96,7 @@ in a fixed population model for design-based inference.
 #### Direct estimate
 
 The direct estimator of the total is <img src="/tex/1be0457898a13c5f4f4a4c95d22b17ae.svg?invert_in_darkmode&sanitize=true" align=middle width=122.34483359999999pt height=24.657735299999988pt/>. The function `CompositeRegressionEstimation::WS` will produce
-the weighted estimates <img src="/tex/3ce530175fe262bc233a95b0c8b47e89.svg?invert_in_darkmode&sanitize=true" align=middle width=209.78846129999997pt height=24.657735299999988pt/>
+the weighted estimates <img src="/tex/7629247eccd6f3f305aaec4a62d5e015.svg?invert_in_darkmode&sanitize=true" align=middle width=274.0464474pt height=28.89761819999999pt/>
 
 In the following code, we compute the direct estimates of the counts in each employment status category from the CPS public anonymised micro data in the year 2005, compute the corresponding unemployment rate time series and plot the result.
 
@@ -151,18 +151,19 @@ Let <img src="/tex/cbfb1b2a33b28eab8a3e59464768e810.svg?invert_in_darkmode&sanit
 Elements of <img src="/tex/cbfb1b2a33b28eab8a3e59464768e810.svg?invert_in_darkmode&sanitize=true" align=middle width=14.908688849999992pt height=22.465723500000017pt/> can be refered to by the line number or by a combinaison of month, rotation group, and employment status, as for example : <img src="/tex/3fc66a72e2d17e020e9c41a3fa79f3c9.svg?invert_in_darkmode&sanitize=true" align=middle width=160.88719184999997pt height=22.465723500000017pt/>, or by a line number <img src="/tex/aef6b18063caff2c3750441e127e3e5a.svg?invert_in_darkmode&sanitize=true" align=middle width=21.941076299999988pt height=41.64378900000001pt/>.
 We use <img src="/tex/d3615153e21981003e4ebb11168a5cc7.svg?invert_in_darkmode&sanitize=true" align=middle width=16.43875364999999pt height=41.64378900000001pt/> to designate the vector and <img src="/tex/cbfb1b2a33b28eab8a3e59464768e810.svg?invert_in_darkmode&sanitize=true" align=middle width=14.908688849999992pt height=22.465723500000017pt/> to designate the array.
 
-The values to estimate are the elements of the <img src="/tex/d589f80ee85eb594b74fa100a4e0f23f.svg?invert_in_darkmode&sanitize=true" align=middle width=104.08773374999998pt height=22.831056599999986pt/> sized array <img src="/tex/6113a4c2abf45f7818f3d5e58b17b6ca.svg?invert_in_darkmode&sanitize=true" align=middle width=820.0904612999999pt height=24.657735299999988pt/>. We denote by <img src="/tex/9f7c9b1c4f87b770604d8d1c7e206d53.svg?invert_in_darkmode&sanitize=true" align=middle width=16.43875364999999pt height=41.64378900000001pt/> the vectorisation of the array <img src="/tex/91aac9730317276af725abd8cef04ca9.svg?invert_in_darkmode&sanitize=true" align=middle width=13.19638649999999pt height=22.465723500000017pt/>.
+The values to estimate are the elements of the <img src="/tex/7c674d837975ddc779079888281b9cff.svg?invert_in_darkmode&sanitize=true" align=middle width=46.050115649999995pt height=22.465723500000017pt/>-sized array <img src="/tex/6113a4c2abf45f7818f3d5e58b17b6ca.svg?invert_in_darkmode&sanitize=true" align=middle width=820.0904612999999pt height=24.657735299999988pt/>. We denote by <img src="/tex/9f7c9b1c4f87b770604d8d1c7e206d53.svg?invert_in_darkmode&sanitize=true" align=middle width=16.43875364999999pt height=41.64378900000001pt/> the vectorisation of the array <img src="/tex/91aac9730317276af725abd8cef04ca9.svg?invert_in_darkmode&sanitize=true" align=middle width=13.19638649999999pt height=22.465723500000017pt/>.
 
 We consider estimates of <img src="/tex/9f7c9b1c4f87b770604d8d1c7e206d53.svg?invert_in_darkmode&sanitize=true" align=middle width=16.43875364999999pt height=41.64378900000001pt/>
 of the form  <img src="/tex/d516d32413c72655e7d935d133cb7a10.svg?invert_in_darkmode&sanitize=true" align=middle width=92.69456624999998pt height=45.02964839999999pt/>
 
 
-### Recursive estimation
+### Recursive linear estimates
 
 The function `CompositeRegressionEstimation::composite` 
 allows to compute linear combinations of the month in sample groups of the form
 
-$
+<img src="/tex/f25e6f4893a2c62ca2010faa24fbd513.svg?invert_in_darkmode&sanitize=true" align=middle width=428.24322255000004pt height=124.31165669999999pt/>
+This is a special case of a linear combination of the month-in-sample estimates.
 
 #### AK estimator
 
