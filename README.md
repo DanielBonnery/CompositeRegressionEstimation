@@ -71,27 +71,10 @@ The R package `dataCPS` available there: ["github.com/DanielBonnery/dataCPS"](gi
 The following code creates a list of dataframes for the months of 2005 that are selection of variables from the CPS public use microdata. It creates a new employment status table with only 3 levels
 
 
-```r
-period<-200501:200512
-list.tables<-lapply(data(list=paste0("cps",period),package="dataCPS"),get);names(list.tables)<-period
-list.tables<-lapply(list.tables,function(L){
-  L<img src="/tex/d601f1ca9bf23f9e3218cd0bcc872f2d.svg?invert_in_darkmode&sanitize=true" align=middle width=256.11755565pt height=24.65753399999998pt/>pemlr);
-  levels(L<img src="/tex/8f5a8bc73d1733e3397d46ba7ae1ffd2.svg?invert_in_darkmode&sanitize=true" align=middle width=923.3611035pt height=355.0684929pt/>\sum_{k\in S_m} w_{k,m} Y_{k,m}<img src="/tex/c809ea0d92a0447434ff91dc93614fc7.svg?invert_in_darkmode&sanitize=true" align=middle width=647.2427973pt height=22.831056599999986pt/>(\sum_{k\in S_m} w_{k,m} Y_{k,m})_{m\in\{1,\ldots,M\}}<img src="/tex/75922774787d40863a862bbdff155e8b.svg?invert_in_darkmode&sanitize=true" align=middle width=886.8775674000001pt height=637.6255776pt/>\sum_{k\in S_{m,g} w_{m,k}Y_{m,k}<img src="/tex/7742b018b21f3db2781e0261cbe037e4.svg?invert_in_darkmode&sanitize=true" align=middle width=1134.8505794999999pt height=836.7123303pt/>X$ be the 
-#### AK estimator
-
-```
-CompositeRegressionEstimation::CPS_AK()
-```
 
 
-#### Rough estimation of the month-in-sample estimate covariance matrix
 
-#### Empirical best AK estimator
 
-#### Empirical best YF estimator
 
-#### Empirical best linear estimator
-
-### Modified regression (Singh, Fuller-Rao)
 
 
