@@ -75,7 +75,7 @@ The following code creates a list of dataframes for the months of 2005 that are 
 period<-200501:200512
 list.tables<-lapply(data(list=paste0("cps",period),package="dataCPS"),get);names(list.tables)<-period
 list.tables<-lapply(list.tables,function(L){
-  L$employmentstatus<-forcats::fct_collapse(factor(L$pemlr),
+  L[["employmentstatus"]]<-forcats::fct_collapse(factor(L$pemlr),
                                             "e"=c("1","2"),
                                             "u"=c("3","4"),
                                             "n"=c("5","6","7","-1"));
