@@ -162,24 +162,30 @@ of the form  <img src="/tex/d516d32413c72655e7d935d133cb7a10.svg?invert_in_darkm
 The function `CompositeRegressionEstimation::composite` 
 allows to compute linear combinations of the month in sample groups of the form
 
-<img src="/tex/f25e6f4893a2c62ca2010faa24fbd513.svg?invert_in_darkmode&sanitize=true" align=middle width=428.24322255000004pt height=124.31165669999999pt/>
+<img src="/tex/85bd3cbb0e3c38c933c02bf477525126.svg?invert_in_darkmode&sanitize=true" align=middle width=428.24322255000004pt height=124.31165669999999pt/>
 This is a special case of a linear combination of the month-in-sample estimates.
 
 #### AK estimator
 
-
-The AK composite estimator is defined in ``CPS Technical Paper (2006). Design and Methodology of the Current Population Survey. Technical Report 66, U.S. Census Bureau. (2006), [section 10-11]'':
-
-<img src="/tex/a62fdbec44055391321be633bd067003.svg?invert_in_darkmode&sanitize=true" align=middle width=412.73748779999994pt height=114.2298828pt/>
- 
-For <img src="/tex/448378a33e519f8bf89301552c0a348c.svg?invert_in_darkmode&sanitize=true" align=middle width=44.56994024999999pt height=21.18721440000001pt/>, <img src="/tex/a3561c8eaf619ce67be395ef03090707.svg?invert_in_darkmode&sanitize=true" align=middle width=169.68190469999996pt height=28.89761819999999pt/>.
+The AK estimator can be defined as follows:
+For <img src="/tex/448378a33e519f8bf89301552c0a348c.svg?invert_in_darkmode&sanitize=true" align=middle width=44.56994024999999pt height=21.18721440000001pt/>, <img src="/tex/da2cc7485cb0fa1b15583647a8b5d253.svg?invert_in_darkmode&sanitize=true" align=middle width=167.13742815pt height=28.89761819999999pt/>.
  
  For <img src="/tex/dfc1aff530546b0b16ab4aa699cf534f.svg?invert_in_darkmode&sanitize=true" align=middle width=44.56994024999999pt height=21.18721440000001pt/>, 
- <p align="center"><img src="/tex/82dab466646f8c54bad708b2ab0e38ce.svg?invert_in_darkmode&sanitize=true" align=middle width=540.06497985pt height=50.18295645pt/></p>
+
+<img src="/tex/9b79008ec861ce77d54cae3b39884f4e.svg?invert_in_darkmode&sanitize=true" align=middle width=410.19301125pt height=114.2298828pt/>
  
 
-where \deqn{\Delta_m=\eta_0\times\sum_{k\in S_m\cap S_{m-1}}(w_{k,m} Y_{k,m}-w_{k,m-1} Y_{k,m-1})}
- and \deqn{\hat{\beta}_m=\left(\sum_{k\notin S_m\cap S_{m-1}}w_{k,m} Y_{k,m}\right)~-~\eta_1~\times~\left(\sum_{k\in S_m\cap S_{m-1}}w_{k,m} Y_{k,m}\right)}
+The AK composite estimator is defined equivalently in ``CPS Technical Paper (2006). Design and Methodology of the Current Population Survey. Technical Report 66, U.S. Census Bureau. (2006), [section 10-11]'':
+
+
+For <img src="/tex/448378a33e519f8bf89301552c0a348c.svg?invert_in_darkmode&sanitize=true" align=middle width=44.56994024999999pt height=21.18721440000001pt/>, <img src="/tex/da2cc7485cb0fa1b15583647a8b5d253.svg?invert_in_darkmode&sanitize=true" align=middle width=167.13742815pt height=28.89761819999999pt/>.
+ 
+ For <img src="/tex/dfc1aff530546b0b16ab4aa699cf534f.svg?invert_in_darkmode&sanitize=true" align=middle width=44.56994024999999pt height=21.18721440000001pt/>, 
+ <p align="center"><img src="/tex/6518d014d587aa82df63c2831dfca370.svg?invert_in_darkmode&sanitize=true" align=middle width=536.46001035pt height=50.18295645pt/></p>
+ 
+
+where \deqn{\Delta_m=\eta_0\times\sum_{k\in S_m\cap S_{m-1}}(w_{k,m} y_{k,m}-w_{k,m-1} y_{k,m-1})}
+ and \deqn{\hat{\beta}_m=\left(\sum_{k\notin S_m\cap S_{m-1}}w_{k,m} y_{k,m}\right)~-~\eta_1~\times~\left(\sum_{k\in S_m\cap S_{m-1}}w_{k,m} y_{k,m}\right)}
  
  For the CPS, <img src="/tex/b396510f188ae3cee621c2a36bcb2985.svg?invert_in_darkmode&sanitize=true" align=middle width=14.714708249999989pt height=14.15524440000002pt/> is the ratio between the number of rotation groups in the sample and the number of overlaping rotation groups between two month, 
  which is a constant  <img src="/tex/3e0fccc50f84b4c25e62fc568fcf153e.svg?invert_in_darkmode&sanitize=true" align=middle width=62.11188059999999pt height=24.65753399999998pt/>; <img src="/tex/4a09d1898adc7637934a77010e40aea5.svg?invert_in_darkmode&sanitize=true" align=middle width=14.714708249999989pt height=14.15524440000002pt/> is the ratio between the number of non overlaping rotation groups the number of overlaping rotation groups between two month, 
