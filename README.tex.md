@@ -162,24 +162,30 @@ of the form  $\widehat{\overrightarrow{Y}} =W\times \overrightarrow{X}$
 The function `CompositeRegressionEstimation::composite` 
 allows to compute linear combinations of the month in sample groups of the form
 
-$\hat{t}^{\text{Recursive}}_{y_{m,e}}=\left[\begin{array}{c} \hat{t}^{\text{Recursive}}_{Y_{.,m-1}}\\ \sum_{k\in S_{m}} w_{k,m} y_{k,m}\\\sum_{k\in S_{m-1}\cap      S_{m}} w_{k,m-1} y_{k,m-1}\\ \sum_{k\in S_{m-1}\cap      S_{m}} w_{k,m} y_{k,m}\\\sum_{k\in S_{m}\setminus S_{m-1}} w_{k,m} y_{k,m}\end{array}\right]^{\mathrm{T}}\times \left[\begin{array}{c}\alpha_{(-1)}\\\alpha_{0}\\\beta_{(-1)}\\\beta_0\\\gamma_0\end{array}\right]$
+$\hat{t}^{\text{Recursive}}_{y_{m,e}}=\left[\begin{array}{c} \hat{t}^{\text{Recursive}}_{y_{.,m-1}}\\ \sum_{k\in S_{m}} w_{k,m} y_{k,m}\\\sum_{k\in S_{m-1}\cap      S_{m}} w_{k,m-1} y_{k,m-1}\\ \sum_{k\in S_{m-1}\cap      S_{m}} w_{k,m} y_{k,m}\\\sum_{k\in S_{m}\setminus S_{m-1}} w_{k,m} y_{k,m}\end{array}\right]^{\mathrm{T}}\times \left[\begin{array}{c}\alpha_{(-1)}\\\alpha_{0}\\\beta_{(-1)}\\\beta_0\\\gamma_0\end{array}\right]$
 This is a special case of a linear combination of the month-in-sample estimates.
 
 #### AK estimator
 
-
-The AK composite estimator is defined in ``CPS Technical Paper (2006). Design and Methodology of the Current Population Survey. Technical Report 66, U.S. Census Bureau. (2006), [section 10-11]'':
-
-${ \begin{array}{clll}\hat{t}_{Y_{.,m}}=&& K&\times \hat{t}_{Y_{.,m-1}}\\&+&(1-K)&\times  \sum_{k\in S_{m}} w_{k,m} Y_{k,m}\\&+&(-4K/3)&\times\sum_{k\in S_{m-1}\cap      S_{m}} w_{k,m-1} Y_{k,m-1}\\&+&(4K-A)/3 &\times\sum_{k\in S_{m-1}\cap      S_{m}} w_{k,m} Y_{k,m}\\&+&A&\times\sum_{k\in S_{m}\setminus S_{m-1}} w_{k,m} Y_{k,m}\end{array}}$
- 
-For ${m=1}$, ${\hat{t}_{Y_{.,1}}=\sum_{k\in S_1}w_{k,m}Y_{k,m}}$.
+The AK estimator can be defined as follows:
+For ${m=1}$, ${\hat{t}_{y_{.,1}}=\sum_{k\in S_1}w_{k,m}y_{k,m}}$.
  
  For ${m\geq 2}$, 
- $${\hat{t}_{Y_{.,m}}= (1-K) \times \left(\sum_{k\in S_{m}} w_{k,m} Y_{k,m}\right)~+~K~\times~(\hat{t}_{Y_{.,m-1}} + \Delta_m)~+~ A~\times\hat{\beta}_m}$$
+
+${ \begin{array}{clll}\hat{t}_{y_{.,m}}=&& K&\times \hat{t}_{y_{.,m-1}}\\&+&(1-K)&\times  \sum_{k\in S_{m}} w_{k,m} y_{k,m}\\&+&(-4K/3)&\times\sum_{k\in S_{m-1}\cap      S_{m}} w_{k,m-1} y_{k,m-1}\\&+&(4K-A)/3 &\times\sum_{k\in S_{m-1}\cap      S_{m}} w_{k,m} y_{k,m}\\&+&A&\times\sum_{k\in S_{m}\setminus S_{m-1}} w_{k,m} y_{k,m}\end{array}}$
  
 
-where \deqn{\Delta_m=\eta_0\times\sum_{k\in S_m\cap S_{m-1}}(w_{k,m} Y_{k,m}-w_{k,m-1} Y_{k,m-1})}
- and \deqn{\hat{\beta}_m=\left(\sum_{k\notin S_m\cap S_{m-1}}w_{k,m} Y_{k,m}\right)~-~\eta_1~\times~\left(\sum_{k\in S_m\cap S_{m-1}}w_{k,m} Y_{k,m}\right)}
+The AK composite estimator is defined equivalently in ``CPS Technical Paper (2006). Design and Methodology of the Current Population Survey. Technical Report 66, U.S. Census Bureau. (2006), [section 10-11]'':
+
+
+For ${m=1}$, ${\hat{t}_{y_{.,1}}=\sum_{k\in S_1}w_{k,m}y_{k,m}}$.
+ 
+ For ${m\geq 2}$, 
+ $${\hat{t}_{y_{.,m}}= (1-K) \times \left(\sum_{k\in S_{m}} w_{k,m} y_{k,m}\right)~+~K~\times~(\hat{t}_{y_{.,m-1}} + \Delta_m)~+~ A~\times\hat{\beta}_m}$$
+ 
+
+where \deqn{\Delta_m=\eta_0\times\sum_{k\in S_m\cap S_{m-1}}(w_{k,m} y_{k,m}-w_{k,m-1} y_{k,m-1})}
+ and \deqn{\hat{\beta}_m=\left(\sum_{k\notin S_m\cap S_{m-1}}w_{k,m} y_{k,m}\right)~-~\eta_1~\times~\left(\sum_{k\in S_m\cap S_{m-1}}w_{k,m} y_{k,m}\right)}
  
  For the CPS, ${\eta_0}$ is the ratio between the number of rotation groups in the sample and the number of overlaping rotation groups between two month, 
  which is a constant  ${\eta_0=4/3}$; ${\eta_1}$ is the ratio between the number of non overlaping rotation groups the number of overlaping rotation groups between two month, 
