@@ -60,7 +60,7 @@ $S_m=S_{m,1}\cup S_{m,2}\cup \ldots\cup  S_{m,8}$.
 
 
 For each unit $k$ in $S_m$, usually the dataset contains:
-the values $Y_{m,k}$ of a variable of interest $Y$ for unit $k$ and the period $m$.
+the values $y_{m,k}$ of a variable of interest $Y$ for unit $k$ and the period $m$.
 It also contains $w_{m,k}$ a sampling weight.
 
 
@@ -93,8 +93,8 @@ in a fixed population model for design-based inference.
 
 #### Direct estimate
 
-The direct estimator of the total is $\sum_{k\in S_m} w_{k,m} Y_{k,m}$. The function `CompositeRegressionEstimation::WS` will produce
-the weighted estimates $(\sum_{k\in S_m} w_{k,m} Y_{k,m})_{m\in\{1,\ldots,M\}}$
+The direct estimator of the total is $\sum_{k\in S_m} w_{k,m} y_{k,m}$. The function `CompositeRegressionEstimation::WS` will produce
+the weighted estimates $(\sum_{k\in S_m} w_{k,m} y_{k,m})_{m\in\{1,\ldots,M\}}$
 
 In the following code, we compute the direct estimates of the counts in each employment status category from the CPS public anonymised micro data in the year 2005, compute the corresponding unemployment rate time series and plot the result.
 
@@ -111,7 +111,7 @@ library(ggplot2);ggplot(data=data.frame(period=period,E=Direct.emp.rate),aes(x=p
 #### Month in sample estimate
 
 An estimate can be obtained from each month-in-sample rotation group. The month-in-sample estimates are estimates of a total of a study variable of the form:
-$\sum_{k\in S_{m,g} w_{m,k}Y_{m,k}$.
+$\sum_{k\in S_{m,g}} w_{m,k}y_{m,k}$.
 The following code 
 
 ```r
@@ -129,18 +129,29 @@ library(ggplot2);ggplot(data=reshape2::melt(MIS.emp.rate),aes(x=Month,y=value,co
 
 #### Linear combinaisons of the month-in-sample estimates
 
-The month-in-sample estimates for each month and each rotation group can be stored in a file with four variables:
+The month-in-sample estimates for each month and each rotation group can be stored in a data.frame with four variables:
 the month, the group, the employment status and the value of the estimate.
 
 
 ```r
-kable(reshape2::melt(MIS.est)[1:5,])
+print(reshape2::melt(MIS.est[,,c("employmentstatus_ne" ,"employmentstatus_nn", "employmentstatus_nu")]))
 ```
 
-```
-## Error in kable(reshape2::melt(MIS.est)[1:5, ]): could not find function "kable"
-```
-Let $X$ be the 
+|Row Number |Month  |Rotation Group |Employment Status   |$X$           |
+|:----------|:------|:--------------|:-------------------|:-------------|
+|1          |200501 |hrmis1         |employmentstatus_ne |17771771.5595 |
+|2          |200502 |hrmis1         |employmentstatus_ne |17501581.9912 |
+|3          |200503 |hrmis1         |employmentstatus_ne |17911922.4613 |
+|...        |...    |...            |...                 |...           |
+|288        |200512 |hrmis8         |employmentstatus_nu |846918.8885   |
+
+Let $X$ be the vector of values in the data.frame.
+Elements of $X$ can be refered to by the line number or by a combinaison of month, rotation group, and employment status, as for example : $X_{200501,group 3,employed]$, or by a line number $\overrightarrow{X}_\ell$.
+We use $\overrightarrow{X}$ to designate the vector and $X$ to designate the array.
+
+The values to estimate are the elements of the $M\times 3-sized$ sized array $Y=(\sum_{k\in U} (y_{k,m}==e))_{m\in\{1,\ldots,M\},e\in\{"employed","unemployed","nilf"}}$.
+of the form $W\times X$
+
 #### AK estimator
 
 ```
