@@ -181,21 +181,21 @@ For ${m=1}$, ${\hat{t}_{Y_{.,1}}=\sum_{k\in S_1}w_{k,m}Y_{k,m}}$.
 where \deqn{\Delta_m=\eta_0\times\sum_{k\in S_m\cap S_{m-1}}(w_{k,m} Y_{k,m}-w_{k,m-1} Y_{k,m-1})}
  and \deqn{\hat{\beta}_m=\left(\sum_{k\notin S_m\cap S_{m-1}}w_{k,m} Y_{k,m}\right)~-~\eta_1~\times~\left(\sum_{k\in S_m\cap S_{m-1}}w_{k,m} Y_{k,m}\right)}
  
- For the CPS, \eqn{\eta_0} is the ratio between the number of rotation groups in the sample and the number of overlaping rotation groups between two month, 
- which is a constant  \eqn{\eta_0=4/3}; \eqn{\eta_1} is the ratio between the number of non overlaping rotation groups the number of overlaping rotation groups between two month, 
- which is a constant of \eqn{1/3}.
+ For the CPS, ${\eta_0}$ is the ratio between the number of rotation groups in the sample and the number of overlaping rotation groups between two month, 
+ which is a constant  ${\eta_0=4/3}$; ${\eta_1}$ is the ratio between the number of non overlaping rotation groups the number of overlaping rotation groups between two month, 
+ which is a constant of ${1/3}$.
  
     
   In the case of the CPS, the rotation group one sample unit  belongs to in a particular month  is a function
  of the number of times it has been selected before, including this month, and so the rotation group of an individual in a particular month is called the "month in sample" variable.
     
- For the CPS, in month \eqn{m} the overlap \eqn{S_{m-1}\cap      S_{m}} correspond to the individuals in the sample \eqn{S_m} with a value of month in sample equal to 2,3,4, 6,7 or 8.
- The overlap \eqn{S_{m-1}\cap      S_{m}} correspond to the individuals in the sample \eqn{S_m} with a value of month in sample equal to 2,3,4, 6,7 or 8. as well as 
- individuals in the sample \eqn{S_{m-1}} with a value of month in sample equal to 1,2,3, 5,6 or 7. 
- When parametrising the function, the choice would be \code{group_1=c(1:3,5:7)} and \code{group0=c(2:4,6:8)}.
+ For the CPS, in month ${m}$ the overlap ${S_{m-1}\cap      S_{m}}$ correspond to the individuals in the sample ${S_m}$ with a value of month in sample equal to 2,3,4, 6,7 or 8.
+ The overlap ${S_{m-1}\cap      S_{m}}$ correspond to the individuals in the sample ${S_m}$ with a value of month in sample equal to 2,3,4, 6,7 or 8. as well as 
+ individuals in the sample ${S_{m-1}}$ with a value of month in sample equal to 1,2,3, 5,6 or 7. 
+ When parametrising the function, the choice would be `group_1=c(1:3,5:7)` and `group0=c(2:4,6:8)`.
 
  Computing the estimators recursively is not very efficient. At the end, we get a linear combinaison of month in sample estimates
- The functions \code{AK3}, and \code{WSrg} computes the linear combination directly and more efficiently.
+ The functions `AK3`, and `WSrg` compute the linear combination directly and more efficiently.
  
 
 ```
