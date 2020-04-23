@@ -149,8 +149,10 @@ Let $X$ be the vector of values in the data.frame.
 Elements of $X$ can be refered to by the line number or by a combinaison of month, rotation group, and employment status, as for example : $X_{200501,group 3,employed]$, or by a line number $\overrightarrow{X}_\ell$.
 We use $\overrightarrow{X}$ to designate the vector and $X$ to designate the array.
 
-The values to estimate are the elements of the $M\times 3-sized$ sized array $Y=(\sum_{k\in U} (y_{k,m}==e))_{m\in\{1,\ldots,M\},e\in\{"employed","unemployed","nilf"}}$.
-of the form $W\times X$
+The values to estimate are the elements of the $M\times 3-sized$ sized array $Y=(\sum_{k\in U} (y_{k,m}==e))_{m\in\{1,\ldots,M\},e\in\{"employed","unemployed","nilf"}}$. We denote by $\overrightarrow{Y}$ the vectorisation of the array $Y$.
+
+We consider estimates of $\overrightarrow{Y}$
+of the form  $\widehat{\overrightarrow{Y}} =W\times \overrightarrow{X}$
 
 #### AK estimator
 
