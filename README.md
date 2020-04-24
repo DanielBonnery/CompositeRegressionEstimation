@@ -192,7 +192,7 @@ This is a special case of a linear combination of the month-in-sample estimates.
 
 Computing the estimators recursively is not very efficient. At the end, we get a linear combinaison of month in sample estimates.
  
-The following code computes a recursive estimator with parameters <img src="/tex/f9ecf46100aacda7b08753da755e33cc.svg?invert_in_darkmode&sanitize=true" align=middle width=68.88090164999998pt height=27.77565449999998pt/>, <img src="/tex/d6c15b9e998c80e2bf1acc13d2b846cf.svg?invert_in_darkmode&sanitize=true" align=middle width=61.620622799999985pt height=33.20539859999999pt/>, <img src="/tex/2f9ca43849ec874dd8bee288ce39d125.svg?invert_in_darkmode&sanitize=true" align=middle width=67.35728504999999pt height=22.831056599999986pt/>, <img src="/tex/6600176eb2c9d38bc0bc3d4de8c91efd.svg?invert_in_darkmode&sanitize=true" align=middle width=46.80926414999998pt height=22.831056599999986pt/>, <img src="/tex/fbc4eac24fd8a70deb82e4826e0006df.svg?invert_in_darkmode&sanitize=true" align=middle width=46.02194189999999pt height=21.18721440000001pt/>.
+The following code computes a recursive estimator with parameters <img src="/tex/0d22c917616fe8a92c5c6813000e4783.svg?invert_in_darkmode&sanitize=true" align=middle width=119.06307104999999pt height=27.77565449999998pt/>, <img src="/tex/c07d4aad080ca920fc0e9dbe570cd021.svg?invert_in_darkmode&sanitize=true" align=middle width=143.75007074999996pt height=22.831056599999986pt/>.
 
 
 ```r
@@ -220,21 +220,6 @@ Wrec<-W.rec(months=period,
 
 Then one can multiply the array 'W' and 'X':
 
-
-```r
-dimnames(Wrec)
-```
-
-```
-## <img src="/tex/4076905418d6e50e232c5c4694562a41.svg?invert_in_darkmode&sanitize=true" align=middle width=829.0480736999999pt height=24.65753399999998pt/>m1
-##  [1] "200501" "200502" "200503" "200504" "200505" "200506" "200507" "200508" "200509" "200510" "200511" "200512"
-## 
-## <img src="/tex/fee80f1e783f5b170f2c7cb230ac5cb1.svg?invert_in_darkmode&sanitize=true" align=middle width=251.92063874999997pt height=78.90410880000002pt/>m
-##  [1] "200501" "200502" "200503" "200504" "200505" "200506" "200507" "200508" "200509" "200510" "200511" "200512"
-## 
-## <img src="/tex/8057ad56e552e229d17882b9f8af465f.svg?invert_in_darkmode&sanitize=true" align=middle width=259.75855949999993pt height=24.65753399999998pt/>employmentstatus
-## [1] "n" "e" "u"
-```
 
 ```r
 Yc2<-TensorDB::"%.%"(Wrec,X,I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),I_B=list(c=integer(0),p=c("m","hrmis"),q="employmentstatus"))
