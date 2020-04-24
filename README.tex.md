@@ -115,13 +115,13 @@ library(ggplot2);ggplot(data=data.frame(period=period,E=Direct.emp.rate),aes(x=p
 An estimate can be obtained from each month-in-sample rotation group. The month-in-sample estimates are estimates of a total of a study variable of the form:
 $\alpha\sum_{k\in S_{m,g}} w_{m,k}y_{m,k}$, where $\alpha$ is an adjustment. In the CPS, the adjustment $\alpha= 8$ as there are $8$ rotation groups. Other adjustments are possible, as for example $(\sum_{k\in S_{m}})/\sum_{k\in S_{m,g}}$.
 
-The following code 
+The following code  creates the array `X` of dimension $M\times 8\times 3$ (M months, 8 rotation groups, 3 employment statuses.) where `X[m,g,e]` is the month in sample estimate for month `m`, group `g` and status `e`.
+
 
 ```r
 library(CompositeRegressionEstimation)
-MIS.est<-CompositeRegressionEstimation::WSrg(list.tables,rg = "hrmis",weight="pwsswgt",list.y = "employmentstatus")
-names(dimnames(MIS.est))<-c("Month","RotationGroup","EmploymentStatus")
-MIS.emp.rate<-plyr::aaply(MIS.est[,,"employmentstatus_ne"],1:2,sum)/plyr::aaply(MIS.est[,,c("employmentstatus_ne","employmentstatus_nu")],1:2,sum);names(dimnames(MIS.emp.rate))<-c("Month","RotationGroup")
+X<-CompositeRegressionEstimation::WSrg(list.tables,rg = "hrmis",weight="pwsswgt",list.y = "employmentstatus")
+MIS.emp.rate<-plyr::aaply(X[,,"employmentstatus_ne"],1:2,sum)/plyr::aaply(X[,,c("employmentstatus_ne","employmentstatus_nu")],1:2,sum);names(dimnames(MIS.emp.rate))<-c("Month","RotationGroup")
 library(ggplot2);ggplot(data=reshape2::melt(MIS.emp.rate),aes(x=Month,y=value,color=RotationGroup))+geom_line()+
   scale_x_continuous(breaks=200501:200512,labels=month.abb)+xlab("")+ylab("")+ 
   labs(title = "Month-in-sample estimates", 
@@ -133,21 +133,28 @@ library(ggplot2);ggplot(data=reshape2::melt(MIS.emp.rate),aes(x=Month,y=value,co
 
 #### Linear combinaisons of the month-in-sample estimates
 
-The month-in-sample estimates for each month and each rotation group can be stored in a data.frame with four variables:
-the month, the group, the employment status and the value of the estimate.
+The month-in-sample estimates for each month and each rotation group can also be given in a data.frame with four variables: the month, the group, the employment status and the value of the estimate.
+Such a dataframe can be obtained from `X` using the function `reshape2::melt`
 
 
 ```r
-print(reshape2::melt(MIS.est[,,c("employmentstatus_ne" ,"employmentstatus_nn", "employmentstatus_nu")]))
+print(reshape2::melt(X[,,c("employmentstatus_ne" ,"employmentstatus_nn", "employmentstatus_nu")]))
 ```
 
-|Row Number |Month  |Rotation Group |Employment Status   |$X$           |
-|:----------|:------|:--------------|:-------------------|:-------------|
-|1          |200501 |hrmis1         |employmentstatus_ne |17771771.5595 |
-|2          |200502 |hrmis1         |employmentstatus_ne |17501581.9912 |
-|3          |200503 |hrmis1         |employmentstatus_ne |17911922.4613 |
-|...        |...    |...            |...                 |...           |
-|288        |200512 |hrmis8         |employmentstatus_nu |846918.8885   |
+
+```
+## Error in `[.data.frame`(toto, c("RowNumber", "Month", "RotationGroup", : undefined columns selected
+```
+
+
+
+|Row Number |Month  |Rotation Group      |Employment Status |$X$ |
+|:----------|:------|:-------------------|:-----------------|:---|
+|200501     |hrmis1 |employmentstatus_ne |17771771.5595     |1   |
+|200502     |hrmis1 |employmentstatus_ne |17501581.9912     |2   |
+|200503     |hrmis1 |employmentstatus_ne |17911922.4613     |3   |
+|...        |...    |...                 |...               |... |
+|200512     |hrmis8 |employmentstatus_nu |846918.8885       |288 |
 
 Let $X$ be the vector of values in the data.frame.
 Elements of $X$ can be refered to by the line number or by a combinaison of month, rotation group, and employment status, as for example : $X_{200501,group 3,employed]$, or by a line number $\overrightarrow{X}_\ell$.
@@ -156,6 +163,7 @@ We use $\overrightarrow{X}$ to designate the vector and $X$ to designate the arr
 The values to estimate are the elements of the $M\times 3$-sized array $Y=(t_{y_{m,e}})_{m\in\{1,\ldots,M\},e\in\{"employed","unemployed","nilf"\}}=\sum_{k\in U} (y_{k,m,e}))_{m\in\{1,\ldots,M\},e\in\{"employed","unemployed","nilf"\}}$. We denote by $\overrightarrow{Y}$ the vectorisation of the array $Y$.
 
 In R, the function to vectorize an array is the function `c`
+
 
 ```r
 A<-array(1:12,c(3,2,2));c(A)
@@ -182,6 +190,13 @@ allows to compute linear combinations of the month in sample groups of the form
 
 $\hat{t}^{\text{Recursive}}_{y_{m,e}}=\left[\begin{array}{c}\alpha_{(-1)}\\\alpha_{0}\\\beta_{(-1)}\\\beta_0\\\gamma_0\end{array}\right]^{\mathrm{T}}\times \left[\begin{array}{c} \hat{t}^{\text{Recursive}}_{y_{.,m-1}}\\ \sum_{k\in S_{m}} w_{k,m} y_{k,m}\\\sum_{k\in S_{m-1}\cap      S_{m}} w_{k,m-1} y_{k,m-1}\\ \sum_{k\in S_{m-1}\cap      S_{m}} w_{k,m} y_{k,m}\\\sum_{k\in S_{m}\setminus S_{m-1}} w_{k,m} y_{k,m}\end{array}\right]$
 This is a special case of a linear combination of the month-in-sample estimates.
+
+
+Computing the estimators recursively is not very efficient. At the end, we get a linear combinaison of month in sample estimates.
+ 
+The following code computes a recursive estimator with parameters $\alpha_{(-1)}=\frac12$, $\alpha_{0}=\frac{1/2}$, $\beta_{(-1)}=0$, $\beta_0=0$, $\gamma_0=0$.
+
+
 
 #### AK estimator
 
@@ -220,8 +235,8 @@ $$\hat{t}^{\text{AK}}_{y_{.,m}}= \left[\begin{array}{c}K\\(1-K)\\(-4K/3)\\(4K-A)
  individuals in the sample ${S_{m-1}}$ with a value of month in sample equal to 1,2,3, 5,6 or 7. 
  When parametrising the function 'AK', the choice would be `group_1=c(1:3,5:7)` and `group0=c(2:4,6:8)`.
 
- Computing the estimators recursively is not very efficient. At the end, we get a linear combinaison of month in sample estimates
- 
+
+
 
 ```
 CompositeRegressionEstimation::CPS_AK()
@@ -290,7 +305,12 @@ W=CPS_AK_coeff.array.f(4,ak=CPS_AK(),simplify=FALSE)
 dimnames(W);dim(W)
 ```
 
-#### Rough estimation of the month-in-sample estimate covariance matrix
+#### Rough estimation of the month-in-sample estimate covariance matrix for the CPS
+
+Here, we compute a rough estimator of the month-in-sample estimate covariance matrix.
+We do not claim it is a good estimator, we just need one in this page to illustrate how 
+the functions we programmed work.
+
 
 A rough estimate of 
 $$\Sigma_{(m,g,e),(m',g',e')}=\mathrm{Cov}\left[\sum_{k\in S_{m,g}} w_{k,m}y_{k,m,e},\sum_{k\in S_{m',g'}} w_{k',m'}y_{k',m',e'}\right]$$ is
@@ -322,11 +342,14 @@ If $m'+\delta_{g'}\neq m+\delta_{g}$ then $S_{m,g}\cap S_{m',g'}=\emptyset$ and 
 $\mathrm{Cov}\left[\hat{t}^{\text{m.i.s}}_{m,g,.},\hat{t}^{\text{m.i.s}}_{m',g',.}\right]$
 by $\widehat{\mathrm{Cov}}\left[\hat{t }^{\text{m.i.s}}_{y_{m,g,.}},\hat{t }^{\text{m.i.s}}_{y_{m',g',.}}\right]=-H\hat{\sigma}^2_{m,m'}$.
 
-%and
-%$\Sigma_y$ by  
-%$\widehat\Sigma=\overrightarrow{\left[\widehat{\mathrm{Cov}}\left[\hat{t }^{\text{m.i.s}}_{y_{m,g,e }},\hat{t }^{\text{m.i.s}}_{y_{m',g',e '}}\right]\right]}$.
 
+```r
+Sigma=rWishart(prod(dim(Y)))
+```
 
+```
+## Error in rWishart(prod(dim(Y))): argument "df" is missing, with no default
+```
 
 
 #### Empirical best AK estimator
