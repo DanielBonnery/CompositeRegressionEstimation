@@ -356,6 +356,37 @@ dimnames(W);dim(W)
 
 #### Rough estimation of the month-in-sample estimate covariance matrix
 
+A rough estimate of 
+<p align="center"><img src="/tex/fa95f469ffcf946d02475750d32f11c6.svg?invert_in_darkmode&sanitize=true" align=middle width=479.010609pt height=59.1786591pt/></p> is
+
+
+<p align="center"><img src="/tex/3394d25c23604708c2c35bde2ff1b568.svg?invert_in_darkmode&sanitize=true" align=middle width=292.86962264999994pt height=39.452455349999994pt/></p> is
+
+
+
+
+
+Define <p align="center"><img src="/tex/4f9b848c936115d77b07767c84c653da.svg?invert_in_darkmode&sanitize=true" align=middle width=490.44842714999993pt height=62.30817615pt/></p>
+We estimate <img src="/tex/d9d0efe557c28ba200ec644a2c6b5f77.svg?invert_in_darkmode&sanitize=true" align=middle width=40.25140184999999pt height=26.76175259999998pt/>
+ by <p align="center"><img src="/tex/5f9147addb1728b041ef5331806f0841.svg?invert_in_darkmode&sanitize=true" align=middle width=576.7126018499999pt height=69.57749535pt/></p> if <img src="/tex/518c95e319b709925cd43be30620ff01.svg?invert_in_darkmode&sanitize=true" align=middle width=97.98129494999998pt height=24.65753399999998pt/>, <img src="/tex/29632a9bf827ce0200454dd32fc3be82.svg?invert_in_darkmode&sanitize=true" align=middle width=8.219209349999991pt height=21.18721440000001pt/> otherwise.
+Let <img src="/tex/b78271d45b971a1832111783d2843e37.svg?invert_in_darkmode&sanitize=true" align=middle width=136.49523524999998pt height=24.7161288pt/>,   <img src="/tex/2a79f8d17e98e6cc5c4b7ab2dbb935c9.svg?invert_in_darkmode&sanitize=true" align=middle width=96.84905009999999pt height=24.7161288pt/>.
+If <img src="/tex/042fdba3a34da88d06853d6c76454391.svg?invert_in_darkmode&sanitize=true" align=middle width=116.08039904999998pt height=24.7161288pt/> then
+<img src="/tex/a16dde14afcf173390a729ee1c31a470.svg?invert_in_darkmode&sanitize=true" align=middle width=82.10817614999999pt height=22.465723500000017pt/>, we approximate the distribution of <img src="/tex/590b352e62a1cf9f51e86bfdbf30cd04.svg?invert_in_darkmode&sanitize=true" align=middle width=33.71974649999999pt height=22.465723500000017pt/> by a cluster sampling, where first stage is simple random sampling.
+and
+we estimate
+<img src="/tex/7de0846eab0ce23453744e215f54cfb6.svg?invert_in_darkmode&sanitize=true" align=middle width=77.13674099999999pt height=24.65753399999998pt/>
+by <img src="/tex/e21c35f3e8f3d073d4a881fe0f358706.svg?invert_in_darkmode&sanitize=true" align=middle width=285.86875349999997pt height=42.42527849999999pt/>
+If <img src="/tex/225bc57379cd13b7bd14de0b085e9803.svg?invert_in_darkmode&sanitize=true" align=middle width=116.08039904999998pt height=24.7161288pt/> then <img src="/tex/f7e376ef0b23ef045f42172090f4f973.svg?invert_in_darkmode&sanitize=true" align=middle width=110.23589114999999pt height=24.65753399999998pt/> and we approximate the distribution of  <img src="/tex/e4c3bae991ab9074ba158a3485fddc6e.svg?invert_in_darkmode&sanitize=true" align=middle width=81.92566964999999pt height=24.65753399999998pt/> by the distribution of two independent simple random samples of clusters conditional to non-overlap of the two samples, and we estimate
+<img src="/tex/07c7cd8f119056e207db827601b9580c.svg?invert_in_darkmode&sanitize=true" align=middle width=121.44618584999998pt height=28.89761819999999pt/>
+by <img src="/tex/d1bc9e902eca153bb8191e6473f7f839.svg?invert_in_darkmode&sanitize=true" align=middle width=212.3675136pt height=37.80850590000001pt/>.
+
+%and
+%<img src="/tex/c925149a4953429322ed245a0c8420b2.svg?invert_in_darkmode&sanitize=true" align=middle width=18.95178614999999pt height=22.465723500000017pt/> by  
+%<img src="/tex/2d07d022a6cf718697a175477da50dc3.svg?invert_in_darkmode&sanitize=true" align=middle width=168.64008975pt height=56.98657470000002pt/>.
+
+
+
+
 #### Empirical best AK estimator
 
 #### Empirical best YF estimator
