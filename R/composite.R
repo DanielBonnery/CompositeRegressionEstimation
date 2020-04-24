@@ -139,3 +139,60 @@ composite <-
     }
     rownames(dfEstT)<-names(list.tables)  
     return(dfEstT)}
+
+
+
+
+
+
+
+#' general month in sample estimates weights for recursive linear combinaison of mis estimates
+#' 
+#' @param months an integer, indicating number of months
+#' @param nmonth an integer, indicating number of months
+#' @param ngroup  a vector of character strings or numeric string
+#' @param groups  a vector of character strings or numeric string
+#' @param Coef a named vector of 5 numeric value 
+#' @param S a vector of integers indicating the indices of the rotation group in the sample that overlap with the previous sample: groups[S] are the overlapping rotation groups
+#' @param S_1 a vector of integers indicating the indices of the corresponding rotation group of S in the previous month
+#' @return an array of AK coefficients  W[m2,m1,mis1] such that Ak estimate for month m2  is sum(W[y2,,])*Y) where Y[m1,mis1] is direct estimate on mis mis1 for emp stat y1 at month m1.
+#' @examples
+#' alpha0=runif(1);
+#' W<-W.rec(months=1:3,
+#'          groups=1:8,
+#'          Coef=c(alpha_1=1-alpha0,alpha0=alpha0,beta0=runif(1),beta_1=runif(1),gamma0=runif(1)))
+#' dimnames(W) 
+#' W<-W.ak(months=2:4,groups=letters[1:8],a=.2,k=.5);dimnames(W);
+#' Y<-WSrg(list.tables,weight="pwsswgt",list.y="pemlr",rg="hrmis")
+#' dimnames(Y);month="m";group="mis";variable="y";
+#' A=W.rec(months = dimnames(Y)[[month]],groups = dimnames(Y)[[group]],S=c(2:4,6:8),a=.5,k=.5)
+
+W.rec<-function(months,
+               groups,
+               S=c(2:4,6:8),
+               S_1=S-1,
+               Coef=c(alpha_1=0,alpha0=1,beta_1=0,beta0=0,gamma0=0)){
+  nmonth<-length(months)
+  ngroup<-length(groups)
+  W<-array(0,c(nmonth,nmonth,ngroup))
+  dimnames(W)<-list(m2=months,m1=months,rg1=groups)
+  Hmisc::label(W)<-"Coefficient matrix W[m2,m1,mis1] such that Ak estimate for month m2  is sum(W[y2,,])*Y) where Y[m1,mis1] is direct estimate on mis mis1 for emp stat y1 at month m1"
+  Sbar<-setdiff(1:ngroup,S)
+  W[1,,1]<-1
+  for(i in 2:nmonth){
+    W[i,,]<-W[(i-1),,]*Coef["alpha_1"]
+    W[i,i,]<-Coef["alpha0"]
+    W[i,i-1,S_1]<-W[i,i-1,S_1]-Coef["beta_1"]
+    W[i,i,S]<-W[i,i,S]+Coef["beta0"]
+    W[i,i,Sbar]<-W[i,i,Sbar]+Coef["gamma0"]} 
+  return(W)}
+
+
+
+
+
+
+
+
+
+

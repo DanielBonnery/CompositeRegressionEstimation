@@ -86,14 +86,14 @@ WSrg <-
 #' Y<-WSrg2(list.tables,"pwsswgt",list.y=c("pemlr"),rg="hrmis")
 WSrg2 <-
   function(list.tables,weight,y,rg="hrmis",rescale=F,dimname1="m"){
-    tottab<-plyr::ldply(list.tables,function(L){L[c(list.y,weight,rg)]},.id=dimname1)
+    tottab<-plyr::ldply(list.tables,function(L){L[c(y,weight,rg)]},.id=dimname1)
     if(is.numeric(tottab[[y]])){
         plyr::daply(
           tottab[c(rg,dimname1,y,weight)],
           as.formula(paste0("~",paste(c(dimname1,rg),collapse="+"))),
-          function(d){data.frame(y=sum(d[[weight]]*d[[y]]))})[names(list.tables),]      
+          function(d){y=sum(d[[weight]]*d[[y]])})[names(list.tables),]      
       }else{
       plyr::daply(
         tottab[c(rg,dimname1,y,weight)],
         as.formula(paste0("~",paste(c(dimname1,rg,y),collapse="+"))),
-        function(d){data.frame(y=sum(d[[weight]]))})[names(list.tables),,]}}
+        function(d){y=sum(d[[weight]])})[names(list.tables),,]}}

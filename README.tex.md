@@ -102,8 +102,8 @@ In the following code, we compute the direct estimates of the counts in each emp
 
 ```r
 Direct.est<-CompositeRegressionEstimation::WS(list.tables,weight="pwsswgt",list.y = "employmentstatus")
-Direct.emp.rate<-with(as.data.frame(Direct.est),(employmentstatus_ne)/(employmentstatus_ne+employmentstatus_nu))
-library(ggplot2);ggplot(data=data.frame(period=period,E=Direct.emp.rate),aes(x=period,y=E))+geom_line()+
+U<-with(as.data.frame(Direct.est),(employmentstatus_ne)/(employmentstatus_ne+employmentstatus_nu))
+library(ggplot2);ggplot(data=data.frame(period=period,E=U),aes(x=period,y=U))+geom_line()+
   ggtitle("Direct estimate of the monthly employment rate from the CPS public microdata in 2005")+
   scale_x_continuous(breaks=200501:200512,labels=month.abb)+xlab("")+ylab("")
 ```
@@ -120,13 +120,17 @@ The following code  creates the array `X` of dimension $M\times 8\times 3$ (M mo
 
 ```r
 library(CompositeRegressionEstimation)
-X<-CompositeRegressionEstimation::WSrg(list.tables,rg = "hrmis",weight="pwsswgt",list.y = "employmentstatus")
-MIS.emp.rate<-plyr::aaply(X[,,"employmentstatus_ne"],1:2,sum)/plyr::aaply(X[,,c("employmentstatus_ne","employmentstatus_nu")],1:2,sum);names(dimnames(MIS.emp.rate))<-c("Month","RotationGroup")
-library(ggplot2);ggplot(data=reshape2::melt(MIS.emp.rate),aes(x=Month,y=value,color=RotationGroup))+geom_line()+
+X<-CompositeRegressionEstimation::WSrg2(list.tables,rg = "hrmis",weight="pwsswgt",y = "employmentstatus")
+Umis<-plyr::aaply(X[,,"e"],1:2,sum)/plyr::aaply(X[,,c("e","u")],1:2,sum);
+library(ggplot2);ggplot(data=reshape2::melt(Umis),aes(x=m,y=value,color=mis))+geom_line()+
   scale_x_continuous(breaks=200501:200512,labels=month.abb)+xlab("")+ylab("")+ 
   labs(title = "Month-in-sample estimates", 
        subtitle = "Monthly employment rate, year 2005", 
        caption = "Computed from CPS public anonymized microdata.")
+```
+
+```
+## Error in FUN(X[[i]], ...): object 'mis' not found
 ```
 
 <img src="figure/unnamed-chunk-3-1.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" width="100%" />
@@ -138,23 +142,17 @@ Such a dataframe can be obtained from `X` using the function `reshape2::melt`
 
 
 ```r
-print(reshape2::melt(X[,,c("employmentstatus_ne" ,"employmentstatus_nn", "employmentstatus_nu")]))
+print(reshape2::melt(X[,,]))
 ```
 
 
-```
-## Error in `[.data.frame`(toto, c("RowNumber", "Month", "RotationGroup", : undefined columns selected
-```
-
-
-
-|Row Number |Month  |Rotation Group      |Employment Status |$X$ |
-|:----------|:------|:-------------------|:-----------------|:---|
-|200501     |hrmis1 |employmentstatus_ne |17771771.5595     |1   |
-|200502     |hrmis1 |employmentstatus_ne |17501581.9912     |2   |
-|200503     |hrmis1 |employmentstatus_ne |17911922.4613     |3   |
-|...        |...    |...                 |...               |... |
-|200512     |hrmis8 |employmentstatus_nu |846918.8885       |288 |
+|Row number |Month  |Month in sample group |Employment status |$X$           |
+|:----------|:------|:---------------------|:-----------------|:-------------|
+|1          |200501 |1                     |n                 |17645785.4304 |
+|2          |200502 |1                     |n                 |17526653.25   |
+|3          |200503 |1                     |n                 |17905466.5322 |
+|...        |...    |...                   |...               |...           |
+|288        |200512 |8                     |u                 |846918.8885   |
 
 Let $X$ be the vector of values in the data.frame.
 Elements of $X$ can be refered to by the line number or by a combinaison of month, rotation group, and employment status, as for example : $X_{200501,group 3,employed]$, or by a line number $\overrightarrow{X}_\ell$.
@@ -197,12 +195,72 @@ Computing the estimators recursively is not very efficient. At the end, we get a
 The following code computes a recursive estimator with parameters $\alpha_{(-1)}=\frac12$, $\alpha_{0}=\frac{1/2}$, $\beta_{(-1)}=0$, $\beta_0=0$, $\gamma_0=0$.
 
 
+```r
+Yc<-CompositeRegressionEstimation::composite(list.tables,"pwsswgt","employmentstatus",groupvar="hrmis",groups0 = c(2:4,6:8),groups_1=c(1:3,5:7),Coef = c(alpha_1=.5,alpha0=.5,beta_1=0,beta0=0,gamma0=0))
+Uc<-Yc[,"employmentstatus_ne"]/(Yc[,"employmentstatus_ne"]+Yc[,"employmentstatus_nu"])
+ggplot(data=reshape2::melt(cbind(Direct=U,Composite=Uc)),aes(x=as.Date(paste0(Var1,"01"),"%Y%m%d"),y=value,group=Var2,color=Var2))+geom_line()+xlab("")+ylab("")+ggtitle("Direct and Composite estimates")
+```
+
+<img src="figure/unnamed-chunk-7-1.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" width="100%" />
+
+
+
+The function `CompositeRegressionEstimation::composite` computes recursively the estimates.
+Another way is to compute recursively the coefficients of the resulting linear combinaison of month in sample weights.
+This is performed by the function `CompositeRegressionEstimation::W.rec`
+
+
+```r
+Wrec<-W.rec(months=period,groups =paste0("",1:8),S = c(2:4,6:8),S_1=c(1:3,5:7),Coef = c(alpha_1=.5,alpha0=.5,beta_1=0,beta0=0,gamma0=0))
+```
+
+Then one can multiply the array 'W' and 'X':
+
+
+```r
+dimnames(Wrec)
+```
+
+```
+## $m2
+##  [1] "200501" "200502" "200503" "200504" "200505" "200506" "200507" "200508" "200509" "200510" "200511" "200512"
+## 
+## $m1
+##  [1] "200501" "200502" "200503" "200504" "200505" "200506" "200507" "200508" "200509" "200510" "200511" "200512"
+## 
+## $rg1
+## [1] "1" "2" "3" "4" "5" "6" "7" "8"
+```
+
+```r
+dimnames(X)
+```
+
+```
+## $m
+##  [1] "200501" "200502" "200503" "200504" "200505" "200506" "200507" "200508" "200509" "200510" "200511" "200512"
+## 
+## $hrmis
+## [1] "1" "2" "3" "4" "5" "6" "7" "8"
+## 
+## $employmentstatus
+## [1] "n" "e" "u"
+```
+
+```r
+Yc2<-TensorDB::"%.%"(Wrec,X,I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),I_B=list(c=integer(0),p=c("m","hrmis"),q="employmentstatus"))
+Uc2<-Yc2[,"e"]/(Yc2[,"e"]+Yc2[,"u"])
+any(abs(Uc-Uc2)>1e-3)
+```
+
+```
+## [1] FALSE
+```
+
+
 
 #### AK estimator
-
-
 The AK composite estimator is equivalently in ``CPS Technical Paper (2006). Design and Methodology of the Current Population Survey. Technical Report 66, U.S. Census Bureau. (2006), [section 10-11]'':
-
 
 For ${m=1}$, ${\hat{t}_{y_{.,1}}=\sum_{k\in S_1}w_{k,m}y_{k,m}}$.
  

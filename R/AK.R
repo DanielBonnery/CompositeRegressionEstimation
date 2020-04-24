@@ -102,7 +102,7 @@ function(list.tables,
                    groups_1=groups_1,
                    groups0=groups0,
                    Coef=CoefAK,
-                   dft0.y=dft0.y)}
+                   dft0.y=dft0.y))}
 
 
 #'Add a rotation group indicator to all tables of a list when missing.
