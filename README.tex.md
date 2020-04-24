@@ -258,19 +258,17 @@ The AK estimator can be defined as follows:
 For ${m=1}$, ${\hat{t}_{y_{.,1}}=\sum_{k\in S_1}w_{k,m}y_{k,m}}$.
  
  For ${m\geq 2}$, 
-
-
-$\hat{t}^{\text{AK}}_{y_{m,e}}= \left[\begin{array}{c}K\\(1-K)\\(-4K/3)\\(4K-A)/3 \\A\end{array}\right]^{\mathrm{T}}\times\left[\begin{array}{c} \hat{t}^{\text{AK}}_{y_{.,m-1}}\\ \sum_{k\in S_{m}} w_{k,m} y_{k,m}\\\sum_{k\in S_{m-1}\cap      S_{m}} w_{k,m-1} y_{k,m-1}\\ \sum_{k\in S_{m-1}\cap      S_{m}} w_{k,m} y_{k,m}\\\sum_{k\in S_{m}\setminus S_{m-1}} w_{k,m} y_{k,m}\end{array}\right]$
+$$\hat{t}^{\text{AK}}_{y_{.,m}}= \left[\begin{array}{c}K\\(1-K)\\(-4K/3)\\(4K-A)/3 \\A\end{array}\right]^{\mathrm{T}}\times\left[\begin{array}{c} \hat{t}^{\text{AK}}_{y_{.,m-1}}\\ \sum_{k\in S_{m}} w_{k,m} y_{k,m}\\\sum_{k\in S_{m-1}\cap      S_{m}} w_{k,m-1} y_{k,m-1}\\ \sum_{k\in S_{m-1}\cap      S_{m}} w_{k,m} y_{k,m}\\\sum_{k\in S_{m}\setminus S_{m-1}} w_{k,m} y_{k,m}\end{array}\right]$$
  
  
     
   In the case of the CPS, the rotation group one sample unit  belongs to in a particular month  is a function
  of the number of times it has been selected before, including this month, and so the rotation group of an individual in a particular month is called the "month in sample" variable.
     
- For the CPS, in month ${m}$ the overlap ${S_{m-1}\cap      S_{m}}$ correspond to the individuals in the sample ${S_m}$ with a value of month in sample equal to 2,3,4, 6,7 or 8.
- The overlap ${S_{m-1}\cap      S_{m}}$ correspond to the individuals in the sample ${S_m}$ with a value of month in sample equal to 2,3,4, 6,7 or 8. as well as 
+ For the CPS, in month ${m}$ the overlap ${S_{m-1}\cap S_{m}}$ corresponds to the individuals in the sample ${S_m}$ with a value of month in sample equal to 2,3,4, 6,7 or 8.
+ The overlap ${S_{m-1}\cap S_{m}}$ corresponds to the individuals in the sample ${S_m}$ with a value of month in sample equal to 2,3,4, 6,7 or 8. as well as 
  individuals in the sample ${S_{m-1}}$ with a value of month in sample equal to 1,2,3, 5,6 or 7. 
- When parametrising the function, the choice would be `group_1=c(1:3,5:7)` and `group0=c(2:4,6:8)`.
+ When parametrising the function 'AK', the choice would be `group_1=c(1:3,5:7)` and `group0=c(2:4,6:8)`.
 
  Computing the estimators recursively is not very efficient. At the end, we get a linear combinaison of month in sample estimates
  
