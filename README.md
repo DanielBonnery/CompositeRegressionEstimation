@@ -258,19 +258,17 @@ The AK estimator can be defined as follows:
 For <img src="/tex/448378a33e519f8bf89301552c0a348c.svg?invert_in_darkmode&sanitize=true" align=middle width=44.56994024999999pt height=21.18721440000001pt/>, <img src="/tex/da2cc7485cb0fa1b15583647a8b5d253.svg?invert_in_darkmode&sanitize=true" align=middle width=167.13742815pt height=28.89761819999999pt/>.
  
  For <img src="/tex/dfc1aff530546b0b16ab4aa699cf534f.svg?invert_in_darkmode&sanitize=true" align=middle width=44.56994024999999pt height=21.18721440000001pt/>, 
-
-
-<img src="/tex/0c9644ece89508a4343bb7ca720e39d2.svg?invert_in_darkmode&sanitize=true" align=middle width=446.76190844999996pt height=116.71341989999999pt/>
+<p align="center"><img src="/tex/259eea5fe1348a814aaa684477f0c14c.svg?invert_in_darkmode&sanitize=true" align=middle width=444.96454035pt height=108.49422870000001pt/></p>
  
  
     
   In the case of the CPS, the rotation group one sample unit  belongs to in a particular month  is a function
  of the number of times it has been selected before, including this month, and so the rotation group of an individual in a particular month is called the "month in sample" variable.
     
- For the CPS, in month <img src="/tex/1e277ba1ce19c790851f457314abfa6b.svg?invert_in_darkmode&sanitize=true" align=middle width=14.433101099999991pt height=14.15524440000002pt/> the overlap <img src="/tex/32e587e0d40e3e2ee819ca369a5ca1e9.svg?invert_in_darkmode&sanitize=true" align=middle width=79.40270249999999pt height=22.465723500000017pt/> correspond to the individuals in the sample <img src="/tex/6a9d394a320bc4d2ceba77eb09821eb4.svg?invert_in_darkmode&sanitize=true" align=middle width=21.74477414999999pt height=22.465723500000017pt/> with a value of month in sample equal to 2,3,4, 6,7 or 8.
- The overlap <img src="/tex/32e587e0d40e3e2ee819ca369a5ca1e9.svg?invert_in_darkmode&sanitize=true" align=middle width=79.40270249999999pt height=22.465723500000017pt/> correspond to the individuals in the sample <img src="/tex/6a9d394a320bc4d2ceba77eb09821eb4.svg?invert_in_darkmode&sanitize=true" align=middle width=21.74477414999999pt height=22.465723500000017pt/> with a value of month in sample equal to 2,3,4, 6,7 or 8. as well as 
+ For the CPS, in month <img src="/tex/1e277ba1ce19c790851f457314abfa6b.svg?invert_in_darkmode&sanitize=true" align=middle width=14.433101099999991pt height=14.15524440000002pt/> the overlap <img src="/tex/fcb12e9a318990eacd858a01641ef580.svg?invert_in_darkmode&sanitize=true" align=middle width=79.40270249999999pt height=22.465723500000017pt/> corresponds to the individuals in the sample <img src="/tex/6a9d394a320bc4d2ceba77eb09821eb4.svg?invert_in_darkmode&sanitize=true" align=middle width=21.74477414999999pt height=22.465723500000017pt/> with a value of month in sample equal to 2,3,4, 6,7 or 8.
+ The overlap <img src="/tex/fcb12e9a318990eacd858a01641ef580.svg?invert_in_darkmode&sanitize=true" align=middle width=79.40270249999999pt height=22.465723500000017pt/> corresponds to the individuals in the sample <img src="/tex/6a9d394a320bc4d2ceba77eb09821eb4.svg?invert_in_darkmode&sanitize=true" align=middle width=21.74477414999999pt height=22.465723500000017pt/> with a value of month in sample equal to 2,3,4, 6,7 or 8. as well as 
  individuals in the sample <img src="/tex/dcf2b9a28b9c3ca1536e4215e48a5629.svg?invert_in_darkmode&sanitize=true" align=middle width=38.57134214999999pt height=22.465723500000017pt/> with a value of month in sample equal to 1,2,3, 5,6 or 7. 
- When parametrising the function, the choice would be `group_1=c(1:3,5:7)` and `group0=c(2:4,6:8)`.
+ When parametrising the function 'AK', the choice would be `group_1=c(1:3,5:7)` and `group0=c(2:4,6:8)`.
 
  Computing the estimators recursively is not very efficient. At the end, we get a linear combinaison of month in sample estimates
  
