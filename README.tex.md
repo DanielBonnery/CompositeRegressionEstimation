@@ -375,20 +375,20 @@ We estimate $\sigma^2_{m,m'}$
  by $$\hat{\sigma}^2_{m,m'}=\frac{
             \sum\limits_{i\in\{1,\ldots,H\} \mid h_i\subset S_m\cap S_{m'}}
 \left(\sum\limits_{k\in h}y_{m,k,.}-\frac{\sum_{i=1}^ H\sum_{k\in h_i}y_{m',k,.}}{\# \{i\in\{1,\ldots,H\} \mid h_i\subset S_m\cap S_{m'}\}}\right)^{\mathrm{T}}{\sum\limits_{k\in h}y_{m',k,.}}}{\#\left\{i \in \{1,\ldots,H\}\mid h_i\subset S_m\cap S_{m'}\right\}-1}$$ if $S_m\cap S_{m'}\neq\emptyset$, $0$ otherwise.
-Let $m, m'\in \left\{1,\ldots,m\right\}$,   $\misi,\misi'\in\{1,\ldots,8\}$.
-If $m'+\delta_{\misi'}=m+\delta_{\misi}$ then
-$S_{m,\misi}=S_{m',\misi'}$, we approximate the distribution of $S_{m',\misi'}$ by a cluster sampling, where first stage is simple random sampling.
+Let $m, m'\in \left\{1,\ldots,m\right\}$,   $g,g'\in\{1,\ldots,8\}$.
+If $m'+\delta_{g'}=m+\delta_{g}$ then
+$S_{m,g}=S_{m',g'}$, we approximate the distribution of $S_{m',g'}$ by a cluster sampling, where first stage is simple random sampling.
 and
 we estimate
-$\mathrm{Cov}\left[\hat{\total}^{\mis,\misi}_{m},\hat{\total}^{\mis,\misi}_{m'}\right]$
-by $\widehat{\mathrm{Cov}}\left[\hat{\total}^{\mis,\misi}_{y_{m,\status}},\hat{\total}^{\mis,\misi'}_{y_{m',\status'}}\right]=(H)^2\left(1-\frac{HH}{H}\right)\frac{\hat{\sigma}^2_{m,m'}}{HH/8}.$
-If $m'+\delta_{\misi'}\neq m+\delta_{\misi}$ then $S_{m,\misi}\cap S_{m',\misi'}=\emptyset$ and we approximate the distribution of  $(S_{m,\misi},S_{m',\misi'})$ by the distribution of two independent simple random samples of clusters conditional to non-overlap of the two samples, and we estimate
-$\mathrm{Cov}\left[\hat{t}^{\mis}_{m,\misi,.},\hat{t}^{\mis}_{m',\misi',.}\right]$
-by $\widehat{\mathrm{Cov}}\left[\hat{\total}^{\mis}_{y_{m,\misi,.}},\hat{\total}^{\mis}_{y_{m',\misi',.}}\right]=-H\hat{\sigma}^2_{m,m'}$.
+$\mathrm{Cov}\left[\hat{t }^{\text{m.i.s},g}_{m},\hat{t }^{\text{m.i.s},g}_{m'}\right]$
+by $\widehat{\mathrm{Cov}}\left[\hat{t }^{\text{m.i.s},g}_{y_{m,e }},\hat{t }^{\text{m.i.s},g'}_{y_{m',e '}}\right]=(H)^2\left(1-\frac{N_H}{H}\right)\frac{\hat{\sigma}^2_{m,m'}}{N_H/8}.$
+If $m'+\delta_{g'}\neq m+\delta_{g}$ then $S_{m,g}\cap S_{m',g'}=\emptyset$ and we approximate the distribution of  $(S_{m,g},S_{m',g'})$ by the distribution of two independent simple random samples of clusters conditional to non-overlap of the two samples, and we estimate
+$\mathrm{Cov}\left[\hat{t}^{\text{m.i.s}}_{m,g,.},\hat{t}^{\text{m.i.s}}_{m',g',.}\right]$
+by $\widehat{\mathrm{Cov}}\left[\hat{t }^{\text{m.i.s}}_{y_{m,g,.}},\hat{t }^{\text{m.i.s}}_{y_{m',g',.}}\right]=-H\hat{\sigma}^2_{m,m'}$.
 
 %and
 %$\Sigma_y$ by  
-%$\widehat\Sigma=\overrightarrow{\left[\widehat{\mathrm{Cov}}\left[\hat{\total}^{\mis}_{y_{m,\misi,\status}},\hat{\total}^{\mis}_{y_{m',\misi',\status'}}\right]\right]}$.
+%$\widehat\Sigma=\overrightarrow{\left[\widehat{\mathrm{Cov}}\left[\hat{t }^{\text{m.i.s}}_{y_{m,g,e }},\hat{t }^{\text{m.i.s}}_{y_{m',g',e '}}\right]\right]}$.
 
 
 
