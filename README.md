@@ -211,7 +211,11 @@ This is performed by the function `CompositeRegressionEstimation::W.rec`
 
 
 ```r
-Wrec<-W.rec(months=period,groups =paste0("",1:8),S = c(2:4,6:8),S_1=c(1:3,5:7),Coef = c(alpha_1=.5,alpha0=.5,beta_1=0,beta0=0,gamma0=0))
+Wrec<-W.rec(months=period,
+            groups =paste0("",1:8),
+            S = c(2:4,6:8),
+            S_1=c(1:3,5:7),
+            Coef = c(alpha_1=.5,alpha0=.5,beta_1=0,beta0=0,gamma0=0))
 ```
 
 Then one can multiply the array 'W' and 'X':
