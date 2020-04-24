@@ -102,4 +102,63 @@ function(list.tables,
                    groups_1=groups_1,
                    groups0=groups0,
                    Coef=CoefAK,
-                   dft0.y=dft0.y))}
+                   dft0.y=dft0.y)}
+
+
+#'Add a rotation group indicator to all tables of a list when missing.
+#'
+#' @param list.tables a list of data.frames (order matter)
+#' @param id a vector of character strings indicating the variable names for the sample unit primary key. 
+#' @param rg.name a character string
+#' @return a list of data.frames with a new variable named \code{rg.name}
+ 
+ add.rg<-function(list.tables,id,rg.name){
+ n<-length(list.tables)
+ if(n>1){
+ list.tables[[1]][[rg.name]]<-
+     add.rg3(list.tables[[1]][FALSE,],
+             list.tables[[1]],
+             list.tables[[2]],id,rg.name)
+  
+ list.tables[[n]][[rg.name]]<-
+     add.rg3(list.tables[[n-1]],
+             list.tables[[n]],
+             list.tables[[n]][FALSE,],id,rg.name)
+             }
+ if(n>2){
+ for(i in 2:(n-1)){
+ list.tables[[i]][[rg.name]]<-
+     add.rg3(list.tables[[i-1]],
+             list.tables[[i]],
+             list.tables[[i+1]],id,rg.name)}}
+}
+
+ 
+#'Add a rotation group indicator to a table indicating wheter a unit is present in the previous and next samples.
+#'
+#' @details creates a variable named \code{rg.name} that takes values
+#' 4 for elements present in the current and next tables only,
+#' 3 for elements present in the current table only,
+#' 2 for elements present in the previous, current and next tables,
+#' 1 for elements present in the previous and current tables only.
+#' 
+#' depends on  dplyr, tidyr
+#' @param df_1 a data frame, the previous table
+#' @param df0 a data frame, the current table
+#' @param df1 a data frame, the next table
+#' @param id a vector of character strings indicating the variable names for the sample unit primary key. 
+#' @param rg.name a character string
+#' @return a list of data.frames with a new variable named \code{rg.name}
+#' 
+#' @examples
+#' df <- expand.grid(x= 1:10, y = 1:10)
+#'  df_1 <- df[sample(100,25),]
+#'  df0 <- df[sample(100,25),]
+#'  df1 <- df[sample(100,25),]
+#'  id=c("x","y")
+#'  add.rg3(df_1,df0,df1,c("x","y"))
+ add.rg3<-function(df_1,df0,df1,id,rg.name="rg"){
+   df0[[rg.name]]<-mutate(df0[id]%>% left_join(mutate(unique(df_1[id]),rg_1=1),by=id) %>% left_join(mutate(unique(df1[id]),rg1=-2),by=id)%>%
+                                   tidyr::replace_na(list(rg_1 = 0,rg1=0)),
+                                 rg=3+rg_1+rg1)$rg
+   df0}

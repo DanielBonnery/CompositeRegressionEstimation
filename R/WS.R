@@ -11,7 +11,7 @@
 
 
 WS <-
-function(list.tables,weight=1,list.y=NULL,sep="_n"){
+function(list.tables,weight=1,list.y=NULL,sep="_n",dimname1="m"){
   L<-if(identical(list.y,character(0))){lapply(list.tables,function(df){numeric(0)})}else{
   lapply(list.tables,function(df){
     #procedure

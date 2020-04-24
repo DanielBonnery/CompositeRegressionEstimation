@@ -75,7 +75,7 @@ The following code creates a list of dataframes for the months of 2005 that are 
 
 ```r
 period<-200501:200512
-list.tables<-lapply(data(list=paste0("cps",period),package="dataCPS"),get);names(list.tables)<-period
+list.tables<-lapply(data(list=paste0("cps",period),package="dataCPS"),function(x){get(x)[c("hrmis","hrhhid","pulineno","pwsswgt","pemlr","hrintsta")]});names(list.tables)<-period
 list.tables<-lapply(list.tables,function(L){
   L[["employmentstatus"]]<-forcats::fct_collapse(factor(L[["pemlr"]]),
                                             "e"=c("1","2"),
@@ -91,7 +91,7 @@ list.tables<-lapply(list.tables,function(L){
 The output of a survey are often used to produce estimators of totals over the population of certain characteritics, or function of this same totals, 
 in a fixed population model for design-based inference.  
 
-### Linear estimates
+### Linear combinations of month in sample estimates
 
 #### Direct estimate
 
@@ -113,13 +113,39 @@ library(ggplot2);ggplot(data=data.frame(period=period,E=Direct.emp.rate),aes(x=p
 #### Month in sample estimate
 
 An estimate can be obtained from each month-in-sample rotation group. The month-in-sample estimates are estimates of a total of a study variable of the form:
-$\sum_{k\in S_{m,g}} w_{m,k}y_{m,k}$.
+$\alpha\sum_{k\in S_{m,g}} w_{m,k}y_{m,k}$, where $\alpha$ is an adjustment. In the CPS, the adjustment $\alpha= 8$ as there are $8$ rotation groups. Other adjustments are possible, as for example $(\sum_{k\in S_{m}})/\sum_{k\in S_{m,g}}$.
+
 The following code 
 
 ```r
 MIS.est<-CompositeRegressionEstimation::WSrg(list.tables,rg = "hrmis",weight="pwsswgt",list.y = "employmentstatus")
+```
+
+```
+## Error in abind(`200501` = structure(c(0, 0, 0, 0, 0, 0, 0, 0, 17771771.5595, : could not find function "abind"
+```
+
+```r
 names(dimnames(MIS.est))<-c("Month","RotationGroup","EmploymentStatus")
+```
+
+```
+## Error in names(dimnames(MIS.est)) <- c("Month", "RotationGroup", "EmploymentStatus"): object 'MIS.est' not found
+```
+
+```r
 MIS.emp.rate<-plyr::aaply(MIS.est[,,"employmentstatus_ne"],1:2,sum)/plyr::aaply(MIS.est[,,c("employmentstatus_ne","employmentstatus_nu")],1:2,sum);names(dimnames(MIS.emp.rate))<-c("Month","RotationGroup")
+```
+
+```
+## Error in amv_dim(x): object 'MIS.est' not found
+```
+
+```
+## Error in names(dimnames(MIS.emp.rate)) <- c("Month", "RotationGroup"): object 'MIS.emp.rate' not found
+```
+
+```r
 library(ggplot2);ggplot(data=reshape2::melt(MIS.emp.rate),aes(x=Month,y=value,color=RotationGroup))+geom_line()+
   scale_x_continuous(breaks=200501:200512,labels=month.abb)+xlab("")+ylab("")+ 
   labs(title = "Month-in-sample estimates", 
@@ -127,7 +153,9 @@ library(ggplot2);ggplot(data=reshape2::melt(MIS.emp.rate),aes(x=Month,y=value,co
        caption = "Computed from CPS public anonymized microdata.")
 ```
 
-<img src="figure/unnamed-chunk-3-1.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" width="100%" />
+```
+## Error in reshape2::melt(MIS.emp.rate): object 'MIS.emp.rate' not found
+```
 
 #### Linear combinaisons of the month-in-sample estimates
 
@@ -139,13 +167,37 @@ the month, the group, the employment status and the value of the estimate.
 print(reshape2::melt(MIS.est[,,c("employmentstatus_ne" ,"employmentstatus_nn", "employmentstatus_nu")]))
 ```
 
-|Row Number |Month  |Rotation Group |Employment Status   |$X$           |
-|:----------|:------|:--------------|:-------------------|:-------------|
-|1          |200501 |hrmis1         |employmentstatus_ne |17771771.5595 |
-|2          |200502 |hrmis1         |employmentstatus_ne |17501581.9912 |
-|3          |200503 |hrmis1         |employmentstatus_ne |17911922.4613 |
-|...        |...    |...            |...                 |...           |
-|288        |200512 |hrmis8         |employmentstatus_nu |846918.8885   |
+```
+## Error in reshape2::melt(MIS.est[, , c("employmentstatus_ne", "employmentstatus_nn", : object 'MIS.est' not found
+```
+
+```
+## Error in eval(expr, envir, enclos): object 'tt' not found
+```
+
+```
+## Error in nrow(tt): object 'tt' not found
+```
+
+```
+## Error in lapply(toto, as.character): object 'toto' not found
+```
+
+```
+## Error in ncol(toto): object 'toto' not found
+```
+
+```
+## Error in eval(expr, envir, enclos): object 'toto' not found
+```
+
+```
+## Error in names(toto) <- c("Row Number", "Month", "Rotation Group", "Employment Status", : object 'toto' not found
+```
+
+```
+## Error in knitr::kable(toto): object 'toto' not found
+```
 
 Let $X$ be the vector of values in the data.frame.
 Elements of $X$ can be refered to by the line number or by a combinaison of month, rotation group, and employment status, as for example : $X_{200501,group 3,employed]$, or by a line number $\overrightarrow{X}_\ell$.
@@ -178,20 +230,13 @@ The package uses named arrays with names dimensions (`names(dimnames(A))` is not
 The function `CompositeRegressionEstimation::composite` 
 allows to compute linear combinations of the month in sample groups of the form
 
-$\hat{t}^{\text{Recursive}}_{y_{m,e}}=\left[\begin{array}{c} \hat{t}^{\text{Recursive}}_{y_{.,m-1}}\\ \sum_{k\in S_{m}} w_{k,m} y_{k,m}\\\sum_{k\in S_{m-1}\cap      S_{m}} w_{k,m-1} y_{k,m-1}\\ \sum_{k\in S_{m-1}\cap      S_{m}} w_{k,m} y_{k,m}\\\sum_{k\in S_{m}\setminus S_{m-1}} w_{k,m} y_{k,m}\end{array}\right]^{\mathrm{T}}\times \left[\begin{array}{c}\alpha_{(-1)}\\\alpha_{0}\\\beta_{(-1)}\\\beta_0\\\gamma_0\end{array}\right]$
+$\hat{t}^{\text{Recursive}}_{y_{m,e}}=\left[\begin{array}{c}\alpha_{(-1)}\\\alpha_{0}\\\beta_{(-1)}\\\beta_0\\\gamma_0\end{array}\right]^{\mathrm{T}}\times \left[\begin{array}{c} \hat{t}^{\text{Recursive}}_{y_{.,m-1}}\\ \sum_{k\in S_{m}} w_{k,m} y_{k,m}\\\sum_{k\in S_{m-1}\cap      S_{m}} w_{k,m-1} y_{k,m-1}\\ \sum_{k\in S_{m-1}\cap      S_{m}} w_{k,m} y_{k,m}\\\sum_{k\in S_{m}\setminus S_{m-1}} w_{k,m} y_{k,m}\end{array}\right]$
 This is a special case of a linear combination of the month-in-sample estimates.
 
 #### AK estimator
 
-The AK estimator can be defined as follows:
-For ${m=1}$, ${\hat{t}_{y_{.,1}}=\sum_{k\in S_1}w_{k,m}y_{k,m}}$.
- 
- For ${m\geq 2}$, 
 
-${ \begin{array}{clll}\hat{t}_{y_{.,m}}=&& K&\times \hat{t}_{y_{.,m-1}}\\&+&(1-K)&\times  \sum_{k\in S_{m}} w_{k,m} y_{k,m}\\&+&(-4K/3)&\times\sum_{k\in S_{m-1}\cap      S_{m}} w_{k,m-1} y_{k,m-1}\\&+&(4K-A)/3 &\times\sum_{k\in S_{m-1}\cap      S_{m}} w_{k,m} y_{k,m}\\&+&A&\times\sum_{k\in S_{m}\setminus S_{m-1}} w_{k,m} y_{k,m}\end{array}}$
- 
-
-The AK composite estimator is defined equivalently in ``CPS Technical Paper (2006). Design and Methodology of the Current Population Survey. Technical Report 66, U.S. Census Bureau. (2006), [section 10-11]'':
+The AK composite estimator is equivalently in ``CPS Technical Paper (2006). Design and Methodology of the Current Population Survey. Technical Report 66, U.S. Census Bureau. (2006), [section 10-11]'':
 
 
 For ${m=1}$, ${\hat{t}_{y_{.,1}}=\sum_{k\in S_1}w_{k,m}y_{k,m}}$.
@@ -206,6 +251,17 @@ where $${\Delta_m=\eta_0\times\sum_{k\in S_m\cap S_{m-1}}(w_{k,m} y_{k,m}-w_{k,m
  For the CPS, ${\eta_0}$ is the ratio between the number of rotation groups in the sample and the number of overlaping rotation groups between two month, 
  which is a constant  ${\eta_0=4/3}$; ${\eta_1}$ is the ratio between the number of non overlaping rotation groups the number of overlaping rotation groups between two month, 
  which is a constant of ${1/3}$.
+
+
+
+The AK estimator can be defined as follows:
+For ${m=1}$, ${\hat{t}_{y_{.,1}}=\sum_{k\in S_1}w_{k,m}y_{k,m}}$.
+ 
+ For ${m\geq 2}$, 
+
+
+$\hat{t}^{\text{AK}}_{y_{m,e}}= \left[\begin{array}{c}K\\(1-K)\\(-4K/3)\\(4K-A)/3 \\A\end{array}\right]^{\mathrm{T}}\times\left[\begin{array}{c} \hat{t}^{\text{AK}}_{y_{.,m-1}}\\ \sum_{k\in S_{m}} w_{k,m} y_{k,m}\\\sum_{k\in S_{m-1}\cap      S_{m}} w_{k,m-1} y_{k,m-1}\\ \sum_{k\in S_{m-1}\cap      S_{m}} w_{k,m} y_{k,m}\\\sum_{k\in S_{m}\setminus S_{m-1}} w_{k,m} y_{k,m}\end{array}\right]$
+ 
  
     
   In the case of the CPS, the rotation group one sample unit  belongs to in a particular month  is a function
@@ -237,11 +293,11 @@ CPS_A_e();CPS_A_u();
 ```
 
 ```
-## [1] 0.4
+## Error in CPS_A_e(): could not find function "CPS_A_e"
 ```
 
 ```
-## [1] 0.3
+## Error in CPS_A_u(): could not find function "CPS_A_u"
 ```
 
 ```r
@@ -249,11 +305,11 @@ CPS_K_e();CPS_K_u();
 ```
 
 ```
-## [1] 0.7
+## Error in CPS_K_e(): could not find function "CPS_K_e"
 ```
 
 ```
-## [1] 0.4
+## Error in CPS_K_u(): could not find function "CPS_K_u"
 ```
 
 ```r
@@ -261,8 +317,7 @@ CPS_AK()
 ```
 
 ```
-##  a1  a2  a3  k1  k2  k3 
-## 0.3 0.4 0.0 0.4 0.7 0.0
+## Error in CPS_AK(): could not find function "CPS_AK"
 ```
 
 the option `W.ak` with parameters 
@@ -272,7 +327,7 @@ W.ak()
 ```
 
 ```
-## Error in W.ak(): argument "months" is missing, with no default
+## Error in W.ak(): could not find function "W.ak"
 ```
 
 
@@ -283,7 +338,22 @@ the function `CPS_AK_coeff.array.f` with the parameters
 
 ```r
 W=CPS_AK_coeff.array.f(4,ak=CPS_AK(),simplify=FALSE)
+```
+
+```
+## Error in CPS_AK_coeff.array.f(4, ak = CPS_AK(), simplify = FALSE): could not find function "CPS_AK_coeff.array.f"
+```
+
+```r
 dimnames(W);dim(W)
+```
+
+```
+## Error in eval(expr, envir, enclos): object 'W' not found
+```
+
+```
+## Error in eval(expr, envir, enclos): object 'W' not found
 ```
 
 #### Rough estimation of the month-in-sample estimate covariance matrix

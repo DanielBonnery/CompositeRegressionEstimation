@@ -11,14 +11,14 @@
 #' names(list.tables)<-period
 #' Y<-WSrg(list.tables,"pwsswgt",list.y="pemlr",rg="hrmis")
 #' dimnames(Y);dim(Y)
-#' Y<-plyr::daply(plyr::ldply(list.tables,function(L){L[c("pemlr","pwsswgt","hrmis")]}),
-#' ~.id+pemlr+hrmis,function(d){data.frame(y=sum(d$pwsswgt))})[names(list.tables),,]
+#' Y<-plyr::daply(plyr::ldply(list.tables,function(L){L[c("pemlr","pwsswgt","hrmis")]},.id="m"),
+#' ~m+pemlr+hrmis,function(d){data.frame(y=sum(d$pwsswgt))})[names(list.tables),,]
 #' dimnames(Y);dim(Y)
 #' system.time(plyr::daply(plyr::ldply(list.tables,,function(L){L[c("pemlr","pwsswgt","hrmis")]}),
 #' ~.id+pemlr+hrmis,function(d){data.frame(y=sum(d$pwsswgt))}))
 #' system.time(WSrg(list.tables,weight="pwsswgt",list.y="pemlr",rg="hrmis"))
 WSrg <-
-  function(list.tables,weight=1,list.y=NULL,rg="hrmis",rescale=F){
+  function(list.tables,weight=1,list.y=NULL,rg="hrmis",rescale=F,dimname1="m"){
     #require(abind)
     #controls    
     #     if(max(!sapply(list.tables,is.data.frame))){stop("First argument(s) of WS must be  (a) data frame(s)", domain = NA)}
@@ -64,8 +64,36 @@ WSrg <-
     L<-lapply(L,function(df){df[variables2,variables1]})
     
     dfEstT<- do.call("abind", c(L,along=0))
-    names(dimnames(dfEstT))<-c("m","mis","y")
+    names(dimnames(dfEstT))<-c(dimnames1,rg,"y")
     #rownames(dfEstT)<-names(list.tables)
     #names(dfEstT)<-c("T",fdf$apasconvertir,fdf$nfdf)
     if(rescale){dfEstT<-dfEstT*dim(dfEstT)[2]}
     return(dfEstT)}
+
+
+#' Weighted sums by rotation groups
+#' @param list.tables a named list of data frames
+#' @param weight a character string  indicating the variable name or a numerical value 
+#' @param y a character strings indicating one study variable
+#' @param rg a character string indicating the name of the rotation group.
+#' @return an array
+#' @examples
+#' library(dataCPS)
+#' period<-200501:200512
+#' list.tables<-lapply(data(list=paste0("cps",period),package="dataCPS"),get);
+#' names(list.tables)<-period
+#' Y<-WSrg2(list.tables,"pwsswgt",list.y=c("pemlr","pwsswgt"),rg="hrmis")
+#' Y<-WSrg2(list.tables,"pwsswgt",list.y=c("pemlr"),rg="hrmis")
+WSrg2 <-
+  function(list.tables,weight,y,rg="hrmis",rescale=F,dimname1="m"){
+    tottab<-plyr::ldply(list.tables,function(L){L[c(list.y,weight,rg)]},.id=dimname1)
+    if(is.numeric(tottab[[y]])){
+        plyr::daply(
+          tottab[c(rg,dimname1,y,weight)],
+          as.formula(paste0("~",paste(c(dimname1,rg),collapse="+"))),
+          function(d){data.frame(y=sum(d[[weight]]*d[[y]]))})[names(list.tables),]      
+      }else{
+      plyr::daply(
+        tottab[c(rg,dimname1,y,weight)],
+        as.formula(paste0("~",paste(c(dimname1,rg,y),collapse="+"))),
+        function(d){data.frame(y=sum(d[[weight]]))})[names(list.tables),,]}}
