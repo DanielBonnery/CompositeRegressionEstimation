@@ -37,19 +37,15 @@ W.ak<-function(months,
                eta0=length(groups)/length(S),
                eta1=eta0-1,
                rescaled=F){
-  nmonth<-length(months)
-  ngroup<-length(groups)
-  W<-array(0,c(nmonth,nmonth,ngroup))
-  dimnames(W)<-list(m2=months,m1=months,rg1=groups)
-  Hmisc::label(W)<-"Coefficient matrix W[m2,m1,mis1] such that Ak estimate for month m2  is sum(W[y2,,])*Y) where Y[m1,mis1] is direct estimate on mis mis1 for emp stat y1 at month m1"
-  Sbar<-setdiff(1:ngroup,S)
-    W[1,,1]<-1
-    for(i in 2:nmonth){
-      W[i,,]<-W[(i-1),,]*k
-      W[i,i,]<-(1-k)
-      W[i,i-1,S_1]<-W[i,i-1,S_1]-k*eta0
-      W[i,i,S]<-W[i,i,S]+k*eta0-a*eta1
-      W[i,i,Sbar]<-W[i,i,Sbar]+a} 
+  W.rec<-function(months,
+                  groups,
+                  S,
+                  S_1,
+                  Coef=c(alpha_1 = K,
+                         alpha0 = 1-K,
+                         beta_1  = -K*eta0,
+                         beta0  = K*eta0-A*eta1,
+                         gamma0 = A))
   if(rescaled){W<-W/ngroup}
   return(W)}
 

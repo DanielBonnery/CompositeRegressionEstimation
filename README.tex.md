@@ -102,8 +102,10 @@ In the following code, we compute the direct estimates of the counts in each emp
 
 ```r
 Direct.est<-CompositeRegressionEstimation::WS(list.tables,weight="pwsswgt",list.y = "employmentstatus")
-U<-with(as.data.frame(Direct.est),(employmentstatus_ne)/(employmentstatus_ne+employmentstatus_nu))
-library(ggplot2);ggplot(data=data.frame(period=period,E=U),aes(x=period,y=U))+geom_line()+
+U<-with(as.data.frame(Direct.est),
+        (employmentstatus_ne)/(employmentstatus_ne+employmentstatus_nu))
+library(ggplot2);
+ggplot(data=data.frame(period=period,E=U),aes(x=period,y=U))+geom_line()+
   ggtitle("Direct estimate of the monthly employment rate from the CPS public microdata in 2005")+
   scale_x_continuous(breaks=200501:200512,labels=month.abb)+xlab("")+ylab("")
 ```
@@ -283,6 +285,7 @@ For the employmed total, the values used are: $A=$, $K=$.
 For the unemployed total, the values used are: $A=$, $K=$.
 The functions `CPS_A_e`, `CPS_A_u`, `CPS_K_e`, `CPS_K_u`, `CPS_AK()` return these coefficients.
 
+
 ```r
 CPS_AK()
 ```
@@ -292,28 +295,73 @@ CPS_AK()
 ## 0.3 0.4 0.0 0.4 0.7 0.0
 ```
 
-the option `W.ak` with parameters 
-
-```r
-W.ak()
-```
-
-```
-## Error in W.ak(): argument "months" is missing, with no default
-```
 
 
-the function `CPS_AK_coeff.array.f` with the parameters
 
-`simplify=FALSE` produces the array of dimension 
+The matrix $W$ corresponding to the coefficients for the AK estimator for the total of employed can be obtained with:
 
 
 ```r
-W=CPS_AK_coeff.array.f(4,ak=CPS_AK(),simplify=FALSE)
-dimnames(W);dim(W)
+Wak.e<-W.ak(months=period,
+            groups =paste0("",1:8),
+            S = c(2:4,6:8),
+            S_1=c(1:3,5:7),
+            a=CPS_A_e(),k=CPS_K_e(),
+            eta0=4/3,
+            eta1=1/3,
+            rescaled=F)
 ```
+
+In the same way:
+
+```r
+Wak.u<-W.ak(months=period,
+            groups =paste0("",1:8),
+            S = c(2:4,6:8),
+            S_1=c(1:3,5:7),
+            a=CPS_A_u(),k=CPS_K_u(),
+            eta0=4/3,
+            eta1=1/3,
+            rescaled=F)
+```
+
+The Census AK estimator of the total of employed and unemployed computed with the values of A and K used by the Census are:
+
+
+```r
+Y_census_AK.e<-TensorDB::"%.%"(Wak.e,X[,,"e"],I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),I_B=list(c=integer(0),p=c("m","hrmis"),q=integer(0)))
+Y_census_AK.u<-TensorDB::"%.%"(Wak.u,X[,,"u"],I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),I_B=list(c=integer(0),p=c("m","hrmis"),q=integer(0)))
+```
+The corresponding unemployment rate time series can be obtained by the ratio :
+
+
+```r
+U_census_AK<-Y_census_AK.e/(Y_census_AK.e+Y_census_AK.u)
+```
+
+We plot the Direct estimate vs the AK estimate:
+
+
+```r
+ggplot(data=reshape2::melt(cbind(Direct=U,Composite=U_census_AK)),aes(x=as.Date(paste0(Var1,"01"),"%Y%m%d"),y=value,group=Var2,color=Var2))+geom_line()+xlab("")+ylab("")+ggtitle("Direct and Composite estimates")
+```
+
+![plot of chunk unnamed-chunk-15](figure/unnamed-chunk-15-1.png)
+
+## Optimisation of the linear combinaisons of the month in sample estimates
+
+In a model where $\Sigma$, the design-based covariance matrix of $X$, is known, then the optimal linear estimator could be computed!
+
+A formula to compute the optimal value of $W$ as a value of $\Sigma$ is given in 
+["Bonnery Cheng Lahiri, An Evaluation of Design-based Properties of Different Composite Estimators"](https://arxiv.org/abs/1811.12249)
+
+The Census uses an 
+
 
 #### Rough estimation of the month-in-sample estimate covariance matrix for the CPS
+
+
+
 
 Here, we compute a rough estimator of the month-in-sample estimate covariance matrix.
 We do not claim it is a good estimator, we just need one in this page to illustrate how 
