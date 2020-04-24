@@ -284,30 +284,6 @@ For the unemployed total, the values used are: $A=$, $K=$.
 The functions `CPS_A_e`, `CPS_A_u`, `CPS_K_e`, `CPS_K_u`, `CPS_AK()` return these coefficients.
 
 ```r
-CPS_A_e();CPS_A_u();
-```
-
-```
-## [1] 0.4
-```
-
-```
-## [1] 0.3
-```
-
-```r
-CPS_K_e();CPS_K_u();
-```
-
-```
-## [1] 0.7
-```
-
-```
-## [1] 0.4
-```
-
-```r
 CPS_AK()
 ```
 
