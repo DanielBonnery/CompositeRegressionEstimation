@@ -118,34 +118,10 @@ An estimate can be obtained from each month-in-sample rotation group. The month-
 The following code 
 
 ```r
+library(CompositeRegressionEstimation)
 MIS.est<-CompositeRegressionEstimation::WSrg(list.tables,rg = "hrmis",weight="pwsswgt",list.y = "employmentstatus")
-```
-
-```
-## Error in abind(`200501` = structure(c(0, 0, 0, 0, 0, 0, 0, 0, 17771771.5595, : could not find function "abind"
-```
-
-```r
 names(dimnames(MIS.est))<-c("Month","RotationGroup","EmploymentStatus")
-```
-
-```
-## Error in names(dimnames(MIS.est)) <- c("Month", "RotationGroup", "EmploymentStatus"): object 'MIS.est' not found
-```
-
-```r
 MIS.emp.rate<-plyr::aaply(MIS.est[,,"employmentstatus_ne"],1:2,sum)/plyr::aaply(MIS.est[,,c("employmentstatus_ne","employmentstatus_nu")],1:2,sum);names(dimnames(MIS.emp.rate))<-c("Month","RotationGroup")
-```
-
-```
-## Error in amv_dim(x): object 'MIS.est' not found
-```
-
-```
-## Error in names(dimnames(MIS.emp.rate)) <- c("Month", "RotationGroup"): object 'MIS.emp.rate' not found
-```
-
-```r
 library(ggplot2);ggplot(data=reshape2::melt(MIS.emp.rate),aes(x=Month,y=value,color=RotationGroup))+geom_line()+
   scale_x_continuous(breaks=200501:200512,labels=month.abb)+xlab("")+ylab("")+ 
   labs(title = "Month-in-sample estimates", 
@@ -153,9 +129,7 @@ library(ggplot2);ggplot(data=reshape2::melt(MIS.emp.rate),aes(x=Month,y=value,co
        caption = "Computed from CPS public anonymized microdata.")
 ```
 
-```
-## Error in reshape2::melt(MIS.emp.rate): object 'MIS.emp.rate' not found
-```
+<img src="figure/unnamed-chunk-3-1.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" width="100%" />
 
 #### Linear combinaisons of the month-in-sample estimates
 
@@ -167,37 +141,13 @@ the month, the group, the employment status and the value of the estimate.
 print(reshape2::melt(MIS.est[,,c("employmentstatus_ne" ,"employmentstatus_nn", "employmentstatus_nu")]))
 ```
 
-```
-## Error in reshape2::melt(MIS.est[, , c("employmentstatus_ne", "employmentstatus_nn", : object 'MIS.est' not found
-```
-
-```
-## Error in eval(expr, envir, enclos): object 'tt' not found
-```
-
-```
-## Error in nrow(tt): object 'tt' not found
-```
-
-```
-## Error in lapply(toto, as.character): object 'toto' not found
-```
-
-```
-## Error in ncol(toto): object 'toto' not found
-```
-
-```
-## Error in eval(expr, envir, enclos): object 'toto' not found
-```
-
-```
-## Error in names(toto) <- c("Row Number", "Month", "Rotation Group", "Employment Status", : object 'toto' not found
-```
-
-```
-## Error in knitr::kable(toto): object 'toto' not found
-```
+|Row Number |Month  |Rotation Group |Employment Status   |<img src="/tex/cbfb1b2a33b28eab8a3e59464768e810.svg?invert_in_darkmode&sanitize=true" align=middle width=14.908688849999992pt height=22.465723500000017pt/>           |
+|:----------|:------|:--------------|:-------------------|:-------------|
+|1          |200501 |hrmis1         |employmentstatus_ne |17771771.5595 |
+|2          |200502 |hrmis1         |employmentstatus_ne |17501581.9912 |
+|3          |200503 |hrmis1         |employmentstatus_ne |17911922.4613 |
+|...        |...    |...            |...                 |...           |
+|288        |200512 |hrmis8         |employmentstatus_nu |846918.8885   |
 
 Let <img src="/tex/cbfb1b2a33b28eab8a3e59464768e810.svg?invert_in_darkmode&sanitize=true" align=middle width=14.908688849999992pt height=22.465723500000017pt/> be the vector of values in the data.frame.
 Elements of <img src="/tex/cbfb1b2a33b28eab8a3e59464768e810.svg?invert_in_darkmode&sanitize=true" align=middle width=14.908688849999992pt height=22.465723500000017pt/> can be refered to by the line number or by a combinaison of month, rotation group, and employment status, as for example : <img src="/tex/3fc66a72e2d17e020e9c41a3fa79f3c9.svg?invert_in_darkmode&sanitize=true" align=middle width=160.88719184999997pt height=22.465723500000017pt/>, or by a line number <img src="/tex/aef6b18063caff2c3750441e127e3e5a.svg?invert_in_darkmode&sanitize=true" align=middle width=21.941076299999988pt height=41.64378900000001pt/>.
@@ -291,11 +241,11 @@ CPS_A_e();CPS_A_u();
 ```
 
 ```
-## Error in CPS_A_e(): could not find function "CPS_A_e"
+## [1] 0.4
 ```
 
 ```
-## Error in CPS_A_u(): could not find function "CPS_A_u"
+## [1] 0.3
 ```
 
 ```r
@@ -303,11 +253,11 @@ CPS_K_e();CPS_K_u();
 ```
 
 ```
-## Error in CPS_K_e(): could not find function "CPS_K_e"
+## [1] 0.7
 ```
 
 ```
-## Error in CPS_K_u(): could not find function "CPS_K_u"
+## [1] 0.4
 ```
 
 ```r
@@ -315,7 +265,8 @@ CPS_AK()
 ```
 
 ```
-## Error in CPS_AK(): could not find function "CPS_AK"
+##  a1  a2  a3  k1  k2  k3 
+## 0.3 0.4 0.0 0.4 0.7 0.0
 ```
 
 the option `W.ak` with parameters 
@@ -325,7 +276,7 @@ W.ak()
 ```
 
 ```
-## Error in W.ak(): could not find function "W.ak"
+## Error in W.ak(): argument "months" is missing, with no default
 ```
 
 
@@ -336,22 +287,7 @@ the function `CPS_AK_coeff.array.f` with the parameters
 
 ```r
 W=CPS_AK_coeff.array.f(4,ak=CPS_AK(),simplify=FALSE)
-```
-
-```
-## Error in CPS_AK_coeff.array.f(4, ak = CPS_AK(), simplify = FALSE): could not find function "CPS_AK_coeff.array.f"
-```
-
-```r
 dimnames(W);dim(W)
-```
-
-```
-## Error in eval(expr, envir, enclos): object 'W' not found
-```
-
-```
-## Error in eval(expr, envir, enclos): object 'W' not found
 ```
 
 #### Rough estimation of the month-in-sample estimate covariance matrix
