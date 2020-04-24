@@ -115,13 +115,13 @@ library(ggplot2);ggplot(data=data.frame(period=period,E=Direct.emp.rate),aes(x=p
 An estimate can be obtained from each month-in-sample rotation group. The month-in-sample estimates are estimates of a total of a study variable of the form:
 <img src="/tex/05fe3182e27f9195f836052a21bf2a55.svg?invert_in_darkmode&sanitize=true" align=middle width=145.4812623pt height=24.657735299999988pt/>, where <img src="/tex/c745b9b57c145ec5577b82542b2df546.svg?invert_in_darkmode&sanitize=true" align=middle width=10.57650494999999pt height=14.15524440000002pt/> is an adjustment. In the CPS, the adjustment <img src="/tex/a4eaf29ba18ea817aa165fcb033bc2b7.svg?invert_in_darkmode&sanitize=true" align=middle width=40.713337499999994pt height=21.18721440000001pt/> as there are <img src="/tex/005c128d6e551735fa5d938e44e7a613.svg?invert_in_darkmode&sanitize=true" align=middle width=8.219209349999991pt height=21.18721440000001pt/> rotation groups. Other adjustments are possible, as for example <img src="/tex/71997fae67898064cda8f915bdcf3a12.svg?invert_in_darkmode&sanitize=true" align=middle width=138.49146134999998pt height=24.657735299999988pt/>.
 
-The following code 
+The following code  creates the array `X` of dimension <img src="/tex/941e0906d926f039bcfada153e127a16.svg?invert_in_darkmode&sanitize=true" align=middle width=74.36051699999999pt height=22.465723500000017pt/> (M months, 8 rotation groups, 3 employment statuses.) where `X[m,g,e]` is the month in sample estimate for month `m`, group `g` and status `e`.
+
 
 ```r
 library(CompositeRegressionEstimation)
-MIS.est<-CompositeRegressionEstimation::WSrg(list.tables,rg = "hrmis",weight="pwsswgt",list.y = "employmentstatus")
-names(dimnames(MIS.est))<-c("Month","RotationGroup","EmploymentStatus")
-MIS.emp.rate<-plyr::aaply(MIS.est[,,"employmentstatus_ne"],1:2,sum)/plyr::aaply(MIS.est[,,c("employmentstatus_ne","employmentstatus_nu")],1:2,sum);names(dimnames(MIS.emp.rate))<-c("Month","RotationGroup")
+X<-CompositeRegressionEstimation::WSrg(list.tables,rg = "hrmis",weight="pwsswgt",list.y = "employmentstatus")
+MIS.emp.rate<-plyr::aaply(X[,,"employmentstatus_ne"],1:2,sum)/plyr::aaply(X[,,c("employmentstatus_ne","employmentstatus_nu")],1:2,sum);names(dimnames(MIS.emp.rate))<-c("Month","RotationGroup")
 library(ggplot2);ggplot(data=reshape2::melt(MIS.emp.rate),aes(x=Month,y=value,color=RotationGroup))+geom_line()+
   scale_x_continuous(breaks=200501:200512,labels=month.abb)+xlab("")+ylab("")+ 
   labs(title = "Month-in-sample estimates", 
@@ -133,21 +133,28 @@ library(ggplot2);ggplot(data=reshape2::melt(MIS.emp.rate),aes(x=Month,y=value,co
 
 #### Linear combinaisons of the month-in-sample estimates
 
-The month-in-sample estimates for each month and each rotation group can be stored in a data.frame with four variables:
-the month, the group, the employment status and the value of the estimate.
+The month-in-sample estimates for each month and each rotation group can also be given in a data.frame with four variables: the month, the group, the employment status and the value of the estimate.
+Such a dataframe can be obtained from `X` using the function `reshape2::melt`
 
 
 ```r
-print(reshape2::melt(MIS.est[,,c("employmentstatus_ne" ,"employmentstatus_nn", "employmentstatus_nu")]))
+print(reshape2::melt(X[,,c("employmentstatus_ne" ,"employmentstatus_nn", "employmentstatus_nu")]))
 ```
 
-|Row Number |Month  |Rotation Group |Employment Status   |<img src="/tex/cbfb1b2a33b28eab8a3e59464768e810.svg?invert_in_darkmode&sanitize=true" align=middle width=14.908688849999992pt height=22.465723500000017pt/>           |
-|:----------|:------|:--------------|:-------------------|:-------------|
-|1          |200501 |hrmis1         |employmentstatus_ne |17771771.5595 |
-|2          |200502 |hrmis1         |employmentstatus_ne |17501581.9912 |
-|3          |200503 |hrmis1         |employmentstatus_ne |17911922.4613 |
-|...        |...    |...            |...                 |...           |
-|288        |200512 |hrmis8         |employmentstatus_nu |846918.8885   |
+
+```
+## Error in `[.data.frame`(toto, c("RowNumber", "Month", "RotationGroup", : undefined columns selected
+```
+
+
+
+|Row Number |Month  |Rotation Group      |Employment Status |<img src="/tex/cbfb1b2a33b28eab8a3e59464768e810.svg?invert_in_darkmode&sanitize=true" align=middle width=14.908688849999992pt height=22.465723500000017pt/> |
+|:----------|:------|:-------------------|:-----------------|:---|
+|200501     |hrmis1 |employmentstatus_ne |17771771.5595     |1   |
+|200502     |hrmis1 |employmentstatus_ne |17501581.9912     |2   |
+|200503     |hrmis1 |employmentstatus_ne |17911922.4613     |3   |
+|...        |...    |...                 |...               |... |
+|200512     |hrmis8 |employmentstatus_nu |846918.8885       |288 |
 
 Let <img src="/tex/cbfb1b2a33b28eab8a3e59464768e810.svg?invert_in_darkmode&sanitize=true" align=middle width=14.908688849999992pt height=22.465723500000017pt/> be the vector of values in the data.frame.
 Elements of <img src="/tex/cbfb1b2a33b28eab8a3e59464768e810.svg?invert_in_darkmode&sanitize=true" align=middle width=14.908688849999992pt height=22.465723500000017pt/> can be refered to by the line number or by a combinaison of month, rotation group, and employment status, as for example : <img src="/tex/3fc66a72e2d17e020e9c41a3fa79f3c9.svg?invert_in_darkmode&sanitize=true" align=middle width=160.88719184999997pt height=22.465723500000017pt/>, or by a line number <img src="/tex/aef6b18063caff2c3750441e127e3e5a.svg?invert_in_darkmode&sanitize=true" align=middle width=21.941076299999988pt height=41.64378900000001pt/>.
@@ -156,6 +163,7 @@ We use <img src="/tex/d3615153e21981003e4ebb11168a5cc7.svg?invert_in_darkmode&sa
 The values to estimate are the elements of the <img src="/tex/7c674d837975ddc779079888281b9cff.svg?invert_in_darkmode&sanitize=true" align=middle width=46.050115649999995pt height=22.465723500000017pt/>-sized array <img src="/tex/6113a4c2abf45f7818f3d5e58b17b6ca.svg?invert_in_darkmode&sanitize=true" align=middle width=820.0904612999999pt height=24.657735299999988pt/>. We denote by <img src="/tex/9f7c9b1c4f87b770604d8d1c7e206d53.svg?invert_in_darkmode&sanitize=true" align=middle width=16.43875364999999pt height=41.64378900000001pt/> the vectorisation of the array <img src="/tex/91aac9730317276af725abd8cef04ca9.svg?invert_in_darkmode&sanitize=true" align=middle width=13.19638649999999pt height=22.465723500000017pt/>.
 
 In R, the function to vectorize an array is the function `c`
+
 
 ```r
 A<-array(1:12,c(3,2,2));c(A)
@@ -182,6 +190,13 @@ allows to compute linear combinations of the month in sample groups of the form
 
 <img src="/tex/68def15f8ff220e879e78aa6f1df32bd.svg?invert_in_darkmode&sanitize=true" align=middle width=428.24322255000004pt height=116.71341989999999pt/>
 This is a special case of a linear combination of the month-in-sample estimates.
+
+
+Computing the estimators recursively is not very efficient. At the end, we get a linear combinaison of month in sample estimates.
+ 
+The following code computes a recursive estimator with parameters <img src="/tex/f9ecf46100aacda7b08753da755e33cc.svg?invert_in_darkmode&sanitize=true" align=middle width=68.88090164999998pt height=27.77565449999998pt/>, <img src="/tex/d6c15b9e998c80e2bf1acc13d2b846cf.svg?invert_in_darkmode&sanitize=true" align=middle width=61.620622799999985pt height=33.20539859999999pt/>, <img src="/tex/2f9ca43849ec874dd8bee288ce39d125.svg?invert_in_darkmode&sanitize=true" align=middle width=67.35728504999999pt height=22.831056599999986pt/>, <img src="/tex/6600176eb2c9d38bc0bc3d4de8c91efd.svg?invert_in_darkmode&sanitize=true" align=middle width=46.80926414999998pt height=22.831056599999986pt/>, <img src="/tex/fbc4eac24fd8a70deb82e4826e0006df.svg?invert_in_darkmode&sanitize=true" align=middle width=46.02194189999999pt height=21.18721440000001pt/>.
+
+
 
 #### AK estimator
 
@@ -220,8 +235,8 @@ For <img src="/tex/448378a33e519f8bf89301552c0a348c.svg?invert_in_darkmode&sanit
  individuals in the sample <img src="/tex/dcf2b9a28b9c3ca1536e4215e48a5629.svg?invert_in_darkmode&sanitize=true" align=middle width=38.57134214999999pt height=22.465723500000017pt/> with a value of month in sample equal to 1,2,3, 5,6 or 7. 
  When parametrising the function 'AK', the choice would be `group_1=c(1:3,5:7)` and `group0=c(2:4,6:8)`.
 
- Computing the estimators recursively is not very efficient. At the end, we get a linear combinaison of month in sample estimates
- 
+
+
 
 ```
 CompositeRegressionEstimation::CPS_AK()
@@ -290,7 +305,12 @@ W=CPS_AK_coeff.array.f(4,ak=CPS_AK(),simplify=FALSE)
 dimnames(W);dim(W)
 ```
 
-#### Rough estimation of the month-in-sample estimate covariance matrix
+#### Rough estimation of the month-in-sample estimate covariance matrix for the CPS
+
+Here, we compute a rough estimator of the month-in-sample estimate covariance matrix.
+We do not claim it is a good estimator, we just need one in this page to illustrate how 
+the functions we programmed work.
+
 
 A rough estimate of 
 <p align="center"><img src="/tex/fa95f469ffcf946d02475750d32f11c6.svg?invert_in_darkmode&sanitize=true" align=middle width=479.010609pt height=59.1786591pt/></p> is
@@ -316,11 +336,14 @@ If <img src="/tex/65969d5626e41e3245474ff6f8232ebe.svg?invert_in_darkmode&saniti
 <img src="/tex/e588d251a29a394b670ea543e8b0e93d.svg?invert_in_darkmode&sanitize=true" align=middle width=135.09807795pt height=28.89761819999999pt/>
 by <img src="/tex/795d94b9f1589ae8191870b9ace85332.svg?invert_in_darkmode&sanitize=true" align=middle width=236.34590099999997pt height=37.80850590000001pt/>.
 
-%and
-%<img src="/tex/c925149a4953429322ed245a0c8420b2.svg?invert_in_darkmode&sanitize=true" align=middle width=18.95178614999999pt height=22.465723500000017pt/> by  
-%<img src="/tex/189fa7b3b1bd8a7dc39b8fa7bbcc7ebc.svg?invert_in_darkmode&sanitize=true" align=middle width=203.74752914999996pt height=56.98657470000002pt/>.
 
+```r
+Sigma=rWishart(prod(dim(Y)))
+```
 
+```
+## Error in rWishart(prod(dim(Y))): argument "df" is missing, with no default
+```
 
 
 #### Empirical best AK estimator
