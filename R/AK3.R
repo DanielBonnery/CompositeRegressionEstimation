@@ -70,7 +70,7 @@ W.multi.ak<-function(months,
     W.ak(months,groups,S,a=AK["a"],k=AK["k"],eta0=eta0,eta1=eta1)
   })
 names(dimnames(W))[1]<-"ak"
-dimnames(W)[[1]]<-1:length(ak)
+dimnames(W)[[1]]<-if(is.null(names(ak))){1:length(ak)}else{names(ak)}
 Hmisc::label(W)<-"Coefficient matrix W[ak,m2,m1,mis1] such that AK estimate for value of AK choice number ak, month m2  is sum(W[ak,y2,,])*Y) where Y[m1,mis1] is direct estimate on mis mis1 for emp stat y1 at month m1"
 W}
 

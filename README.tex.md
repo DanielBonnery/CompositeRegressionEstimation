@@ -325,12 +325,24 @@ Wak.u<-W.ak(months=period,
             rescaled=F)
 ```
 
+
 The Census AK estimator of the total of employed and unemployed computed with the values of A and K used by the Census are:
 
 
 ```r
 Y_census_AK.e<-TensorDB::"%.%"(Wak.e,X[,,"e"],I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),I_B=list(c=integer(0),p=c("m","hrmis"),q=integer(0)))
+```
+
+```
+## Error in aperm.default(A, c(n, p)): 'perm' is of wrong length 3 (!= 5)
+```
+
+```r
 Y_census_AK.u<-TensorDB::"%.%"(Wak.u,X[,,"u"],I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),I_B=list(c=integer(0),p=c("m","hrmis"),q=integer(0)))
+```
+
+```
+## Error in aperm.default(A, c(n, p)): 'perm' is of wrong length 3 (!= 5)
 ```
 The corresponding unemployment rate time series can be obtained by the ratio :
 
@@ -339,7 +351,11 @@ The corresponding unemployment rate time series can be obtained by the ratio :
 U_census_AK<-Y_census_AK.e/(Y_census_AK.e+Y_census_AK.u)
 ```
 
+
+
 We plot the Direct estimate vs the AK estimate:
+
+
 
 
 ```r
@@ -348,12 +364,74 @@ ggplot(data=reshape2::melt(cbind(Direct=U,Composite=U_census_AK)),aes(x=as.Date(
 
 ![plot of chunk unnamed-chunk-15](figure/unnamed-chunk-15-1.png)
 
+If we want to get the whole $W$ matrix, we can use the function
+'W.multi.ak':
+
+
+
+
+```r
+Wak<-W.multi.ak(months=period,
+            groups =paste0("",1:8),
+            S = c(2:4,6:8),
+            S_1=c(1:3,5:7),
+            ak=list(u=c(a=CPS_A_u(),k=CPS_K_u()),e=c(a=CPS_A_e(),k=CPS_K_e()),n=c(a=0,k=0)))
+```
+
+and the estimates total of employed, unemployed and not in the labor force are obtained with:
+
+
+```r
+Y_census_AK<-TensorDB::"%.%"(Wak,X,I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),I_B=list(c=integer(0),p=c("m","hrmis"),q="employmentstatus"))
+```
+
+```
+## Error in aperm.default(A, c(n, p)): 'perm' is of wrong length 3 (!= 6)
+```
+
+```r
+U_census_AK2<-Yc2[,"e"]/(Yc2[,"e"]+Yc2[,"u"])
+any(abs(U_census_AK-U_census_AK)>1e-3)
+```
+
+```
+## [1] FALSE
+```
+
+
+
 ## Optimisation of the linear combinaisons of the month in sample estimates
 
-In a model where $\Sigma$, the design-based covariance matrix of $X$, is known, then the optimal linear estimator could be computed!
+In a model where $\Sigma$, the design-based covariance matrix of $X$, is known, then the optimal linear estimator could be computed.
 
-A formula to compute the optimal value of $W$ as a value of $\Sigma$ is given in 
+Gauss Markov gives us the formula to compute the optimal value of $W$ as a value of $\Sigma$ is given in 
 ["Bonnery Cheng Lahiri, An Evaluation of Design-based Properties of Different Composite Estimators"](https://arxiv.org/abs/1811.12249)
+
+
+
+Let $\Sigma_\paramy=\mathrm{Var}_\paramy\left[{\vec{\hat{\total}}^{\mis}_\paramy}\right]$. \index[notations]{Sigma@$\Sigma_\paramy$ : variance covariance  matrix, $\Sigma_\paramy=\mathrm{Var}_\paramy[\hat{\total}^{\mis}_\paramy]$} 
+In the design-based approach, $\Sigma_\paramy$ is a function of the parameter $\paramy$.
+The variance of a linear transformation $W  \vec{\hat{\total}}^{\mis}_\paramy$ of $\hat{\total}^{\mis}_\paramy$ is:
+$\mathrm{Var}\left[W  \vec{\hat{\total}}^{\mis}_\paramy\right]=W^T  \Sigma_\paramy  W.$
+When month-in-sample estimates are unbiased, $\Sigma_\paramy$ is known, and only $\vec{\hat{\total}}^{\mis}_\paramy$ is observed, and \newversion{when $\vec\Xmatrix^+\vec\Xmatrix=I$}, the Gauss-Markov theorem states that 
+the BLUE of $\total_\paramy$ uniformly in $\total_y$ is the $(\Mon,3)$-sized matrix $\hat{\total}^{\text{BLUE}}_\paramy$ defined by
+
+\newversion{
+\begin{equation}\label{bestW}
+\vec\Xmatrix ^+ (\vec\Xmatrix   \vec\Xmatrix ^+)  \left(I-\Sigma_\paramy ((I-\vec\Xmatrix   \vec\Xmatrix ^+)^+ \Sigma_\paramy  (I-\vec\Xmatrix   \vec\Xmatrix ^+))^+\right)\vec{\hat{\total}}^{\mis}_\paramy,
+\end{equation}
+}
+
+\noindent
+where the $^+$\index[notations]{=@${}^+$ : operator, Moore Penrose pseudo inverse} operator designates the Moore Penrose pseudo inversion, $I$ is the
+identity matrix. Here the minimisation is with respect to the order on symmetric positive definite matrices: $M_1\leq M_2 \Leftrightarrow M_2-M_1$ is positive. It can be shown that $\vec\Xmatrix ^+=\transp{\vec\Xmatrix }/8$ in our case and that $\vec\Xmatrix ^+\vec\Xmatrix=I$. For more details about the Gauss-Markov result under singular linear model, one may refer to \newversion{\cite[p.~140, Eq. 3b]{Searle1994}}.
+This is a generalization of the  result  of \cite{yansaneh1998optimal}, as it takes into account the multi-dimensions of $\paramy$ and non-invertibility of $\Sigma_\paramy$.
+Note that $\Sigma_\paramy$ can be non-invertible, especially when the sample is calibrated on a given fixed population size, considered non-random, because of an affine relationship between month-in-sample  estimates (e.g., $\sum_{\misi=1}^8\sum_{\status=1}^3 \left(\hat{\total}^{\mis}_\paramy \right)_{\mon,\misi,\status} $ is not random). 
+
+It is important to recall that (i) for any linear transformation $L$ applicable to $\vec{\total}_\paramy$, the best linear unbiased estimator of $L {\vec{\total}_\paramy}$  uniformly in $\total_\paramy$ is $L  \vec{\hat{\total}}_\paramy^{\text{BLUE}}$, which ensures that the BLUE of month-to-month change can be simply obtained from the BLUE of level and so there is no need for searching a compromise between estimation of level and  change;
+(ii) for any linear transformation $L$ applicable to $\vec{\total}_\paramy$, any linear transformation $J$ applicable to $L\vec{\total}_\paramy$,  $L\vec{\hat{\total}}_\paramy^{\text{BLUE}}\in \argmin\left\{\left.J W \Sigma_\paramy \partransp{J W }\right|W, W\vec\Xmatrix =L\right\}$, which ensures that plug-in estimators for unemployment rate and month-to-month unemployment rate change derived from the BLUE are also optimal 
+in the sense that they minimize the linearized approximation of the variance of such plug-in estimators, that can be written in the form $J W \Sigma_\paramy \partransp{J W }$.
+
 
 The Census uses an 
 
