@@ -75,7 +75,7 @@ The following code creates a list of dataframes for the months of 2005 that are 
 
 ```r
 period<-200501:200512
-list.tables<-lapply(data(list=paste0("cps",period),package="dataCPS"),get);names(list.tables)<-period
+list.tables<-lapply(data(list=paste0("cps",period),package="dataCPS"),function(x){get(x)[c("hrmis","hrhhid","pulineno","pwsswgt","pemlr","hrintsta")]});names(list.tables)<-period
 list.tables<-lapply(list.tables,function(L){
   L[["employmentstatus"]]<-forcats::fct_collapse(factor(L[["pemlr"]]),
                                             "e"=c("1","2"),
@@ -91,7 +91,7 @@ list.tables<-lapply(list.tables,function(L){
 The output of a survey are often used to produce estimators of totals over the population of certain characteritics, or function of this same totals, 
 in a fixed population model for design-based inference.  
 
-### Linear estimates
+### Linear combinations of month in sample estimates
 
 #### Direct estimate
 
@@ -113,13 +113,39 @@ library(ggplot2);ggplot(data=data.frame(period=period,E=Direct.emp.rate),aes(x=p
 #### Month in sample estimate
 
 An estimate can be obtained from each month-in-sample rotation group. The month-in-sample estimates are estimates of a total of a study variable of the form:
-<img src="/tex/794e6e1521fc2728f11f63433cf8056f.svg?invert_in_darkmode&sanitize=true" align=middle width=132.16510559999998pt height=24.657735299999988pt/>.
+<img src="/tex/05fe3182e27f9195f836052a21bf2a55.svg?invert_in_darkmode&sanitize=true" align=middle width=145.4812623pt height=24.657735299999988pt/>, where <img src="/tex/c745b9b57c145ec5577b82542b2df546.svg?invert_in_darkmode&sanitize=true" align=middle width=10.57650494999999pt height=14.15524440000002pt/> is an adjustment. In the CPS, the adjustment <img src="/tex/a4eaf29ba18ea817aa165fcb033bc2b7.svg?invert_in_darkmode&sanitize=true" align=middle width=40.713337499999994pt height=21.18721440000001pt/> as there are <img src="/tex/005c128d6e551735fa5d938e44e7a613.svg?invert_in_darkmode&sanitize=true" align=middle width=8.219209349999991pt height=21.18721440000001pt/> rotation groups. Other adjustments are possible, as for example <img src="/tex/71997fae67898064cda8f915bdcf3a12.svg?invert_in_darkmode&sanitize=true" align=middle width=138.49146134999998pt height=24.657735299999988pt/>.
+
 The following code 
 
 ```r
 MIS.est<-CompositeRegressionEstimation::WSrg(list.tables,rg = "hrmis",weight="pwsswgt",list.y = "employmentstatus")
+```
+
+```
+## Error in abind(`200501` = structure(c(0, 0, 0, 0, 0, 0, 0, 0, 17771771.5595, : could not find function "abind"
+```
+
+```r
 names(dimnames(MIS.est))<-c("Month","RotationGroup","EmploymentStatus")
+```
+
+```
+## Error in names(dimnames(MIS.est)) <- c("Month", "RotationGroup", "EmploymentStatus"): object 'MIS.est' not found
+```
+
+```r
 MIS.emp.rate<-plyr::aaply(MIS.est[,,"employmentstatus_ne"],1:2,sum)/plyr::aaply(MIS.est[,,c("employmentstatus_ne","employmentstatus_nu")],1:2,sum);names(dimnames(MIS.emp.rate))<-c("Month","RotationGroup")
+```
+
+```
+## Error in amv_dim(x): object 'MIS.est' not found
+```
+
+```
+## Error in names(dimnames(MIS.emp.rate)) <- c("Month", "RotationGroup"): object 'MIS.emp.rate' not found
+```
+
+```r
 library(ggplot2);ggplot(data=reshape2::melt(MIS.emp.rate),aes(x=Month,y=value,color=RotationGroup))+geom_line()+
   scale_x_continuous(breaks=200501:200512,labels=month.abb)+xlab("")+ylab("")+ 
   labs(title = "Month-in-sample estimates", 
@@ -127,7 +153,9 @@ library(ggplot2);ggplot(data=reshape2::melt(MIS.emp.rate),aes(x=Month,y=value,co
        caption = "Computed from CPS public anonymized microdata.")
 ```
 
-<img src="figure/unnamed-chunk-3-1.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" width="100%" />
+```
+## Error in reshape2::melt(MIS.emp.rate): object 'MIS.emp.rate' not found
+```
 
 #### Linear combinaisons of the month-in-sample estimates
 
@@ -139,13 +167,37 @@ the month, the group, the employment status and the value of the estimate.
 print(reshape2::melt(MIS.est[,,c("employmentstatus_ne" ,"employmentstatus_nn", "employmentstatus_nu")]))
 ```
 
-|Row Number |Month  |Rotation Group |Employment Status   |<img src="/tex/cbfb1b2a33b28eab8a3e59464768e810.svg?invert_in_darkmode&sanitize=true" align=middle width=14.908688849999992pt height=22.465723500000017pt/>           |
-|:----------|:------|:--------------|:-------------------|:-------------|
-|1          |200501 |hrmis1         |employmentstatus_ne |17771771.5595 |
-|2          |200502 |hrmis1         |employmentstatus_ne |17501581.9912 |
-|3          |200503 |hrmis1         |employmentstatus_ne |17911922.4613 |
-|...        |...    |...            |...                 |...           |
-|288        |200512 |hrmis8         |employmentstatus_nu |846918.8885   |
+```
+## Error in reshape2::melt(MIS.est[, , c("employmentstatus_ne", "employmentstatus_nn", : object 'MIS.est' not found
+```
+
+```
+## Error in eval(expr, envir, enclos): object 'tt' not found
+```
+
+```
+## Error in nrow(tt): object 'tt' not found
+```
+
+```
+## Error in lapply(toto, as.character): object 'toto' not found
+```
+
+```
+## Error in ncol(toto): object 'toto' not found
+```
+
+```
+## Error in eval(expr, envir, enclos): object 'toto' not found
+```
+
+```
+## Error in names(toto) <- c("Row Number", "Month", "Rotation Group", "Employment Status", : object 'toto' not found
+```
+
+```
+## Error in knitr::kable(toto): object 'toto' not found
+```
 
 Let <img src="/tex/cbfb1b2a33b28eab8a3e59464768e810.svg?invert_in_darkmode&sanitize=true" align=middle width=14.908688849999992pt height=22.465723500000017pt/> be the vector of values in the data.frame.
 Elements of <img src="/tex/cbfb1b2a33b28eab8a3e59464768e810.svg?invert_in_darkmode&sanitize=true" align=middle width=14.908688849999992pt height=22.465723500000017pt/> can be refered to by the line number or by a combinaison of month, rotation group, and employment status, as for example : <img src="/tex/3fc66a72e2d17e020e9c41a3fa79f3c9.svg?invert_in_darkmode&sanitize=true" align=middle width=160.88719184999997pt height=22.465723500000017pt/>, or by a line number <img src="/tex/aef6b18063caff2c3750441e127e3e5a.svg?invert_in_darkmode&sanitize=true" align=middle width=21.941076299999988pt height=41.64378900000001pt/>.
@@ -178,20 +230,13 @@ The package uses named arrays with names dimensions (`names(dimnames(A))` is not
 The function `CompositeRegressionEstimation::composite` 
 allows to compute linear combinations of the month in sample groups of the form
 
-<img src="/tex/85bd3cbb0e3c38c933c02bf477525126.svg?invert_in_darkmode&sanitize=true" align=middle width=428.24322255000004pt height=124.31165669999999pt/>
+<img src="/tex/68def15f8ff220e879e78aa6f1df32bd.svg?invert_in_darkmode&sanitize=true" align=middle width=428.24322255000004pt height=116.71341989999999pt/>
 This is a special case of a linear combination of the month-in-sample estimates.
 
 #### AK estimator
 
-The AK estimator can be defined as follows:
-For <img src="/tex/448378a33e519f8bf89301552c0a348c.svg?invert_in_darkmode&sanitize=true" align=middle width=44.56994024999999pt height=21.18721440000001pt/>, <img src="/tex/da2cc7485cb0fa1b15583647a8b5d253.svg?invert_in_darkmode&sanitize=true" align=middle width=167.13742815pt height=28.89761819999999pt/>.
- 
- For <img src="/tex/dfc1aff530546b0b16ab4aa699cf534f.svg?invert_in_darkmode&sanitize=true" align=middle width=44.56994024999999pt height=21.18721440000001pt/>, 
 
-<img src="/tex/9b79008ec861ce77d54cae3b39884f4e.svg?invert_in_darkmode&sanitize=true" align=middle width=410.19301125pt height=114.2298828pt/>
- 
-
-The AK composite estimator is defined equivalently in ``CPS Technical Paper (2006). Design and Methodology of the Current Population Survey. Technical Report 66, U.S. Census Bureau. (2006), [section 10-11]'':
+The AK composite estimator is equivalently in ``CPS Technical Paper (2006). Design and Methodology of the Current Population Survey. Technical Report 66, U.S. Census Bureau. (2006), [section 10-11]'':
 
 
 For <img src="/tex/448378a33e519f8bf89301552c0a348c.svg?invert_in_darkmode&sanitize=true" align=middle width=44.56994024999999pt height=21.18721440000001pt/>, <img src="/tex/da2cc7485cb0fa1b15583647a8b5d253.svg?invert_in_darkmode&sanitize=true" align=middle width=167.13742815pt height=28.89761819999999pt/>.
@@ -206,6 +251,17 @@ where <p align="center"><img src="/tex/81dd682ea0449547e2543021d5275dc3.svg?inve
  For the CPS, <img src="/tex/b396510f188ae3cee621c2a36bcb2985.svg?invert_in_darkmode&sanitize=true" align=middle width=14.714708249999989pt height=14.15524440000002pt/> is the ratio between the number of rotation groups in the sample and the number of overlaping rotation groups between two month, 
  which is a constant  <img src="/tex/3e0fccc50f84b4c25e62fc568fcf153e.svg?invert_in_darkmode&sanitize=true" align=middle width=62.11188059999999pt height=24.65753399999998pt/>; <img src="/tex/4a09d1898adc7637934a77010e40aea5.svg?invert_in_darkmode&sanitize=true" align=middle width=14.714708249999989pt height=14.15524440000002pt/> is the ratio between the number of non overlaping rotation groups the number of overlaping rotation groups between two month, 
  which is a constant of <img src="/tex/be175353a87f6fc97908fcda28d4c44a.svg?invert_in_darkmode&sanitize=true" align=middle width=24.657628049999992pt height=24.65753399999998pt/>.
+
+
+
+The AK estimator can be defined as follows:
+For <img src="/tex/448378a33e519f8bf89301552c0a348c.svg?invert_in_darkmode&sanitize=true" align=middle width=44.56994024999999pt height=21.18721440000001pt/>, <img src="/tex/da2cc7485cb0fa1b15583647a8b5d253.svg?invert_in_darkmode&sanitize=true" align=middle width=167.13742815pt height=28.89761819999999pt/>.
+ 
+ For <img src="/tex/dfc1aff530546b0b16ab4aa699cf534f.svg?invert_in_darkmode&sanitize=true" align=middle width=44.56994024999999pt height=21.18721440000001pt/>, 
+
+
+<img src="/tex/0c9644ece89508a4343bb7ca720e39d2.svg?invert_in_darkmode&sanitize=true" align=middle width=446.76190844999996pt height=116.71341989999999pt/>
+ 
  
     
   In the case of the CPS, the rotation group one sample unit  belongs to in a particular month  is a function
@@ -237,11 +293,11 @@ CPS_A_e();CPS_A_u();
 ```
 
 ```
-## [1] 0.4
+## Error in CPS_A_e(): could not find function "CPS_A_e"
 ```
 
 ```
-## [1] 0.3
+## Error in CPS_A_u(): could not find function "CPS_A_u"
 ```
 
 ```r
@@ -249,11 +305,11 @@ CPS_K_e();CPS_K_u();
 ```
 
 ```
-## [1] 0.7
+## Error in CPS_K_e(): could not find function "CPS_K_e"
 ```
 
 ```
-## [1] 0.4
+## Error in CPS_K_u(): could not find function "CPS_K_u"
 ```
 
 ```r
@@ -261,8 +317,7 @@ CPS_AK()
 ```
 
 ```
-##  a1  a2  a3  k1  k2  k3 
-## 0.3 0.4 0.0 0.4 0.7 0.0
+## Error in CPS_AK(): could not find function "CPS_AK"
 ```
 
 the option `W.ak` with parameters 
@@ -272,7 +327,7 @@ W.ak()
 ```
 
 ```
-## Error in W.ak(): argument "months" is missing, with no default
+## Error in W.ak(): could not find function "W.ak"
 ```
 
 
@@ -283,7 +338,22 @@ the function `CPS_AK_coeff.array.f` with the parameters
 
 ```r
 W=CPS_AK_coeff.array.f(4,ak=CPS_AK(),simplify=FALSE)
+```
+
+```
+## Error in CPS_AK_coeff.array.f(4, ak = CPS_AK(), simplify = FALSE): could not find function "CPS_AK_coeff.array.f"
+```
+
+```r
 dimnames(W);dim(W)
+```
+
+```
+## Error in eval(expr, envir, enclos): object 'W' not found
+```
+
+```
+## Error in eval(expr, envir, enclos): object 'W' not found
 ```
 
 #### Rough estimation of the month-in-sample estimate covariance matrix
