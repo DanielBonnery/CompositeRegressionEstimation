@@ -192,7 +192,7 @@ This is a special case of a linear combination of the month-in-sample estimates.
 
 Computing the estimators recursively is not very efficient. At the end, we get a linear combinaison of month in sample estimates.
  
-The following code computes a recursive estimator with parameters $\alpha_{(-1)}=\frac12$, $\alpha_{0}=\frac{1/2}$, $\beta_{(-1)}=0$, $\beta_0=0$, $\gamma_0=0$.
+The following code computes a recursive estimator with parameters $\alpha_{(-1)}=\alpha_{0}=\frac{1}/2$, $\beta_{(-1)}=\beta_0=\gamma_0=0$.
 
 
 ```r
@@ -220,36 +220,6 @@ Wrec<-W.rec(months=period,
 
 Then one can multiply the array 'W' and 'X':
 
-
-```r
-dimnames(Wrec)
-```
-
-```
-## $m2
-##  [1] "200501" "200502" "200503" "200504" "200505" "200506" "200507" "200508" "200509" "200510" "200511" "200512"
-## 
-## $m1
-##  [1] "200501" "200502" "200503" "200504" "200505" "200506" "200507" "200508" "200509" "200510" "200511" "200512"
-## 
-## $rg1
-## [1] "1" "2" "3" "4" "5" "6" "7" "8"
-```
-
-```r
-dimnames(X)
-```
-
-```
-## $m
-##  [1] "200501" "200502" "200503" "200504" "200505" "200506" "200507" "200508" "200509" "200510" "200511" "200512"
-## 
-## $hrmis
-## [1] "1" "2" "3" "4" "5" "6" "7" "8"
-## 
-## $employmentstatus
-## [1] "n" "e" "u"
-```
 
 ```r
 Yc2<-TensorDB::"%.%"(Wrec,X,I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),I_B=list(c=integer(0),p=c("m","hrmis"),q="employmentstatus"))
