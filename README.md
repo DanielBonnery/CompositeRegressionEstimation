@@ -5,8 +5,14 @@ author: Daniel Bonnery
 
 `CompositeRegressionEstimation` is an R package that allows to compute estimators for longitudinal survey:
 * Composite Regression ["Fuller, Wayne A., and J. N. K. Rao. "A regression composite estimator with application to the Canadian Labour Force Survey." Survey Methodology 27.1 (2001): 45-52."](http://www.statcan.gc.ca/pub/12-001-x/2001001/article/5853-eng.pdf)
-* Yansaneh Fuller
+
+* Gauss Markov BLUE
+
 * AK estimator
+
+This package contains the generic functions that were developped for the journal article ["Bonnery Cheng Lahiri, An Evaluation of Design-based Properties of Different Composite Estimators"](https://arxiv.org/abs/1811.12249).
+The demonstration code on this page  uses the `dataCPS` package that allows to download public anonymised CPS micro data from the US Census Bureau website.
+
 
 #  General usage
 
@@ -16,18 +22,8 @@ author: Daniel Bonnery
 ```r
 devtools::install_github("DanielBonnery/CompositeRegressionEstimation")
 ```
-## Demonstration code
-This package has been used for the paper submitted by D. Bonnery, P. Lahiri and Y. Cheng on real data (CPS data).
-One can consult the pdf package documentation on the github page to see demo code.
-
-Below is given a basic demonstration code on a simulated dataset
 
 
-```r
-library(CompositeRegressionEstimation)
-data(CRE_data)
-example(MR)
-```
 
 ## Manual
 R package pdf manual can be found there:
@@ -117,13 +113,13 @@ ggplot(data=data.frame(period=period,E=U),aes(x=period,y=U))+geom_line()+
 An estimate can be obtained from each month-in-sample rotation group. The month-in-sample estimates are estimates of a total of a study variable of the form:
 <img src="/tex/05fe3182e27f9195f836052a21bf2a55.svg?invert_in_darkmode&sanitize=true" align=middle width=145.4812623pt height=24.657735299999988pt/>, where <img src="/tex/c745b9b57c145ec5577b82542b2df546.svg?invert_in_darkmode&sanitize=true" align=middle width=10.57650494999999pt height=14.15524440000002pt/> is an adjustment. In the CPS, the adjustment <img src="/tex/a4eaf29ba18ea817aa165fcb033bc2b7.svg?invert_in_darkmode&sanitize=true" align=middle width=40.713337499999994pt height=21.18721440000001pt/> as there are <img src="/tex/005c128d6e551735fa5d938e44e7a613.svg?invert_in_darkmode&sanitize=true" align=middle width=8.219209349999991pt height=21.18721440000001pt/> rotation groups. Other adjustments are possible, as for example <img src="/tex/71997fae67898064cda8f915bdcf3a12.svg?invert_in_darkmode&sanitize=true" align=middle width=138.49146134999998pt height=24.657735299999988pt/>.
 
-The following code  creates the array `X` of dimension <img src="/tex/941e0906d926f039bcfada153e127a16.svg?invert_in_darkmode&sanitize=true" align=middle width=74.36051699999999pt height=22.465723500000017pt/> (M months, 8 rotation groups, 3 employment statuses.) where `X[m,g,e]` is the month in sample estimate for month `m`, group `g` and status `e`.
+The following code  creates the array `Y` of dimension <img src="/tex/941e0906d926f039bcfada153e127a16.svg?invert_in_darkmode&sanitize=true" align=middle width=74.36051699999999pt height=22.465723500000017pt/> (M months, 8 rotation groups, 3 employment statuses.) where `Y[m,g,e]` is the month in sample estimate for month `m`, group `g` and status `e`.
 
 
 ```r
 library(CompositeRegressionEstimation)
-X<-CompositeRegressionEstimation::WSrg2(list.tables,rg = "hrmis",weight="pwsswgt",y = "employmentstatus")
-Umis<-plyr::aaply(X[,,"e"],1:2,sum)/plyr::aaply(X[,,c("e","u")],1:2,sum);
+Y<-CompositeRegressionEstimation::WSrg2(list.tables,rg = "hrmis",weight="pwsswgt",y = "employmentstatus")
+Umis<-plyr::aaply(Y[,,"e"],1:2,sum)/plyr::aaply(Y[,,c("e","u")],1:2,sum);
 library(ggplot2);ggplot(data=reshape2::melt(Umis),aes(x=m,y=value,color=mis))+geom_line()+
   scale_x_continuous(breaks=200501:200512,labels=month.abb)+xlab("")+ylab("")+ 
   labs(title = "Month-in-sample estimates", 
@@ -140,15 +136,15 @@ library(ggplot2);ggplot(data=reshape2::melt(Umis),aes(x=m,y=value,color=mis))+ge
 #### Linear combinaisons of the month-in-sample estimates
 
 The month-in-sample estimates for each month and each rotation group can also be given in a data.frame with four variables: the month, the group, the employment status and the value of the estimate.
-Such a dataframe can be obtained from `X` using the function `reshape2::melt`
+Such a dataframe can be obtained from `Y` using the function `reshape2::melt`
 
 
 ```r
-print(reshape2::melt(X[,,]))
+print(reshape2::melt(Y[,,]))
 ```
 
 
-|Row number |Month  |Month in sample group |Employment status |<img src="/tex/cbfb1b2a33b28eab8a3e59464768e810.svg?invert_in_darkmode&sanitize=true" align=middle width=14.908688849999992pt height=22.465723500000017pt/>           |
+|Row number |Month  |Month in sample group |Employment status |<img src="/tex/91aac9730317276af725abd8cef04ca9.svg?invert_in_darkmode&sanitize=true" align=middle width=13.19638649999999pt height=22.465723500000017pt/>           |
 |:----------|:------|:---------------------|:-----------------|:-------------|
 |1          |200501 |1                     |n                 |17645785.4304 |
 |2          |200502 |1                     |n                 |17526653.25   |
@@ -156,9 +152,9 @@ print(reshape2::melt(X[,,]))
 |...        |...    |...                   |...               |...           |
 |288        |200512 |8                     |u                 |846918.8885   |
 
-Let <img src="/tex/cbfb1b2a33b28eab8a3e59464768e810.svg?invert_in_darkmode&sanitize=true" align=middle width=14.908688849999992pt height=22.465723500000017pt/> be the vector of values in the data.frame.
-Elements of <img src="/tex/cbfb1b2a33b28eab8a3e59464768e810.svg?invert_in_darkmode&sanitize=true" align=middle width=14.908688849999992pt height=22.465723500000017pt/> can be refered to by the line number or by a combinaison of month, rotation group, and employment status, as for example : <img src="/tex/3fc66a72e2d17e020e9c41a3fa79f3c9.svg?invert_in_darkmode&sanitize=true" align=middle width=160.88719184999997pt height=22.465723500000017pt/>, or by a line number <img src="/tex/aef6b18063caff2c3750441e127e3e5a.svg?invert_in_darkmode&sanitize=true" align=middle width=21.941076299999988pt height=41.64378900000001pt/>.
-We use <img src="/tex/d3615153e21981003e4ebb11168a5cc7.svg?invert_in_darkmode&sanitize=true" align=middle width=16.43875364999999pt height=41.64378900000001pt/> to designate the vector and <img src="/tex/cbfb1b2a33b28eab8a3e59464768e810.svg?invert_in_darkmode&sanitize=true" align=middle width=14.908688849999992pt height=22.465723500000017pt/> to designate the array.
+Let <img src="/tex/91aac9730317276af725abd8cef04ca9.svg?invert_in_darkmode&sanitize=true" align=middle width=13.19638649999999pt height=22.465723500000017pt/> be the vector of values in the data.frame.
+Elements of <img src="/tex/91aac9730317276af725abd8cef04ca9.svg?invert_in_darkmode&sanitize=true" align=middle width=13.19638649999999pt height=22.465723500000017pt/> can be refered to by the line number or by a combinaison of month, rotation group, and employment status, as for example : <img src="/tex/fb0a7c5c30dbaeff34cd1afcac885a47.svg?invert_in_darkmode&sanitize=true" align=middle width=156.81184199999998pt height=22.465723500000017pt/>, or by a line number <img src="/tex/8fb799df5f9c1f6f7fdaa744372bd533.svg?invert_in_darkmode&sanitize=true" align=middle width=21.941076299999988pt height=41.64378900000001pt/>.
+We use <img src="/tex/9f7c9b1c4f87b770604d8d1c7e206d53.svg?invert_in_darkmode&sanitize=true" align=middle width=16.43875364999999pt height=41.64378900000001pt/> to designate the vector and <img src="/tex/91aac9730317276af725abd8cef04ca9.svg?invert_in_darkmode&sanitize=true" align=middle width=13.19638649999999pt height=22.465723500000017pt/> to designate the array.
 
 The values to estimate are the elements of the <img src="/tex/7c674d837975ddc779079888281b9cff.svg?invert_in_darkmode&sanitize=true" align=middle width=46.050115649999995pt height=22.465723500000017pt/>-sized array <img src="/tex/6113a4c2abf45f7818f3d5e58b17b6ca.svg?invert_in_darkmode&sanitize=true" align=middle width=820.0904612999999pt height=24.657735299999988pt/>. We denote by <img src="/tex/9f7c9b1c4f87b770604d8d1c7e206d53.svg?invert_in_darkmode&sanitize=true" align=middle width=16.43875364999999pt height=41.64378900000001pt/> the vectorisation of the array <img src="/tex/91aac9730317276af725abd8cef04ca9.svg?invert_in_darkmode&sanitize=true" align=middle width=13.19638649999999pt height=22.465723500000017pt/>.
 
@@ -174,9 +170,9 @@ A<-array(1:12,c(3,2,2));c(A)
 ```
 
 
-We consider estimates of <img src="/tex/9f7c9b1c4f87b770604d8d1c7e206d53.svg?invert_in_darkmode&sanitize=true" align=middle width=16.43875364999999pt height=41.64378900000001pt/>
-of the form  <img src="/tex/e01e4b580defdbd55ba4c6b09b1ffb3d.svg?invert_in_darkmode&sanitize=true" align=middle width=92.69454479999999pt height=45.02964839999999pt/>, 
-where <img src="/tex/b44848922a59328b4ef74c94bdf966a0.svg?invert_in_darkmode&sanitize=true" align=middle width=17.80826024999999pt height=41.64378900000001pt/> is a matrix of dimension <img src="/tex/ae1907bd1d43388b78617cae84cfa316.svg?invert_in_darkmode&sanitize=true" align=middle width=126.94161974999999pt height=41.64378900000001pt/>).
+We consider estimates of <img src="/tex/4c69ba23ad577f87c4f6c53a06302d4d.svg?invert_in_darkmode&sanitize=true" align=middle width=16.43875364999999pt height=42.00914850000001pt/>
+of the form  <img src="/tex/357107fe199aa73bc3adf22491a43690.svg?invert_in_darkmode&sanitize=true" align=middle width=92.69454479999999pt height=45.3950046pt/>, 
+where <img src="/tex/b44848922a59328b4ef74c94bdf966a0.svg?invert_in_darkmode&sanitize=true" align=middle width=17.80826024999999pt height=41.64378900000001pt/> is a matrix of dimension <img src="/tex/f865697b01f0a6fca85b0727701e6693.svg?invert_in_darkmode&sanitize=true" align=middle width=126.94161974999999pt height=42.00914850000001pt/>).
 
 Which is equivalent to estimators of the form <img src="/tex/5097776bc1f30a7da974ffb5596313f6.svg?invert_in_darkmode&sanitize=true" align=middle width=52.80813779999999pt height=22.465723500000017pt/> where the <img src="/tex/84c95f91a742c9ceb460a83f9b5090bf.svg?invert_in_darkmode&sanitize=true" align=middle width=17.80826024999999pt height=22.465723500000017pt/> is a <img src="/tex/9204b1b54cbff660169ee2b1f9b3ba8d.svg?invert_in_darkmode&sanitize=true" align=middle width=154.13265944999998pt height=24.65753399999998pt/> matrix, where an element <img src="/tex/0915cde0aa1d2e0f9dd73778329423e3.svg?invert_in_darkmode&sanitize=true" align=middle width=32.64358184999999pt height=22.465723500000017pt/> of <img src="/tex/84c95f91a742c9ceb460a83f9b5090bf.svg?invert_in_darkmode&sanitize=true" align=middle width=17.80826024999999pt height=22.465723500000017pt/> is indexed by two vector <img src="/tex/2ec6e630f199f589a2402fdf3e0289d5.svg?invert_in_darkmode&sanitize=true" align=middle width=8.270567249999992pt height=14.15524440000002pt/> and <img src="/tex/d5c18a8ca1894fd3a7d25f242cbe8890.svg?invert_in_darkmode&sanitize=true" align=middle width=7.928106449999989pt height=14.15524440000002pt/> and of length the number of dimensions of the array <img src="/tex/91aac9730317276af725abd8cef04ca9.svg?invert_in_darkmode&sanitize=true" align=middle width=13.19638649999999pt height=22.465723500000017pt/> and the dimensions of the array <img src="/tex/cbfb1b2a33b28eab8a3e59464768e810.svg?invert_in_darkmode&sanitize=true" align=middle width=14.908688849999992pt height=22.465723500000017pt/> respectively. 
 
@@ -225,6 +221,13 @@ Then one can multiply the array 'W' and 'X':
 
 ```r
 Yc2<-TensorDB::"%.%"(Wrec,X,I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),I_B=list(c=integer(0),p=c("m","hrmis"),q="employmentstatus"))
+```
+
+```
+## Error in aperm.default(A, c(n, p)): 'perm' is of wrong length 3 (!= 5)
+```
+
+```r
 Uc2<-Yc2[,"e"]/(Yc2[,"e"]+Yc2[,"u"])
 any(abs(Uc-Uc2)>1e-3)
 ```
@@ -325,12 +328,24 @@ Wak.u<-W.ak(months=period,
             rescaled=F)
 ```
 
+
 The Census AK estimator of the total of employed and unemployed computed with the values of A and K used by the Census are:
 
 
 ```r
 Y_census_AK.e<-TensorDB::"%.%"(Wak.e,X[,,"e"],I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),I_B=list(c=integer(0),p=c("m","hrmis"),q=integer(0)))
+```
+
+```
+## Error in X[, , "e"]: incorrect number of dimensions
+```
+
+```r
 Y_census_AK.u<-TensorDB::"%.%"(Wak.u,X[,,"u"],I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),I_B=list(c=integer(0),p=c("m","hrmis"),q=integer(0)))
+```
+
+```
+## Error in X[, , "u"]: incorrect number of dimensions
 ```
 The corresponding unemployment rate time series can be obtained by the ratio :
 
@@ -339,7 +354,11 @@ The corresponding unemployment rate time series can be obtained by the ratio :
 U_census_AK<-Y_census_AK.e/(Y_census_AK.e+Y_census_AK.u)
 ```
 
+
+
 We plot the Direct estimate vs the AK estimate:
+
+
 
 
 ```r
@@ -348,66 +367,230 @@ ggplot(data=reshape2::melt(cbind(Direct=U,Composite=U_census_AK)),aes(x=as.Date(
 
 ![plot of chunk unnamed-chunk-15](figure/unnamed-chunk-15-1.png)
 
-## Optimisation of the linear combinaisons of the month in sample estimates
-
-In a model where <img src="/tex/813cd865c037c89fcdc609b25c465a05.svg?invert_in_darkmode&sanitize=true" align=middle width=11.87217899999999pt height=22.465723500000017pt/>, the design-based covariance matrix of <img src="/tex/cbfb1b2a33b28eab8a3e59464768e810.svg?invert_in_darkmode&sanitize=true" align=middle width=14.908688849999992pt height=22.465723500000017pt/>, is known, then the optimal linear estimator could be computed!
-
-A formula to compute the optimal value of <img src="/tex/84c95f91a742c9ceb460a83f9b5090bf.svg?invert_in_darkmode&sanitize=true" align=middle width=17.80826024999999pt height=22.465723500000017pt/> as a value of <img src="/tex/813cd865c037c89fcdc609b25c465a05.svg?invert_in_darkmode&sanitize=true" align=middle width=11.87217899999999pt height=22.465723500000017pt/> is given in 
-["Bonnery Cheng Lahiri, An Evaluation of Design-based Properties of Different Composite Estimators"](https://arxiv.org/abs/1811.12249)
-
-The Census uses an 
+If we want to get the whole <img src="/tex/84c95f91a742c9ceb460a83f9b5090bf.svg?invert_in_darkmode&sanitize=true" align=middle width=17.80826024999999pt height=22.465723500000017pt/> matrix, we can use the function
+'W.multi.ak':
 
 
-#### Rough estimation of the month-in-sample estimate covariance matrix for the CPS
-
-
-
-
-Here, we compute a rough estimator of the month-in-sample estimate covariance matrix.
-We do not claim it is a good estimator, we just need one in this page to illustrate how 
-the functions we programmed work.
-
-
-A rough estimate of 
-<p align="center"><img src="/tex/fa95f469ffcf946d02475750d32f11c6.svg?invert_in_darkmode&sanitize=true" align=middle width=479.010609pt height=59.1786591pt/></p> is
-
-
-<p align="center"><img src="/tex/3394d25c23604708c2c35bde2ff1b568.svg?invert_in_darkmode&sanitize=true" align=middle width=292.86962264999994pt height=39.452455349999994pt/></p> is
-
-
-
-
-
-Define <p align="center"><img src="/tex/4f9b848c936115d77b07767c84c653da.svg?invert_in_darkmode&sanitize=true" align=middle width=490.44842714999993pt height=62.30817615pt/></p>
-We estimate <img src="/tex/d9d0efe557c28ba200ec644a2c6b5f77.svg?invert_in_darkmode&sanitize=true" align=middle width=40.25140184999999pt height=26.76175259999998pt/>
- by <p align="center"><img src="/tex/5f9147addb1728b041ef5331806f0841.svg?invert_in_darkmode&sanitize=true" align=middle width=576.7126018499999pt height=69.57749535pt/></p> if <img src="/tex/518c95e319b709925cd43be30620ff01.svg?invert_in_darkmode&sanitize=true" align=middle width=97.98129494999998pt height=24.65753399999998pt/>, <img src="/tex/29632a9bf827ce0200454dd32fc3be82.svg?invert_in_darkmode&sanitize=true" align=middle width=8.219209349999991pt height=21.18721440000001pt/> otherwise.
-Let <img src="/tex/b78271d45b971a1832111783d2843e37.svg?invert_in_darkmode&sanitize=true" align=middle width=136.49523524999998pt height=24.7161288pt/>,   <img src="/tex/c0d6e33cd99457506b41d90ef1ef6d2d.svg?invert_in_darkmode&sanitize=true" align=middle width=118.27586429999998pt height=24.7161288pt/>.
-If <img src="/tex/7a66ba39d6680352e05c1d46c02e1e81.svg?invert_in_darkmode&sanitize=true" align=middle width=129.11017845pt height=24.7161288pt/> then
-<img src="/tex/4919f1f74f54569c891e23dbf89f47b7.svg?invert_in_darkmode&sanitize=true" align=middle width=95.76009134999998pt height=22.465723500000017pt/>, we approximate the distribution of <img src="/tex/f113839f878aca836a1f4995bf9577e8.svg?invert_in_darkmode&sanitize=true" align=middle width=40.54571564999999pt height=22.465723500000017pt/> by a cluster sampling, where first stage is simple random sampling.
-and
-we estimate
-<img src="/tex/6f8074d667f8f7ab85416426fb909252.svg?invert_in_darkmode&sanitize=true" align=middle width=143.42839169999996pt height=37.80850590000001pt/>
-by <img src="/tex/4b70794f5ec2ad24432578ec96c6da24.svg?invert_in_darkmode&sanitize=true" align=middle width=324.07837605pt height=42.42527849999999pt/>
-If <img src="/tex/65969d5626e41e3245474ff6f8232ebe.svg?invert_in_darkmode&sanitize=true" align=middle width=129.11017845pt height=24.7161288pt/> then <img src="/tex/87ddf54d1eec1c3f47b81c873679a404.svg?invert_in_darkmode&sanitize=true" align=middle width=123.88778324999997pt height=24.65753399999998pt/> and we approximate the distribution of  <img src="/tex/3b41dcca9d79c034795d061636eafb1d.svg?invert_in_darkmode&sanitize=true" align=middle width=95.57756174999999pt height=24.65753399999998pt/> by the distribution of two independent simple random samples of clusters conditional to non-overlap of the two samples, and we estimate
-<img src="/tex/e588d251a29a394b670ea543e8b0e93d.svg?invert_in_darkmode&sanitize=true" align=middle width=135.09807795pt height=28.89761819999999pt/>
-by <img src="/tex/795d94b9f1589ae8191870b9ace85332.svg?invert_in_darkmode&sanitize=true" align=middle width=236.34590099999997pt height=37.80850590000001pt/>.
 
 
 ```r
-Sigma=rWishart(prod(dim(Y)))
+Wak<-W.multi.ak(months=period,
+            groups =paste0("",1:8),
+            S = c(2:4,6:8),
+            S_1=c(1:3,5:7),
+            ak=list(u=c(a=CPS_A_u(),k=CPS_K_u()),e=c(a=CPS_A_e(),k=CPS_K_e()),n=c(a=0,k=0)))
+```
+
+and the estimates total of employed, unemployed and not in the labor force are obtained with:
+
+
+```r
+Y_census_AK<-TensorDB::"%.%"(Wak,X,I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),I_B=list(c=integer(0),p=c("m","hrmis"),q="employmentstatus"))
 ```
 
 ```
-## Error in rWishart(prod(dim(Y))): argument "df" is missing, with no default
+## Error in aperm.default(A, c(n, p)): 'perm' is of wrong length 3 (!= 6)
+```
+
+```r
+U_census_AK2<-Yc2[,"e"]/(Yc2[,"e"]+Yc2[,"u"])
+any(abs(U_census_AK-U_census_AK)>1e-3)
+```
+
+```
+## [1] FALSE
 ```
 
 
-#### Empirical best AK estimator
 
-#### Empirical best YF estimator
+## Optimisation of the linear combinaisons of the month in sample estimates
 
-#### Empirical best linear estimator
+In a model where <img src="/tex/813cd865c037c89fcdc609b25c465a05.svg?invert_in_darkmode&sanitize=true" align=middle width=11.87217899999999pt height=22.465723500000017pt/>, the design-based covariance matrix of <img src="/tex/cbfb1b2a33b28eab8a3e59464768e810.svg?invert_in_darkmode&sanitize=true" align=middle width=14.908688849999992pt height=22.465723500000017pt/>, is known, then the optimal linear estimator could be computed.
 
-### Modified regression (Singh, Fuller-Rao)
+Gauss Markov gives us the formula to compute the optimal value of <img src="/tex/84c95f91a742c9ceb460a83f9b5090bf.svg?invert_in_darkmode&sanitize=true" align=middle width=17.80826024999999pt height=22.465723500000017pt/> as a value of <img src="/tex/813cd865c037c89fcdc609b25c465a05.svg?invert_in_darkmode&sanitize=true" align=middle width=11.87217899999999pt height=22.465723500000017pt/>. It is given in 
+["Bonnery Cheng Lahiri, An Evaluation of Design-based Properties of Different Composite Estimators"](https://arxiv.org/abs/1811.12249)
+
+
+The model for the month in sample estimate vector <img src="/tex/91aac9730317276af725abd8cef04ca9.svg?invert_in_darkmode&sanitize=true" align=middle width=13.19638649999999pt height=22.465723500000017pt/> is 
+<img src="/tex/671b47a51c4700e988e220049f5f5a3e.svg?invert_in_darkmode&sanitize=true" align=middle width=102.49404494999997pt height=24.65753399999998pt/>, 
+where <img src="/tex/8217ed3c32a785f0b5aad4055f432ad8.svg?invert_in_darkmode&sanitize=true" align=middle width=10.16555099999999pt height=22.831056599999986pt/> is the vector indexed by <img src="/tex/d0e755a01a41c87a5166af852bf75a2d.svg?invert_in_darkmode&sanitize=true" align=middle width=29.39312144999999pt height=14.15524440000002pt/>: <img src="/tex/11f58870370728d1afbde825a0a4dfa7.svg?invert_in_darkmode&sanitize=true" align=middle width=142.10540024999997pt height=24.657735299999988pt/> and <img src="/tex/cbfb1b2a33b28eab8a3e59464768e810.svg?invert_in_darkmode&sanitize=true" align=middle width=14.908688849999992pt height=22.465723500000017pt/> is the matrix with rows indexed by <img src="/tex/6b53aba94c06975e932f98405e00fd53.svg?invert_in_darkmode&sanitize=true" align=middle width=45.129362849999985pt height=14.15524440000002pt/> and columns indexed by <img src="/tex/d0e755a01a41c87a5166af852bf75a2d.svg?invert_in_darkmode&sanitize=true" align=middle width=29.39312144999999pt height=14.15524440000002pt/> such that <img src="/tex/e4a077e059953faf6081dd6ba33ead56.svg?invert_in_darkmode&sanitize=true" align=middle width=128.15455784999997pt height=24.65753399999998pt/> if <img src="/tex/1a75153b75c9963c45b6885e90d2decf.svg?invert_in_darkmode&sanitize=true" align=middle width=68.18113994999999pt height=24.7161288pt/> and <img src="/tex/6b275a9cd6e1268e4e95549ffa1b19cd.svg?invert_in_darkmode&sanitize=true" align=middle width=54.62321534999999pt height=24.7161288pt/>, <img src="/tex/29632a9bf827ce0200454dd32fc3be82.svg?invert_in_darkmode&sanitize=true" align=middle width=8.219209349999991pt height=21.18721440000001pt/> otherwise.
+
+The best coefficient array <img src="/tex/5bfad3945951b5bc8adc29e86180bc7b.svg?invert_in_darkmode&sanitize=true" align=middle width=24.543452999999992pt height=22.63846199999998pt/> is the matrix with rows indexed by <img src="/tex/d04446fc222321b6fe818ef6636afd2e.svg?invert_in_darkmode&sanitize=true" align=middle width=51.40230479999999pt height=24.7161288pt/> and columns indexed by <img src="/tex/6b53aba94c06975e932f98405e00fd53.svg?invert_in_darkmode&sanitize=true" align=middle width=45.129362849999985pt height=14.15524440000002pt/> given by:
+
+<p align="center"><img src="/tex/4895e9a155618f0b4607a650b7786ac5.svg?invert_in_darkmode&sanitize=true" align=middle width=402.9448698pt height=19.726228499999998pt/></p>
+
+
+where the <img src="/tex/580c42d204dc080d3bd5938b427c5db9.svg?invert_in_darkmode&sanitize=true" align=middle width=10.09137359999999pt height=26.17730939999998pt/> operator designates the Moore Penrose pseudo inversion, <img src="/tex/21fd4e8eecd6bdf1a4d3d6bd1fb8d733.svg?invert_in_darkmode&sanitize=true" align=middle width=8.515988249999989pt height=22.465723500000017pt/> is the
+identity matrix. Here the minimisation is with respect to the order on symmetric positive definite matrices: <img src="/tex/654cec854951c205ce77578b67684e93.svg?invert_in_darkmode&sanitize=true" align=middle width=160.0454064pt height=22.465723500000017pt/> is positive. It can be shown that <img src="/tex/d223e53348ca685134544c60e4d8b904.svg?invert_in_darkmode&sanitize=true" align=middle width=72.0318588pt height=27.6567522pt/> in our case and that <img src="/tex/2edcd8fc671b418f91c163a1cc3064bb.svg?invert_in_darkmode&sanitize=true" align=middle width=71.16423764999999pt height=26.17730939999998pt/>. 
+The estimator <img src="/tex/03830e6740cae4428e61a5d02614198d.svg?invert_in_darkmode&sanitize=true" align=middle width=17.80826024999999pt height=22.465723500000017pt/> is the Best Linear Unbiased Estimator under this model.
+
+
+The next code provides the <img src="/tex/cbfb1b2a33b28eab8a3e59464768e810.svg?invert_in_darkmode&sanitize=true" align=middle width=14.908688849999992pt height=22.465723500000017pt/> and <img src="/tex/84259d0b51812feb7c1a7fd2da2722d7.svg?invert_in_darkmode&sanitize=true" align=middle width=25.00004099999999pt height=26.17730939999998pt/> matrices:
+
+
+```r
+ X<-CPS_X_array(months=list(m=paste(200501:200504)),
+             vars=list(y=c("e","u","n")),
+             rgs=list(hrmis=paste(1:8)),1/2)
+ Xplus<-CPS_Xplus_array(months=list(m=paste(200501:200504)),
+             vars=list(y=c("e","u","n")),
+             rgs=list(hrmis=paste(1:8)),1/2)
+ TensorDB::"%.%"(Xplus,X,
+  I_A=list(c=integer(0),n=c("y2","m2"),p=c("y","hrmis","m")),
+  I_B=list(c=integer(0),p=c("y","hrmis","m"),q=c("y2","m2")))
+```
+
+```
+## , , y2 = e, m2 = 200501
+## 
+##    m2
+## y2  200501 200502 200503 200504
+##   e      1      0      0      0
+##   u      0      0      0      0
+##   n      0      0      0      0
+## 
+## , , y2 = u, m2 = 200501
+## 
+##    m2
+## y2  200501 200502 200503 200504
+##   e      0      0      0      0
+##   u      1      0      0      0
+##   n      0      0      0      0
+## 
+## , , y2 = n, m2 = 200501
+## 
+##    m2
+## y2  200501 200502 200503 200504
+##   e      0      0      0      0
+##   u      0      0      0      0
+##   n      1      0      0      0
+## 
+## , , y2 = e, m2 = 200502
+## 
+##    m2
+## y2  200501 200502 200503 200504
+##   e      0      1      0      0
+##   u      0      0      0      0
+##   n      0      0      0      0
+## 
+## , , y2 = u, m2 = 200502
+## 
+##    m2
+## y2  200501 200502 200503 200504
+##   e      0      0      0      0
+##   u      0      1      0      0
+##   n      0      0      0      0
+## 
+## , , y2 = n, m2 = 200502
+## 
+##    m2
+## y2  200501 200502 200503 200504
+##   e      0      0      0      0
+##   u      0      0      0      0
+##   n      0      1      0      0
+## 
+## , , y2 = e, m2 = 200503
+## 
+##    m2
+## y2  200501 200502 200503 200504
+##   e      0      0      1      0
+##   u      0      0      0      0
+##   n      0      0      0      0
+## 
+## , , y2 = u, m2 = 200503
+## 
+##    m2
+## y2  200501 200502 200503 200504
+##   e      0      0      0      0
+##   u      0      0      1      0
+##   n      0      0      0      0
+## 
+## , , y2 = n, m2 = 200503
+## 
+##    m2
+## y2  200501 200502 200503 200504
+##   e      0      0      0      0
+##   u      0      0      0      0
+##   n      0      0      1      0
+## 
+## , , y2 = e, m2 = 200504
+## 
+##    m2
+## y2  200501 200502 200503 200504
+##   e      0      0      0      1
+##   u      0      0      0      0
+##   n      0      0      0      0
+## 
+## , , y2 = u, m2 = 200504
+## 
+##    m2
+## y2  200501 200502 200503 200504
+##   e      0      0      0      0
+##   u      0      0      0      1
+##   n      0      0      0      0
+## 
+## , , y2 = n, m2 = 200504
+## 
+##    m2
+## y2  200501 200502 200503 200504
+##   e      0      0      0      0
+##   u      0      0      0      0
+##   n      0      0      0      1
+```
+
+
+The estimator <img src="/tex/03830e6740cae4428e61a5d02614198d.svg?invert_in_darkmode&sanitize=true" align=middle width=17.80826024999999pt height=22.465723500000017pt/> is the Best Linear Unbiased Estimator under this model.
+
+
+```r
+beta= matrix(rchisq(12,1),4,3)
+dimnames(beta)<-list(m=paste(200501:200504),y=c("e","u","n"))
+ X<-CPS_X_array(months=list(m=paste(200501:200504)),
+             vars=list(y=c("e","u","n")),
+             rgs=list(hrmis=paste(1:8)))
+ Xplus<-CPS_Xplus_array(months=list(m=paste(200501:200504)),
+             vars=list(y=c("e","u","n")),
+             rgs=list(hrmis=paste(1:8)),1/2)
+ EY<-TensorDB::"%.%"(X,beta,I_A=list(c=integer(0),n=c("m","y","hrmis"),p=c("m2","y2")),I_B=list(c=integer(0),p=c("m","y"),q=integer(0)))
+ set.seed(1)
+ Sigma=rWishart(1,length(EY),diag(length(EY)))
+ Y<-array(mvrnorm(n = 100,mu = c(EY),Sigma = Sigma[,,1]),c(100,dim(EY)))
+ dimnames(Y)<-c(list(rep=1:100),dimnames(EY))
+ Sigma.A<-array(Sigma,c(dim(EY),dim(EY)))
+ dimnames(Sigma.A)<-rep(dimnames(EY),2);names(dimnames(Sigma.A))[4:6]<-paste0(names(dimnames(Sigma.A))[4:6],"2")
+ W<-CoeffGM.array(Sigma.A,X,Xplus)
+ WY<-TensorDB::"%.%"(W,Y,I_A=list(c=integer(0),n=c("y2","m2"),p=c("m","y","hrmis")),I_B=list(c=integer(0),p=c("m","y","hrmis"),q=c("rep")))
+ DY<-TensorDB::"%.%"(Xplus,Y,I_A=list(c=integer(0),n=c("y2","m2"),p=c("m","y","hrmis")),I_B=list(c=integer(0),p=c("m","y","hrmis"),q=c("rep")))
+ plot(c(beta),c(apply(DY,1:2,var)),col="red")
+```
+
+![plot of chunk unnamed-chunk-19](figure/unnamed-chunk-19-1.png)
+
+```r
+ plot(c(beta),c(apply(WY,1:2,var)))
+```
+
+![plot of chunk unnamed-chunk-19](figure/unnamed-chunk-19-2.png)
+
+
+#### Best AK estimator for level, change and compromise
+
+
+#### Empirical best estimators and estimation of <img src="/tex/813cd865c037c89fcdc609b25c465a05.svg?invert_in_darkmode&sanitize=true" align=middle width=11.87217899999999pt height=22.465723500000017pt/>
+
+As <img src="/tex/813cd865c037c89fcdc609b25c465a05.svg?invert_in_darkmode&sanitize=true" align=middle width=11.87217899999999pt height=22.465723500000017pt/> is not known, the approach adopted by the Census has been  to plugin an estimate of <img src="/tex/813cd865c037c89fcdc609b25c465a05.svg?invert_in_darkmode&sanitize=true" align=middle width=11.87217899999999pt height=22.465723500000017pt/>, and then try values of <img src="/tex/53d147e7f3fe6e47ee05b88b166bd3f6.svg?invert_in_darkmode&sanitize=true" align=middle width=12.32879834999999pt height=22.465723500000017pt/> and <img src="/tex/d6328eaebbcd5c358f426dbea4bdbf70.svg?invert_in_darkmode&sanitize=true" align=middle width=15.13700594999999pt height=22.465723500000017pt/> between
+0 and 1 with one decimal value and take the ones tha minimize the estimated variance.
+
+There are many issues with this approach:
+
+* The optimisation method: 
+- The optimal was chosen on a grid, so the optimal may have been missed.
+- The optimal was chosen variable by variable, which is only optimal when estimates of different variables are uncorrelated, which is not the case: there is a negative relationship between unemployment, employment and not in the labor force: a sample with a high level of employed and unemployed will have a low level of not in the labor force.
+* No robustness
+- The estimation of <img src="/tex/813cd865c037c89fcdc609b25c465a05.svg?invert_in_darkmode&sanitize=true" align=middle width=11.87217899999999pt height=22.465723500000017pt/> was done with really strong variance stationarity assumption, which is unrealistic when one observes the evolution of the employment during the last decade.
+- No study to my knowledge was done to show how good this estimation of <img src="/tex/813cd865c037c89fcdc609b25c465a05.svg?invert_in_darkmode&sanitize=true" align=middle width=11.87217899999999pt height=22.465723500000017pt/> was.
+- the empirical best will be very sensitive to the values of <img src="/tex/813cd865c037c89fcdc609b25c465a05.svg?invert_in_darkmode&sanitize=true" align=middle width=11.87217899999999pt height=22.465723500000017pt/>.
+
+## Modified regression (Singh, Fuller-Rao)
 
 
