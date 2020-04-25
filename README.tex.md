@@ -5,8 +5,14 @@ author: Daniel Bonnery
 
 `CompositeRegressionEstimation` is an R package that allows to compute estimators for longitudinal survey:
 * Composite Regression ["Fuller, Wayne A., and J. N. K. Rao. "A regression composite estimator with application to the Canadian Labour Force Survey." Survey Methodology 27.1 (2001): 45-52."](http://www.statcan.gc.ca/pub/12-001-x/2001001/article/5853-eng.pdf)
-* Yansaneh Fuller
+
+* Gauss Markov BLUE
+
 * AK estimator
+
+This package contains the generic functions that were developped for the journal article ["Bonnery Cheng Lahiri, An Evaluation of Design-based Properties of Different Composite Estimators"](https://arxiv.org/abs/1811.12249).
+The demonstration code on this page  uses the `dataCPS` package that allows to download public anonymised CPS micro data from the US Census Bureau website.
+
 
 #  General usage
 
@@ -16,18 +22,8 @@ author: Daniel Bonnery
 ```r
 devtools::install_github("DanielBonnery/CompositeRegressionEstimation")
 ```
-## Demonstration code
-This package has been used for the paper submitted by D. Bonnery, P. Lahiri and Y. Cheng on real data (CPS data).
-One can consult the pdf package documentation on the github page to see demo code.
-
-Below is given a basic demonstration code on a simulated dataset
 
 
-```r
-library(CompositeRegressionEstimation)
-data(CRE_data)
-example(MR)
-```
 
 ## Manual
 R package pdf manual can be found there:
@@ -117,13 +113,13 @@ ggplot(data=data.frame(period=period,E=U),aes(x=period,y=U))+geom_line()+
 An estimate can be obtained from each month-in-sample rotation group. The month-in-sample estimates are estimates of a total of a study variable of the form:
 $\alpha\sum_{k\in S_{m,g}} w_{m,k}y_{m,k}$, where $\alpha$ is an adjustment. In the CPS, the adjustment $\alpha= 8$ as there are $8$ rotation groups. Other adjustments are possible, as for example $(\sum_{k\in S_{m}})/\sum_{k\in S_{m,g}}$.
 
-The following code  creates the array `X` of dimension $M\times 8\times 3$ (M months, 8 rotation groups, 3 employment statuses.) where `X[m,g,e]` is the month in sample estimate for month `m`, group `g` and status `e`.
+The following code  creates the array `Y` of dimension $M\times 8\times 3$ (M months, 8 rotation groups, 3 employment statuses.) where `Y[m,g,e]` is the month in sample estimate for month `m`, group `g` and status `e`.
 
 
 ```r
 library(CompositeRegressionEstimation)
-X<-CompositeRegressionEstimation::WSrg2(list.tables,rg = "hrmis",weight="pwsswgt",y = "employmentstatus")
-Umis<-plyr::aaply(X[,,"e"],1:2,sum)/plyr::aaply(X[,,c("e","u")],1:2,sum);
+Y<-CompositeRegressionEstimation::WSrg2(list.tables,rg = "hrmis",weight="pwsswgt",y = "employmentstatus")
+Umis<-plyr::aaply(Y[,,"e"],1:2,sum)/plyr::aaply(Y[,,c("e","u")],1:2,sum);
 library(ggplot2);ggplot(data=reshape2::melt(Umis),aes(x=m,y=value,color=mis))+geom_line()+
   scale_x_continuous(breaks=200501:200512,labels=month.abb)+xlab("")+ylab("")+ 
   labs(title = "Month-in-sample estimates", 
@@ -140,15 +136,15 @@ library(ggplot2);ggplot(data=reshape2::melt(Umis),aes(x=m,y=value,color=mis))+ge
 #### Linear combinaisons of the month-in-sample estimates
 
 The month-in-sample estimates for each month and each rotation group can also be given in a data.frame with four variables: the month, the group, the employment status and the value of the estimate.
-Such a dataframe can be obtained from `X` using the function `reshape2::melt`
+Such a dataframe can be obtained from `Y` using the function `reshape2::melt`
 
 
 ```r
-print(reshape2::melt(X[,,]))
+print(reshape2::melt(Y[,,]))
 ```
 
 
-|Row number |Month  |Month in sample group |Employment status |$X$           |
+|Row number |Month  |Month in sample group |Employment status |$Y$           |
 |:----------|:------|:---------------------|:-----------------|:-------------|
 |1          |200501 |1                     |n                 |17645785.4304 |
 |2          |200502 |1                     |n                 |17526653.25   |
@@ -156,9 +152,9 @@ print(reshape2::melt(X[,,]))
 |...        |...    |...                   |...               |...           |
 |288        |200512 |8                     |u                 |846918.8885   |
 
-Let $X$ be the vector of values in the data.frame.
-Elements of $X$ can be refered to by the line number or by a combinaison of month, rotation group, and employment status, as for example : $X_{200501,group 3,employed]$, or by a line number $\overrightarrow{X}_\ell$.
-We use $\overrightarrow{X}$ to designate the vector and $X$ to designate the array.
+Let $Y$ be the vector of values in the data.frame.
+Elements of $Y$ can be refered to by the line number or by a combinaison of month, rotation group, and employment status, as for example : $Y_{200501,group 3,employed]$, or by a line number $\overrightarrow{Y}_\ell$.
+We use $\overrightarrow{Y}$ to designate the vector and $Y$ to designate the array.
 
 The values to estimate are the elements of the $M\times 3$-sized array $Y=(t_{y_{m,e}})_{m\in\{1,\ldots,M\},e\in\{"employed","unemployed","nilf"\}}=\sum_{k\in U} (y_{k,m,e}))_{m\in\{1,\ldots,M\},e\in\{"employed","unemployed","nilf"\}}$. We denote by $\overrightarrow{Y}$ the vectorisation of the array $Y$.
 
@@ -174,9 +170,9 @@ A<-array(1:12,c(3,2,2));c(A)
 ```
 
 
-We consider estimates of $\overrightarrow{Y}$
-of the form  $\widehat{\overrightarrow{Y}} ={\overrightarrow{W}}\times \overrightarrow{X}$, 
-where ${\overrightarrow{W}}$ is a matrix of dimension $(\mathrm{dim}(\overrightarrow{Y}),\mathrm{dim}(\overrightarrow{X})$).
+We consider estimates of $\overrightarrow{\beta}$
+of the form  $\widehat{\overrightarrow{\beta}} ={\overrightarrow{W}}\times \overrightarrow{Y}$, 
+where ${\overrightarrow{W}}$ is a matrix of dimension $(\mathrm{dim}(\overrightarrow{\beta}),\mathrm{dim}(\overrightarrow{Y})$).
 
 Which is equivalent to estimators of the form $W\times X$ where the $W$ is a $(\mathrm{dim}(Y))\times(\mathrm{dim}(X))$ matrix, where an element $W_{p,q}$ of $W$ is indexed by two vector $p$ and $q$ and of length the number of dimensions of the array $Y$ and the dimensions of the array $X$ respectively. 
 
@@ -225,6 +221,13 @@ Then one can multiply the array 'W' and 'X':
 
 ```r
 Yc2<-TensorDB::"%.%"(Wrec,X,I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),I_B=list(c=integer(0),p=c("m","hrmis"),q="employmentstatus"))
+```
+
+```
+## Error in aperm.default(A, c(n, p)): 'perm' is of wrong length 3 (!= 5)
+```
+
+```r
 Uc2<-Yc2[,"e"]/(Yc2[,"e"]+Yc2[,"u"])
 any(abs(Uc-Uc2)>1e-3)
 ```
@@ -334,7 +337,7 @@ Y_census_AK.e<-TensorDB::"%.%"(Wak.e,X[,,"e"],I_A=list(c=integer(0),n="m2",p=c("
 ```
 
 ```
-## Error in aperm.default(A, c(n, p)): 'perm' is of wrong length 3 (!= 5)
+## Error in X[, , "e"]: incorrect number of dimensions
 ```
 
 ```r
@@ -342,7 +345,7 @@ Y_census_AK.u<-TensorDB::"%.%"(Wak.u,X[,,"u"],I_A=list(c=integer(0),n="m2",p=c("
 ```
 
 ```
-## Error in aperm.default(A, c(n, p)): 'perm' is of wrong length 3 (!= 5)
+## Error in X[, , "u"]: incorrect number of dimensions
 ```
 The corresponding unemployment rate time series can be obtained by the ratio :
 
@@ -404,94 +407,190 @@ any(abs(U_census_AK-U_census_AK)>1e-3)
 
 In a model where $\Sigma$, the design-based covariance matrix of $X$, is known, then the optimal linear estimator could be computed.
 
-Gauss Markov gives us the formula to compute the optimal value of $W$ as a value of $\Sigma$ is given in 
+Gauss Markov gives us the formula to compute the optimal value of $W$ as a value of $\Sigma$. It is given in 
 ["Bonnery Cheng Lahiri, An Evaluation of Design-based Properties of Different Composite Estimators"](https://arxiv.org/abs/1811.12249)
 
 
+The model for the month in sample estimate vector $Y$ is 
+$E[Y]=X\times \beta$, 
+where $\beta$ is the vector indexed by $m,e$: $\beta_{m,e}=\sum_{k\in U}y_{k,m,e}$ and $X$ is the matrix with rows indexed by $m,g,e$ and columns indexed by $m,e$ such that $X_{m,g,e,m',e'}=1/8$ if $(m=m')$ and $(e=e')$, $0$ otherwise.
 
-Let $\Sigma_\paramy=\mathrm{Var}_\paramy\left[{\vec{\hat{\total}}^{\mis}_\paramy}\right]$. \index[notations]{Sigma@$\Sigma_\paramy$ : variance covariance  matrix, $\Sigma_\paramy=\mathrm{Var}_\paramy[\hat{\total}^{\mis}_\paramy]$} 
-In the design-based approach, $\Sigma_\paramy$ is a function of the parameter $\paramy$.
-The variance of a linear transformation $W  \vec{\hat{\total}}^{\mis}_\paramy$ of $\hat{\total}^{\mis}_\paramy$ is:
-$\mathrm{Var}\left[W  \vec{\hat{\total}}^{\mis}_\paramy\right]=W^T  \Sigma_\paramy  W.$
-When month-in-sample estimates are unbiased, $\Sigma_\paramy$ is known, and only $\vec{\hat{\total}}^{\mis}_\paramy$ is observed, and \newversion{when $\vec\Xmatrix^+\vec\Xmatrix=I$}, the Gauss-Markov theorem states that 
-the BLUE of $\total_\paramy$ uniformly in $\total_y$ is the $(\Mon,3)$-sized matrix $\hat{\total}^{\text{BLUE}}_\paramy$ defined by
+The best coefficient array $W^\star$ is the matrix with rows indexed by $(m',e')$ and columns indexed by $m,g,e$ given by:
 
-\newversion{
-\begin{equation}\label{bestW}
-\vec\Xmatrix ^+ (\vec\Xmatrix   \vec\Xmatrix ^+)  \left(I-\Sigma_\paramy ((I-\vec\Xmatrix   \vec\Xmatrix ^+)^+ \Sigma_\paramy  (I-\vec\Xmatrix   \vec\Xmatrix ^+))^+\right)\vec{\hat{\total}}^{\mis}_\paramy,
-\end{equation}
-}
-
-\noindent
-where the $^+$\index[notations]{=@${}^+$ : operator, Moore Penrose pseudo inverse} operator designates the Moore Penrose pseudo inversion, $I$ is the
-identity matrix. Here the minimisation is with respect to the order on symmetric positive definite matrices: $M_1\leq M_2 \Leftrightarrow M_2-M_1$ is positive. It can be shown that $\vec\Xmatrix ^+=\transp{\vec\Xmatrix }/8$ in our case and that $\vec\Xmatrix ^+\vec\Xmatrix=I$. For more details about the Gauss-Markov result under singular linear model, one may refer to \newversion{\cite[p.~140, Eq. 3b]{Searle1994}}.
-This is a generalization of the  result  of \cite{yansaneh1998optimal}, as it takes into account the multi-dimensions of $\paramy$ and non-invertibility of $\Sigma_\paramy$.
-Note that $\Sigma_\paramy$ can be non-invertible, especially when the sample is calibrated on a given fixed population size, considered non-random, because of an affine relationship between month-in-sample  estimates (e.g., $\sum_{\misi=1}^8\sum_{\status=1}^3 \left(\hat{\total}^{\mis}_\paramy \right)_{\mon,\misi,\status} $ is not random). 
-
-It is important to recall that (i) for any linear transformation $L$ applicable to $\vec{\total}_\paramy$, the best linear unbiased estimator of $L {\vec{\total}_\paramy}$  uniformly in $\total_\paramy$ is $L  \vec{\hat{\total}}_\paramy^{\text{BLUE}}$, which ensures that the BLUE of month-to-month change can be simply obtained from the BLUE of level and so there is no need for searching a compromise between estimation of level and  change;
-(ii) for any linear transformation $L$ applicable to $\vec{\total}_\paramy$, any linear transformation $J$ applicable to $L\vec{\total}_\paramy$,  $L\vec{\hat{\total}}_\paramy^{\text{BLUE}}\in \argmin\left\{\left.J W \Sigma_\paramy \partransp{J W }\right|W, W\vec\Xmatrix =L\right\}$, which ensures that plug-in estimators for unemployment rate and month-to-month unemployment rate change derived from the BLUE are also optimal 
-in the sense that they minimize the linearized approximation of the variance of such plug-in estimators, that can be written in the form $J W \Sigma_\paramy \partransp{J W }$.
+$$W^\star=X  ^+ (X    X  ^+)  \left(I-\Sigma ((I-X    X  ^+)^+ \Sigma  (I-X    X  ^+))^+\right),$$
 
 
-The Census uses an 
+where the $^+$ operator designates the Moore Penrose pseudo inversion, $I$ is the
+identity matrix. Here the minimisation is with respect to the order on symmetric positive definite matrices: $M_1\leq M_2 \Leftrightarrow M_2-M_1$ is positive. It can be shown that $X  ^+=X^\mathrm{T}$ in our case and that $X  ^+X =I$. 
+The estimator $W^\starY$ is the Best Linear Unbiased Estimator under this model.
 
 
-#### Rough estimation of the month-in-sample estimate covariance matrix for the CPS
-
-
-
-
-Here, we compute a rough estimator of the month-in-sample estimate covariance matrix.
-We do not claim it is a good estimator, we just need one in this page to illustrate how 
-the functions we programmed work.
-
-
-A rough estimate of 
-$$\Sigma_{(m,g,e),(m',g',e')}=\mathrm{Cov}\left[\sum_{k\in S_{m,g}} w_{k,m}y_{k,m,e},\sum_{k\in S_{m',g'}} w_{k',m'}y_{k',m',e'}\right]$$ is
-
-
-$$\hat{\Sigma}_{(m,g,e),(m',g',e')}=\left|\begin{array}{ll}0&\text{if }S_{m,g}\neq S_{m',g'},\\
-&\text{otherwise.}\end{array}\right.$$ is
-
-
-
-
-
-Define $$\sigma^2_{m,m'}=
-\frac{\sum_{i=1}^ H
-     \left(\sum_{k\in h_i}y_{m ,k,.}-\frac{\sum_{i'=1}^ H\sum_{k'\in h_{i'}}y_{m,k',.}}{H}\right)
-^{\mathrm{T}}{\sum_{k\in h_i}y_{m',k,.}}}{H-1}.$$
-We estimate $\sigma^2_{m,m'}$
- by $$\hat{\sigma}^2_{m,m'}=\frac{
-            \sum\limits_{i\in\{1,\ldots,H\} \mid h_i\subset S_m\cap S_{m'}}
-\left(\sum\limits_{k\in h}y_{m,k,.}-\frac{\sum_{i=1}^ H\sum_{k\in h_i}y_{m',k,.}}{\# \{i\in\{1,\ldots,H\} \mid h_i\subset S_m\cap S_{m'}\}}\right)^{\mathrm{T}}{\sum\limits_{k\in h}y_{m',k,.}}}{\#\left\{i \in \{1,\ldots,H\}\mid h_i\subset S_m\cap S_{m'}\right\}-1}$$ if $S_m\cap S_{m'}\neq\emptyset$, $0$ otherwise.
-Let $m, m'\in \left\{1,\ldots,m\right\}$,   $g,g'\in\{1,\ldots,8\}$.
-If $m'+\delta_{g'}=m+\delta_{g}$ then
-$S_{m,g}=S_{m',g'}$, we approximate the distribution of $S_{m',g'}$ by a cluster sampling, where first stage is simple random sampling.
-and
-we estimate
-$\mathrm{Cov}\left[\hat{t }^{\text{m.i.s},g}_{m},\hat{t }^{\text{m.i.s},g}_{m'}\right]$
-by $\widehat{\mathrm{Cov}}\left[\hat{t }^{\text{m.i.s},g}_{y_{m,e }},\hat{t }^{\text{m.i.s},g'}_{y_{m',e '}}\right]=(H)^2\left(1-\frac{N_H}{H}\right)\frac{\hat{\sigma}^2_{m,m'}}{N_H/8}.$
-If $m'+\delta_{g'}\neq m+\delta_{g}$ then $S_{m,g}\cap S_{m',g'}=\emptyset$ and we approximate the distribution of  $(S_{m,g},S_{m',g'})$ by the distribution of two independent simple random samples of clusters conditional to non-overlap of the two samples, and we estimate
-$\mathrm{Cov}\left[\hat{t}^{\text{m.i.s}}_{m,g,.},\hat{t}^{\text{m.i.s}}_{m',g',.}\right]$
-by $\widehat{\mathrm{Cov}}\left[\hat{t }^{\text{m.i.s}}_{y_{m,g,.}},\hat{t }^{\text{m.i.s}}_{y_{m',g',.}}\right]=-H\hat{\sigma}^2_{m,m'}$.
+The next code provides the $X$ and $X^+$ matrices:
 
 
 ```r
-Sigma=rWishart(prod(dim(Y)))
+ X<-CPS_X_array(months=list(m=paste(200501:200504)),
+             vars=list(y=c("e","u","n")),
+             rgs=list(hrmis=paste(1:8)),1/2)
+ Xplus<-CPS_Xplus_array(months=list(m=paste(200501:200504)),
+             vars=list(y=c("e","u","n")),
+             rgs=list(hrmis=paste(1:8)),1/2)
+ TensorDB::"%.%"(Xplus,X,
+  I_A=list(c=integer(0),n=c("y2","m2"),p=c("y","hrmis","m")),
+  I_B=list(c=integer(0),p=c("y","hrmis","m"),q=c("y2","m2")))
 ```
 
 ```
-## Error in rWishart(prod(dim(Y))): argument "df" is missing, with no default
+## , , y2 = e, m2 = 200501
+## 
+##    m2
+## y2  200501 200502 200503 200504
+##   e      1      0      0      0
+##   u      0      0      0      0
+##   n      0      0      0      0
+## 
+## , , y2 = u, m2 = 200501
+## 
+##    m2
+## y2  200501 200502 200503 200504
+##   e      0      0      0      0
+##   u      1      0      0      0
+##   n      0      0      0      0
+## 
+## , , y2 = n, m2 = 200501
+## 
+##    m2
+## y2  200501 200502 200503 200504
+##   e      0      0      0      0
+##   u      0      0      0      0
+##   n      1      0      0      0
+## 
+## , , y2 = e, m2 = 200502
+## 
+##    m2
+## y2  200501 200502 200503 200504
+##   e      0      1      0      0
+##   u      0      0      0      0
+##   n      0      0      0      0
+## 
+## , , y2 = u, m2 = 200502
+## 
+##    m2
+## y2  200501 200502 200503 200504
+##   e      0      0      0      0
+##   u      0      1      0      0
+##   n      0      0      0      0
+## 
+## , , y2 = n, m2 = 200502
+## 
+##    m2
+## y2  200501 200502 200503 200504
+##   e      0      0      0      0
+##   u      0      0      0      0
+##   n      0      1      0      0
+## 
+## , , y2 = e, m2 = 200503
+## 
+##    m2
+## y2  200501 200502 200503 200504
+##   e      0      0      1      0
+##   u      0      0      0      0
+##   n      0      0      0      0
+## 
+## , , y2 = u, m2 = 200503
+## 
+##    m2
+## y2  200501 200502 200503 200504
+##   e      0      0      0      0
+##   u      0      0      1      0
+##   n      0      0      0      0
+## 
+## , , y2 = n, m2 = 200503
+## 
+##    m2
+## y2  200501 200502 200503 200504
+##   e      0      0      0      0
+##   u      0      0      0      0
+##   n      0      0      1      0
+## 
+## , , y2 = e, m2 = 200504
+## 
+##    m2
+## y2  200501 200502 200503 200504
+##   e      0      0      0      1
+##   u      0      0      0      0
+##   n      0      0      0      0
+## 
+## , , y2 = u, m2 = 200504
+## 
+##    m2
+## y2  200501 200502 200503 200504
+##   e      0      0      0      0
+##   u      0      0      0      1
+##   n      0      0      0      0
+## 
+## , , y2 = n, m2 = 200504
+## 
+##    m2
+## y2  200501 200502 200503 200504
+##   e      0      0      0      0
+##   u      0      0      0      0
+##   n      0      0      0      1
 ```
 
 
-#### Empirical best AK estimator
+The estimator $W^\starY$ is the Best Linear Unbiased Estimator under this model.
 
-#### Empirical best YF estimator
 
-#### Empirical best linear estimator
+```r
+beta= matrix(rchisq(12,1),4,3)
+dimnames(beta)<-list(m=paste(200501:200504),y=c("e","u","n"))
+ X<-CPS_X_array(months=list(m=paste(200501:200504)),
+             vars=list(y=c("e","u","n")),
+             rgs=list(hrmis=paste(1:8)))
+ Xplus<-CPS_Xplus_array(months=list(m=paste(200501:200504)),
+             vars=list(y=c("e","u","n")),
+             rgs=list(hrmis=paste(1:8)),1/2)
+ EY<-TensorDB::"%.%"(X,beta,I_A=list(c=integer(0),n=c("m","y","hrmis"),p=c("m2","y2")),I_B=list(c=integer(0),p=c("m","y"),q=integer(0)))
+ set.seed(1)
+ Sigma=rWishart(1,length(EY),diag(length(EY)))
+ Y<-array(mvrnorm(n = 100,mu = c(EY),Sigma = Sigma[,,1]),c(100,dim(EY)))
+ dimnames(Y)<-c(list(rep=1:100),dimnames(EY))
+ Sigma.A<-array(Sigma,c(dim(EY),dim(EY)))
+ dimnames(Sigma.A)<-rep(dimnames(EY),2);names(dimnames(Sigma.A))[4:6]<-paste0(names(dimnames(Sigma.A))[4:6],"2")
+ W<-CoeffGM.array(Sigma.A,X,Xplus)
+ WY<-TensorDB::"%.%"(W,Y,I_A=list(c=integer(0),n=c("y2","m2"),p=c("m","y","hrmis")),I_B=list(c=integer(0),p=c("m","y","hrmis"),q=c("rep")))
+ DY<-TensorDB::"%.%"(Xplus,Y,I_A=list(c=integer(0),n=c("y2","m2"),p=c("m","y","hrmis")),I_B=list(c=integer(0),p=c("m","y","hrmis"),q=c("rep")))
+ plot(c(beta),c(apply(DY,1:2,var)),col="red")
+```
 
-### Modified regression (Singh, Fuller-Rao)
+![plot of chunk unnamed-chunk-19](figure/unnamed-chunk-19-1.png)
+
+```r
+ plot(c(beta),c(apply(WY,1:2,var)))
+```
+
+![plot of chunk unnamed-chunk-19](figure/unnamed-chunk-19-2.png)
+
+
+#### Best AK estimator for level, change and compromise
+
+
+#### Empirical best estimators and estimation of $\Sigma$
+
+As $\Sigma$ is not known, the approach adopted by the Census has been  to plugin an estimate of $\Sigma$, and then try values of $A$ and $K$ between
+0 and 1 with one decimal value and take the ones tha minimize the estimated variance.
+
+There are many issues with this approach:
+
+* The optimisation method: 
+- The optimal was chosen on a grid, so the optimal may have been missed.
+- The optimal was chosen variable by variable, which is only optimal when estimates of different variables are uncorrelated, which is not the case: there is a negative relationship between unemployment, employment and not in the labor force: a sample with a high level of employed and unemployed will have a low level of not in the labor force.
+* No robustness
+- The estimation of $\Sigma$ was done with really strong variance stationarity assumption, which is unrealistic when one observes the evolution of the employment during the last decade.
+- No study to my knowledge was done to show how good this estimation of $\Sigma$ was.
+- the empirical best will be very sensitive to the values of $\Sigma$.
+
+## Modified regression (Singh, Fuller-Rao)
 
 
