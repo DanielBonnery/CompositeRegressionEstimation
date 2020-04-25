@@ -574,11 +574,23 @@ dimnames(beta)<-list(m=paste(200501:200504),y=c("e","u","n"))
 
 
 #### Best AK estimator for level, change and compromise
+When $\Sigma$ is known, the best linear estimate of $A\times \beta$ is $A\times W^\star \beta$. What is true for the Best linear estimate is not 
+true for all the best linear estimate in a subclass of the linear estimates.
+For example, the best coefficients A and K for month to month change may not be the best coeeficients for level of employement.
+One needs to define a compromise target to define what is the optimal $A$ and $K$ coefficients.
 
+The following code gives the A and K coefficient as a function of $\Sigma$ that minimise ...
+
+
+```r
+to be done
+```
+
+When $\Sigma$ is known, 
 
 #### Empirical best estimators and estimation of $\Sigma$
 
-As $\Sigma$ is not known, the approach adopted by the Census has been  to plugin an estimate of $\Sigma$, and then try values of $A$ and $K$ between
+As $\Sigma$ is not known, the approach adopted by the Census has been for total of employed and total of unemployed separately to plugin an estimate of $\Sigma$, and then try values of $A$ and $K$ between
 0 and 1 with one decimal value and take the ones tha minimize the estimated variance.
 
 There are many issues with this approach:
