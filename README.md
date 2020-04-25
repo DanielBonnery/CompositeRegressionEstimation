@@ -574,11 +574,23 @@ dimnames(beta)<-list(m=paste(200501:200504),y=c("e","u","n"))
 
 
 #### Best AK estimator for level, change and compromise
+When <img src="/tex/813cd865c037c89fcdc609b25c465a05.svg?invert_in_darkmode&sanitize=true" align=middle width=11.87217899999999pt height=22.465723500000017pt/> is known, the best linear estimate of <img src="/tex/82d4821940bb3683b4917f439e512b9d.svg?invert_in_darkmode&sanitize=true" align=middle width=42.58554134999999pt height=22.831056599999986pt/> is <img src="/tex/20ef8e6105aacc4a9df9bc1ae34b4fa9.svg?invert_in_darkmode&sanitize=true" align=middle width=67.95088739999998pt height=22.831056599999986pt/>. What is true for the Best linear estimate is not 
+true for all the best linear estimate in a subclass of the linear estimates.
+For example, the best coefficients A and K for month to month change may not be the best coeeficients for level of employement.
+One needs to define a compromise target to define what is the optimal <img src="/tex/53d147e7f3fe6e47ee05b88b166bd3f6.svg?invert_in_darkmode&sanitize=true" align=middle width=12.32879834999999pt height=22.465723500000017pt/> and <img src="/tex/d6328eaebbcd5c358f426dbea4bdbf70.svg?invert_in_darkmode&sanitize=true" align=middle width=15.13700594999999pt height=22.465723500000017pt/> coefficients.
 
+The following code gives the A and K coefficient as a function of <img src="/tex/813cd865c037c89fcdc609b25c465a05.svg?invert_in_darkmode&sanitize=true" align=middle width=11.87217899999999pt height=22.465723500000017pt/> that minimise ...
+
+
+```r
+to be done
+```
+
+When <img src="/tex/813cd865c037c89fcdc609b25c465a05.svg?invert_in_darkmode&sanitize=true" align=middle width=11.87217899999999pt height=22.465723500000017pt/> is known, 
 
 #### Empirical best estimators and estimation of <img src="/tex/813cd865c037c89fcdc609b25c465a05.svg?invert_in_darkmode&sanitize=true" align=middle width=11.87217899999999pt height=22.465723500000017pt/>
 
-As <img src="/tex/813cd865c037c89fcdc609b25c465a05.svg?invert_in_darkmode&sanitize=true" align=middle width=11.87217899999999pt height=22.465723500000017pt/> is not known, the approach adopted by the Census has been  to plugin an estimate of <img src="/tex/813cd865c037c89fcdc609b25c465a05.svg?invert_in_darkmode&sanitize=true" align=middle width=11.87217899999999pt height=22.465723500000017pt/>, and then try values of <img src="/tex/53d147e7f3fe6e47ee05b88b166bd3f6.svg?invert_in_darkmode&sanitize=true" align=middle width=12.32879834999999pt height=22.465723500000017pt/> and <img src="/tex/d6328eaebbcd5c358f426dbea4bdbf70.svg?invert_in_darkmode&sanitize=true" align=middle width=15.13700594999999pt height=22.465723500000017pt/> between
+As <img src="/tex/813cd865c037c89fcdc609b25c465a05.svg?invert_in_darkmode&sanitize=true" align=middle width=11.87217899999999pt height=22.465723500000017pt/> is not known, the approach adopted by the Census has been for total of employed and total of unemployed separately to plugin an estimate of <img src="/tex/813cd865c037c89fcdc609b25c465a05.svg?invert_in_darkmode&sanitize=true" align=middle width=11.87217899999999pt height=22.465723500000017pt/>, and then try values of <img src="/tex/53d147e7f3fe6e47ee05b88b166bd3f6.svg?invert_in_darkmode&sanitize=true" align=middle width=12.32879834999999pt height=22.465723500000017pt/> and <img src="/tex/d6328eaebbcd5c358f426dbea4bdbf70.svg?invert_in_darkmode&sanitize=true" align=middle width=15.13700594999999pt height=22.465723500000017pt/> between
 0 and 1 with one decimal value and take the ones tha minimize the estimated variance.
 
 There are many issues with this approach:
