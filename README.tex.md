@@ -11,7 +11,7 @@ author: Daniel Bonnery
 
 * Composite Regression ["Fuller, Wayne A., and J. N. K. Rao. "A regression composite estimator with application to the Canadian Labour Force Survey." Survey Methodology 27.1 (2001): 45-52."](http://www.statcan.gc.ca/pub/12-001-x/2001001/article/5853-eng.pdf)
 
-* Gauss Markov BLUE
+* Gauss Markov Best Linear Unbiased Estimator as a linear combinaison of Month in sample estimates.
 
 * AK estimator, Gurney, M. and Daly, J.~F. (1965). A multivariate approach to estimation in periodic sample surveys}.  In Proceedings of the Social Statistics Section, American
   Statistical Association, volume 242, page 257."
@@ -127,15 +127,11 @@ The following code  creates the array `Y` of dimension $M\times 8\times 3$ (M mo
 library(CompositeRegressionEstimation)
 Y<-CompositeRegressionEstimation::WSrg2(list.tables,rg = "hrmis",weight="pwsswgt",y = "employmentstatus")
 Umis<-plyr::aaply(Y[,,"e"],1:2,sum)/plyr::aaply(Y[,,c("e","u")],1:2,sum);
-library(ggplot2);ggplot(data=reshape2::melt(Umis),aes(x=m,y=value,color=mis))+geom_line()+
+library(ggplot2);ggplot(data=reshape2::melt(Umis),aes(x=m,y=value,color=hrmis,group=hrmis))+geom_line()+
   scale_x_continuous(breaks=200501:200512,labels=month.abb)+xlab("")+ylab("")+ 
   labs(title = "Month-in-sample estimates", 
        subtitle = "Monthly employment rate, year 2005", 
        caption = "Computed from CPS public anonymized microdata.")
-```
-
-```
-## Error in FUN(X[[i]], ...): object 'mis' not found
 ```
 
 <img src="figure/unnamed-chunk-3-1.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" width="100%" />
@@ -227,27 +223,13 @@ Then one can multiply the array 'W' and 'X':
 
 
 ```r
-Yc2<-arrayproduct::"%.%"(Wrec,X,I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),I_B=list(c=integer(0),p=c("m","hrmis"),q="employmentstatus"))
-```
-
-```
-## Error in aperm.default(A, c(n, p)): 'perm' is of wrong length 3 (!= 5)
-```
-
-```r
+Yc2<-arrayproduct::"%.%"(Wrec,Y,I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),I_B=list(c=integer(0),p=c("m","hrmis"),q="employmentstatus"))
 Uc2<-Yc2[,"e"]/(Yc2[,"e"]+Yc2[,"u"])
-```
-
-```
-## Error in eval(expr, envir, enclos): object 'Yc2' not found
-```
-
-```r
 any(abs(Uc-Uc2)>1e-3)
 ```
 
 ```
-## Error in eval(expr, envir, enclos): object 'Uc2' not found
+## [1] FALSE
 ```
 
 
@@ -414,13 +396,6 @@ Y_census_AK<-arrayproduct::"%.%"(Wak,X,I_A=list(c=integer(0),n="m2",p=c("m1","rg
 
 ```r
 U_census_AK2<-Yc2[,"e"]/(Yc2[,"e"]+Yc2[,"u"])
-```
-
-```
-## Error in eval(expr, envir, enclos): object 'Yc2' not found
-```
-
-```r
 any(abs(U_census_AK-U_census_AK)>1e-3)
 ```
 
@@ -566,7 +541,7 @@ The next code provides the $X$ and $X^+$ matrices:
 ```
 
 
-The estimator $W^\starY$ is the Best Linear Unbiased Estimator under this model.
+The estimator $W^\star Y$ is the Best Linear Unbiased Estimator under this model.
 
 
 ```r
