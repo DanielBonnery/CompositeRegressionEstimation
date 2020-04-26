@@ -118,24 +118,6 @@ The following code  creates the array `Y` of dimension $M\times 8\times 3$ (M mo
 
 ```r
 library(CompositeRegressionEstimation)
-```
-
-```
-## Loading required package: arrayproduct
-```
-
-```
-## 
-## Attaching package: 'arrayproduct'
-```
-
-```
-## The following objects are masked from 'package:TensorDB':
-## 
-##     %.%, A2M, extractA
-```
-
-```r
 Y<-CompositeRegressionEstimation::WSrg2(list.tables,rg = "hrmis",weight="pwsswgt",y = "employmentstatus")
 Umis<-plyr::aaply(Y[,,"e"],1:2,sum)/plyr::aaply(Y[,,c("e","u")],1:2,sum);
 library(ggplot2);ggplot(data=reshape2::melt(Umis),aes(x=m,y=value,color=mis))+geom_line()+
@@ -242,7 +224,7 @@ Yc2<-arrayproduct::"%.%"(Wrec,X,I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),I_
 ```
 
 ```
-## Error in FUN(X[[i]], ...): object 'X' not found
+## Error in aperm.default(A, c(n, p)): 'perm' is of wrong length 3 (!= 5)
 ```
 
 ```r
@@ -340,10 +322,6 @@ Wak.e<-W.ak(months=period,
             rescaled=F)
 ```
 
-```
-## Error in W.ak(months = period, groups = paste0("", 1:8), S = c(2:4, 6:8), : object 'W' not found
-```
-
 In the same way:
 
 ```r
@@ -357,10 +335,6 @@ Wak.u<-W.ak(months=period,
             rescaled=F)
 ```
 
-```
-## Error in W.ak(months = period, groups = paste0("", 1:8), S = c(2:4, 6:8), : object 'W' not found
-```
-
 
 The Census AK estimator of the total of employed and unemployed computed with the values of A and K used by the Census are:
 
@@ -370,7 +344,7 @@ Y_census_AK.e<-arrayproduct::"%.%"(Wak.e,X[,,"e"],I_A=list(c=integer(0),n="m2",p
 ```
 
 ```
-## Error in FUN(X[[i]], ...): object 'Wak.e' not found
+## Error in X[, , "e"]: incorrect number of dimensions
 ```
 
 ```r
@@ -378,7 +352,7 @@ Y_census_AK.u<-arrayproduct::"%.%"(Wak.u,X[,,"u"],I_A=list(c=integer(0),n="m2",p
 ```
 
 ```
-## Error in FUN(X[[i]], ...): object 'Wak.u' not found
+## Error in X[, , "u"]: incorrect number of dimensions
 ```
 The corresponding unemployment rate time series can be obtained by the ratio :
 
@@ -420,10 +394,6 @@ Wak<-W.multi.ak(months=period,
             ak=list(u=c(a=CPS_A_u(),k=CPS_K_u()),e=c(a=CPS_A_e(),k=CPS_K_e()),n=c(a=0,k=0)))
 ```
 
-```
-## Error in W.ak(months, groups, S, a = AK["a"], k = AK["k"], eta0 = eta0, : object 'W' not found
-```
-
 and the estimates total of employed, unemployed and not in the labor force are obtained with:
 
 
@@ -432,7 +402,7 @@ Y_census_AK<-arrayproduct::"%.%"(Wak,X,I_A=list(c=integer(0),n="m2",p=c("m1","rg
 ```
 
 ```
-## Error in FUN(X[[i]], ...): object 'Wak' not found
+## Error in aperm.default(A, c(n, p)): 'perm' is of wrong length 3 (!= 6)
 ```
 
 ```r
@@ -654,6 +624,57 @@ There are many issues with this approach:
 - the empirical best will be very sensitive to the values of $\Sigma$.
 
 ## Modified regression (Singh, Fuller-Rao)
+
+
+
+The `MR` function allows to compute the general class of "modified regression" estimators  proposed by Singh, see: 
+* "Singh, A.~C., Kennedy, B., and Wu, S. (2001). Regression composite estimation for the Canadian Labour Force Survey: evaluation and implementation, Survey Methodology}, 27(1):33--44."
+* "Singh, A.~C., Kennedy, B., Wu, S., and Brisebois, F. (1997). Composite estimation for the Canadian Labour Force Survey. Proceedings of the Survey Research Methods Section, American
+  Statistical Association}, pages 300--305."
+* "Singh, A.~C. and Merkouris, P. (1995). 
+Composite estimation by modified regression for repeated surveys. Proceedings of the Survey Research Methods Section, American Statistical Association}, pages 420--425."
+
+Modified regression is  general approach that consists in calibrating on one or more proxies for "the previous month". Singh describes what properties the proxy variable has to follow, and proposes two diferent proxy variables (proxy 1, proxy 2), as well as using the two together. "Fuller, W.~A. and Rao, J. N.~K. (2001.  A regression composite estimator with application to the Canadian Labour Force Survey, Survey Methodology}, 27(1):45--51), use an estimator in the class described by Singh that where the proxy is an affine combination of proxy 1 and proxy 2. The coefficient of the combination is denoted $\alpha$.
+
+For  $\alpha\in[0,1]$, the  regression composite estimator of $t_{y}$  is a calibration  estimator $\left(\hat{t}^{\text{MR},\alpha}_y\right)_{m,.}$ defined as follows:
+provide calibration totals $\left(t^{adj}_{x}\right)_{m,.}$ for the auxiliary variables (they can be equal to the true totals when known or estimated), then 
+define $ \left(\hat{t}^{\text{MR} ,\alpha}_z\right)_{1,.}=\left(\hat{t}^{\text{Direct}}_z\right)_{1,.},$  and  $w_{1,\indiv}^{\rcind ,\alpha}=w_{1,\indiv}$ if $k\in \sample_1$, 0 otherwise.
+For $m \in \{2,\ldots, M\}$,  recursively define \index[notations]{MR@{MR1, MR2, MR3} : indicates the modified regression 1, 2 and 3 estimators}\index[notations]{alpha@$\alpha$ : coefficient in $[0,1]$ used to defined the Fuller and Rao regression composite estimator}
+\begin{align}
+zc[(\alpha)]_{m,\indiv,.}&=
+  \begin{cases}
+     \alpha\left(\tau_m^{-1}
+          \left(z_{m-1,\indiv,.}-z_{m,\indiv,.}\right) +z_{m,\indiv,.}\right)
+     +(1-\alpha)~z_{m-1,\indiv,.} & \text{if }k\in \sample_{m}\cap \sample_{m-1},
+\\
+ \alpha~ z_{m,\indiv,.}
+ +(1-\alpha)~\left(\sum_{k\in \sample_{m-1}}w_{m-1,\indiv}^{\rcind ,\alpha}\right)^{-1}
+\left(\hat{t}_y ^{\mathrm{c}}\right)_{m-1,.} & \text{if }k\in \sample_{m}\setminus \sample_{m-1},
+\end{cases}\label{RCstep1}
+\end{align}
+where
+$\tau_m=\left(\sum_{k\in \sample_m\cap \sample_{m-1}}w_{m,\indiv}\right)^{-1}\sum_{k\in \sample_m}w_{m,\indiv}$.
+Then the regression composite estimator of $\left(t_{y}\right)_{m,.}$ is given by
+$\left(\hat{t}^{\rcind,\alpha}_y\right)_{m,.}=
+\sum_{k\in \sample_m}w^{\rcind,\alpha}_{m,\indiv}y_{m,\indiv},$
+where
+\begin{equation}
+\left(w^{\rcind,\alpha}_{m,.}\right)\!=\!\argmin\left\{\sum_{k\in U}\frac{ \left(w^\star_{k}-w_{m,\indiv}\right)^2}{1(k\notin S_m)+w_{m,\indiv}}\left|
+w^\star\in\mathbb{R}^{U},\!\!\!
+\begin{array}{l}\sum_{k\in \sample_m} w^\star_{k}zc[(\alpha)]_{m,\indiv,.}\!=\!\left(\hat{t}^{\rcind,\alpha}_z\right)_{m-1,.}\\
+\sum_{k\in \sample_m} w^\star_{k}x_{m,\indiv,.}=\left(t^{adj}_{x}\right)_{m,.}
+\end{array}
+\right.\!\!\!\! \right\}\!\!,\label{RCstep2}\end{equation}
+and
+$\left(\hat{t}^{\rcind,\alpha}_z\right)_{m,.}=
+\sum_{k\in \sample_m}w^{\rcind,\alpha}_{m,\indiv}zc[(\alpha)]_{m,\indiv},$
+where $1(k\notin S_m)=1$ if $k\notin S_m$ and $0$ otherwise.
+Our definition of regression composite estimator is more general than in \cite{fuller2001regression} as it takes into account a multivariate version of $y$.
+Modified Regression 3 (MR3), of \cite{gambino2001regression},  does not belong to the class of regression composite estimators. The MR3 estimator imposes too many constraints in the calibration procedure, which leads to a high variability of the calibration weights, and consequently, MR3 estimator has a larger MSE than composite regression estimators.
+%As an appIt is obtained by calibrating on both $zc[(0)]_{m,.}$ and $zc[(1)]_{m,.}$ in step \ref{RCstep2}.
+%The regression composite estimator of $\ur_{m}$ is given by
+%$\hat{\ur}^{\rcind(\alpha)}=\urf\left(\hat{t}_y^{\rcind(\alpha)}\right)$.\index[notations]{urh@$\hat{\ur}^\star$ : $M$-sized vector, estimator of unemployment rate derived from estimator of total of employed and unemployed, $\hat{\ur}^{\star}=\urf\left(\hat{t}_y^{\star}\right)$}
+
 
 
 
