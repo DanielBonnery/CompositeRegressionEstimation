@@ -4,11 +4,18 @@ author: Daniel Bonnery
 ---
 
 `CompositeRegressionEstimation` is an R package that allows to compute estimators for longitudinal survey:
+
+* Modified Regression : "Singh, A.~C., Kennedy, B., and Wu, S. (2001). Regression composite estimation for the Canadian Labour Force Survey: evaluation and implementation, Survey Methodology}, 27(1):33--44.", "Singh, A.~C., Kennedy, B., Wu, S., and Brisebois, F. (1997). Composite estimation for the Canadian Labour Force Survey. Proceedings of the Survey Research Methods Section, American Statistical Association}, pages 300--305."  "Singh, A.~C. and Merkouris, P. (1995).  Composite estimation by modified regression for repeated surveys. Proceedings of the Survey Research Methods Section, American Statistical Association}, pages 420--425."
+
+
+
 * Composite Regression ["Fuller, Wayne A., and J. N. K. Rao. "A regression composite estimator with application to the Canadian Labour Force Survey." Survey Methodology 27.1 (2001): 45-52."](http://www.statcan.gc.ca/pub/12-001-x/2001001/article/5853-eng.pdf)
 
 * Gauss Markov BLUE
 
-* AK estimator
+* AK estimator, Gurney, M. and Daly, J.~F. (1965). A multivariate approach to estimation in periodic sample surveys}.  In Proceedings of the Social Statistics Section, American
+  Statistical Association, volume 242, page 257."
+
 
 This package contains the generic functions that were developped for the journal article ["Bonnery Cheng Lahiri, An Evaluation of Design-based Properties of Different Composite Estimators"](https://arxiv.org/abs/1811.12249).
 The demonstration code on this page  uses the `dataCPS` package that allows to download public anonymised CPS micro data from the US Census Bureau website.
@@ -637,8 +644,7 @@ Composite estimation by modified regression for repeated surveys. Proceedings of
 Modified regression is  general approach that consists in calibrating on one or more proxies for "the previous month". Singh describes what properties the proxy variable has to follow, and proposes two diferent proxy variables (proxy 1, proxy 2), as well as using the two together. "Fuller, W.~A. and Rao, J. N.~K. (2001.  A regression composite estimator with application to the Canadian Labour Force Survey, Survey Methodology}, 27(1):45--51), use an estimator in the class described by Singh that where the proxy is an affine combination of proxy 1 and proxy 2. The coefficient of the combination is denoted $\alpha$.
 
 For  $\alpha\in[0,1]$, the  regression composite estimator of $t_{y}$  is a calibration  estimator $\left(\hat{t}^{\text{MR},\alpha}_y\right)_{m,.}$ defined as follows:
-provide calibration totals $\left(t^{adj}_{x}\right)_{m,.}$ for the auxiliary variables (they can be equal to the true totals when known or estimated), then 
-define $ \left(\hat{t}^{\text{MR} ,\alpha}_z\right)_{1,.}=\left(\hat{t}^{\text{Direct}}_z\right)_{1,.},$  and  $w_{1,{k}}^{{\text{MR}} ,\alpha}=w_{1,{k}}$ if $k\in S_1$, 0 otherwise.
+provide calibration totals $\left(t^{adj}_{x}\right)_{m,.}$ for the auxiliary variables (they can be equal to the true totals when known or estimated), then  define $ \left(\hat{t}^{\text{MR} ,\alpha}_z\right)_{1,.}=\left(\hat{t}^{\text{Direct}}_z\right)_{1,.},$  and $w_{1,{k}}^{{\text{MR}} ,\alpha}=w_{1,{k}}$ if $k\in S_1$, 0 otherwise. 
 For $m \in \{2,\ldots, M\}$,  recursively define 
 
 $$z^\star[(\alpha)]_{m,{k},.}=
@@ -650,25 +656,21 @@ $$z^\star[(\alpha)]_{m,{k},.}=
  +(1-\alpha)~\left(\sum_{k\in S_{m-1}}w_{m-1,{k}}^{{\text{MR}} ,\alpha}\right)^{-1}
 \left(\hat{t}_y ^{\mathrm{c}}\right)_{m-1,.} & \text{if }k\in S_{m}\setminus S_{m-1},
 \end{array}\right.$$
-where
-$\tau_m=\left(\sum_{k\in S_m\cap S_{m-1}}w_{m,{k}}\right)^{-1}\sum_{k\in S_m}w_{m,{k}}$.
-Then the regression composite estimator of $\left(t_{y}\right)_{m,.}$ is given by
-$\left(\hat{t}^{{\text{MR}},\alpha}_y\right)_{m,.}=
-\sum_{k\in S_m}w^{{\text{MR}},\alpha}_{m,{k}}y_{m,{k}},$
-where
+where $\tau_m=\left(\sum_{k\in S_m\cap S_{m-1}}w_{m,{k}}\right)^{-1}\sum_{k\in S_m}w_{m,{k}}$.
+
+Then the regression composite estimator of $\left(t_{y}\right)_{m,.}$ is given by $$\left(\hat{t}^{{\text{MR}},\alpha}_y\right)_{m,.}=
+\sum_{k\in S_m}w^{{\text{MR}},\alpha}_{m,{k}}y_{m,{k}},$$
+where 
 $$\left(w^{{\text{MR}},\alpha}_{m,.}\right)\!=\!\arg\min\left\{\sum_{k\in U}\frac{ \left(w^\star_{k}-w_{m,{k}}\right)^2}{1(k\notin S_m)+w_{m,{k}}}\left|
 w^\star\in\mathbb{R}^{U},\!\!\!
 \begin{array}{l}\sum_{k\in S_m} w^\star_{k}{z^\star}[(\alpha)]_{m,{k},.}\!=\!\left(\hat{t}^{{\text{MR}},\alpha}_z\right)_{m-1,.}\\
 \sum_{k\in S_m} w^\star_{k}x_{m,{k},.}=\left(t^{adj}_{x}\right)_{m,.}
 \end{array}
 \right.\right\},$$
-and
-$\left(\hat{t}^{{\text{MR}},\alpha}_z\right)_{m,.}= \sum_{k\in S_m}w^{{\text{MR}},\alpha}_{m,{k}}{z^\star}[(\alpha)]_{m,{k}},$
-where $1(k\notin S_m)=1$ if $k\notin S_m$ and $0$ otherwise.
-
-
+and $\left(\hat{t}^{{\text{MR}},\alpha}_z\right)_{m,.}= \sum_{k\in S_m}w^{{\text{MR}},\alpha}_{m,{k}}{z^\star}[(\alpha)]_{m,{k}},$ where $1(k\notin S_m)=1$ if $k\notin S_m$ and $0$ otherwise.
 
 The following code allows to compute the Regression composite estimation (MR1 corresponds to $\alpha=0$, MR2 corresponds to $\alpha=1$, and MR3 to 'Singh=TRUE') In this example we compute MR1, MR2, MR3 and regression composite for $\alpha=.5,.75,$ and  $.95$.
+
 
 ```r
 list.tables<-lapply(list.tables,dplyr::mutate,const=1)
