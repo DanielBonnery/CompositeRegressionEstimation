@@ -638,42 +638,34 @@ Modified regression is  general approach that consists in calibrating on one or 
 
 For  $\alpha\in[0,1]$, the  regression composite estimator of $t_{y}$  is a calibration  estimator $\left(\hat{t}^{\text{MR},\alpha}_y\right)_{m,.}$ defined as follows:
 provide calibration totals $\left(t^{adj}_{x}\right)_{m,.}$ for the auxiliary variables (they can be equal to the true totals when known or estimated), then 
-define $ \left(\hat{t}^{\text{MR} ,\alpha}_z\right)_{1,.}=\left(\hat{t}^{\text{Direct}}_z\right)_{1,.},$  and  $w_{1,\indiv}^{\rcind ,\alpha}=w_{1,\indiv}$ if $k\in \sample_1$, 0 otherwise.
-For $m \in \{2,\ldots, M\}$,  recursively define \index[notations]{MR@{MR1, MR2, MR3} : indicates the modified regression 1, 2 and 3 estimators}\index[notations]{alpha@$\alpha$ : coefficient in $[0,1]$ used to defined the Fuller and Rao regression composite estimator}
-\begin{align}
-zc[(\alpha)]_{m,\indiv,.}&=
-  \begin{cases}
+define $ \left(\hat{t}^{\text{MR} ,\alpha}_z\right)_{1,.}=\left(\hat{t}^{\text{Direct}}_z\right)_{1,.},$  and  $w_{1,{k}}^{{\text{MR}} ,\alpha}=w_{1,{k}}$ if $k\in S_1$, 0 otherwise.
+For $m \in \{2,\ldots, M\}$,  recursively define 
+
+$$z^\star[(\alpha)]_{m,{k},.}=
+  \left|\begin{array}{ll}
      \alpha\left(\tau_m^{-1}
-          \left(z_{m-1,\indiv,.}-z_{m,\indiv,.}\right) +z_{m,\indiv,.}\right)
-     +(1-\alpha)~z_{m-1,\indiv,.} & \text{if }k\in \sample_{m}\cap \sample_{m-1},
-\\
- \alpha~ z_{m,\indiv,.}
- +(1-\alpha)~\left(\sum_{k\in \sample_{m-1}}w_{m-1,\indiv}^{\rcind ,\alpha}\right)^{-1}
-\left(\hat{t}_y ^{\mathrm{c}}\right)_{m-1,.} & \text{if }k\in \sample_{m}\setminus \sample_{m-1},
-\end{cases}\label{RCstep1}
-\end{align}
+          \left(z_{m-1,{k},.}-z_{m,{k},.}\right) +z_{m,{k},.}\right)
+     +(1-\alpha)~z_{m-1,{k},.} & \text{if }k\in S_{m}\cap S_{m-1},\\
+ \alpha~ z_{m,{k},.}
+ +(1-\alpha)~\left(\sum_{k\in S_{m-1}}w_{m-1,{k}}^{{\text{MR}} ,\alpha}\right)^{-1}
+\left(\hat{t}_y ^{\mathrm{c}}\right)_{m-1,.} & \text{if }k\in S_{m}\setminus S_{m-1},
+\end{array}\right.$$
 where
-$\tau_m=\left(\sum_{k\in \sample_m\cap \sample_{m-1}}w_{m,\indiv}\right)^{-1}\sum_{k\in \sample_m}w_{m,\indiv}$.
+$\tau_m=\left(\sum_{k\in S_m\cap S_{m-1}}w_{m,{k}}\right)^{-1}\sum_{k\in S_m}w_{m,{k}}$.
 Then the regression composite estimator of $\left(t_{y}\right)_{m,.}$ is given by
-$\left(\hat{t}^{\rcind,\alpha}_y\right)_{m,.}=
-\sum_{k\in \sample_m}w^{\rcind,\alpha}_{m,\indiv}y_{m,\indiv},$
+$\left(\hat{t}^{{\text{MR}},\alpha}_y\right)_{m,.}=
+\sum_{k\in S_m}w^{{\text{MR}},\alpha}_{m,{k}}y_{m,{k}},$
 where
-\begin{equation}
-\left(w^{\rcind,\alpha}_{m,.}\right)\!=\!\argmin\left\{\sum_{k\in U}\frac{ \left(w^\star_{k}-w_{m,\indiv}\right)^2}{1(k\notin S_m)+w_{m,\indiv}}\left|
+$$\left(w^{{\text{MR}},\alpha}_{m,.}\right)\!=\!\arg\min\left\{\sum_{k\in U}\frac{ \left(w^\star_{k}-w_{m,{k}}\right)^2}{1(k\notin S_m)+w_{m,{k}}}\left|
 w^\star\in\mathbb{R}^{U},\!\!\!
-\begin{array}{l}\sum_{k\in \sample_m} w^\star_{k}zc[(\alpha)]_{m,\indiv,.}\!=\!\left(\hat{t}^{\rcind,\alpha}_z\right)_{m-1,.}\\
-\sum_{k\in \sample_m} w^\star_{k}x_{m,\indiv,.}=\left(t^{adj}_{x}\right)_{m,.}
+\begin{array}{l}\sum_{k\in S_m} w^\star_{k}{z^\star}[(\alpha)]_{m,{k},.}\!=\!\left(\hat{t}^{{\text{MR}},\alpha}_z\right)_{m-1,.}\\
+\sum_{k\in S_m} w^\star_{k}x_{m,{k},.}=\left(t^{adj}_{x}\right)_{m,.}
 \end{array}
-\right.\!\!\!\! \right\}\!\!,\label{RCstep2}\end{equation}
+\right.\right\},$$
 and
-$\left(\hat{t}^{\rcind,\alpha}_z\right)_{m,.}=
-\sum_{k\in \sample_m}w^{\rcind,\alpha}_{m,\indiv}zc[(\alpha)]_{m,\indiv},$
+$\left(\hat{t}^{{\text{MR}},\alpha}_z\right)_{m,.}= \sum_{k\in S_m}w^{{\text{MR}},\alpha}_{m,{k}}{z^\star}[(\alpha)]_{m,{k}},$
 where $1(k\notin S_m)=1$ if $k\notin S_m$ and $0$ otherwise.
-Our definition of regression composite estimator is more general than in \cite{fuller2001regression} as it takes into account a multivariate version of $y$.
-Modified Regression 3 (MR3), of \cite{gambino2001regression},  does not belong to the class of regression composite estimators. The MR3 estimator imposes too many constraints in the calibration procedure, which leads to a high variability of the calibration weights, and consequently, MR3 estimator has a larger MSE than composite regression estimators.
-%As an appIt is obtained by calibrating on both $zc[(0)]_{m,.}$ and $zc[(1)]_{m,.}$ in step \ref{RCstep2}.
-%The regression composite estimator of $\ur_{m}$ is given by
-%$\hat{\ur}^{\rcind(\alpha)}=\urf\left(\hat{t}_y^{\rcind(\alpha)}\right)$.\index[notations]{urh@$\hat{\ur}^\star$ : $M$-sized vector, estimator of unemployment rate derived from estimator of total of employed and unemployed, $\hat{\ur}^{\star}=\urf\left(\hat{t}_y^{\star}\right)$}
+
 
 
 
