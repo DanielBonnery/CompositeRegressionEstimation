@@ -668,7 +668,7 @@ where $1(k\notin S_m)=1$ if $k\notin S_m$ and $0$ otherwise.
 
 
 
-
+The following code allows to compute the Regression composite estimation (MR1 corresponds to $\alpha=0$, MR2 corresponds to $\alpha=1$, and MR3 to 'Singh=TRUE') In this example we compute MR1, MR2, MR3 and regression composite for $\alpha=.5,.75,$ and  $.95$.
 
 ```r
 list.tables<-lapply(list.tables,dplyr::mutate,const=1)
