@@ -176,7 +176,7 @@ where <img src="/tex/b44848922a59328b4ef74c94bdf966a0.svg?invert_in_darkmode&san
 
 Which is equivalent to estimators of the form <img src="/tex/5097776bc1f30a7da974ffb5596313f6.svg?invert_in_darkmode&sanitize=true" align=middle width=52.80813779999999pt height=22.465723500000017pt/> where the <img src="/tex/84c95f91a742c9ceb460a83f9b5090bf.svg?invert_in_darkmode&sanitize=true" align=middle width=17.80826024999999pt height=22.465723500000017pt/> is a <img src="/tex/9204b1b54cbff660169ee2b1f9b3ba8d.svg?invert_in_darkmode&sanitize=true" align=middle width=154.13265944999998pt height=24.65753399999998pt/> matrix, where an element <img src="/tex/0915cde0aa1d2e0f9dd73778329423e3.svg?invert_in_darkmode&sanitize=true" align=middle width=32.64358184999999pt height=22.465723500000017pt/> of <img src="/tex/84c95f91a742c9ceb460a83f9b5090bf.svg?invert_in_darkmode&sanitize=true" align=middle width=17.80826024999999pt height=22.465723500000017pt/> is indexed by two vector <img src="/tex/2ec6e630f199f589a2402fdf3e0289d5.svg?invert_in_darkmode&sanitize=true" align=middle width=8.270567249999992pt height=14.15524440000002pt/> and <img src="/tex/d5c18a8ca1894fd3a7d25f242cbe8890.svg?invert_in_darkmode&sanitize=true" align=middle width=7.928106449999989pt height=14.15524440000002pt/> and of length the number of dimensions of the array <img src="/tex/91aac9730317276af725abd8cef04ca9.svg?invert_in_darkmode&sanitize=true" align=middle width=13.19638649999999pt height=22.465723500000017pt/> and the dimensions of the array <img src="/tex/cbfb1b2a33b28eab8a3e59464768e810.svg?invert_in_darkmode&sanitize=true" align=middle width=14.908688849999992pt height=22.465723500000017pt/> respectively. 
 
-The function `TensorDB::"%.%"` of the 'TensorDB' allows to perform the array multiplication as described above.
+The function `arrayproduct::"%.%"` of the 'arrayproduct' allows to perform the array multiplication as described above.
 The package uses named arrays with names dimensions (`names(dimnames(A))` is not `NULL`).
 
 ### Recursive linear estimates
@@ -220,7 +220,7 @@ Then one can multiply the array 'W' and 'X':
 
 
 ```r
-Yc2<-TensorDB::"%.%"(Wrec,X,I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),I_B=list(c=integer(0),p=c("m","hrmis"),q="employmentstatus"))
+Yc2<-arrayproduct::"%.%"(Wrec,X,I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),I_B=list(c=integer(0),p=c("m","hrmis"),q="employmentstatus"))
 ```
 
 ```
@@ -333,7 +333,7 @@ The Census AK estimator of the total of employed and unemployed computed with th
 
 
 ```r
-Y_census_AK.e<-TensorDB::"%.%"(Wak.e,X[,,"e"],I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),I_B=list(c=integer(0),p=c("m","hrmis"),q=integer(0)))
+Y_census_AK.e<-arrayproduct::"%.%"(Wak.e,X[,,"e"],I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),I_B=list(c=integer(0),p=c("m","hrmis"),q=integer(0)))
 ```
 
 ```
@@ -341,7 +341,7 @@ Y_census_AK.e<-TensorDB::"%.%"(Wak.e,X[,,"e"],I_A=list(c=integer(0),n="m2",p=c("
 ```
 
 ```r
-Y_census_AK.u<-TensorDB::"%.%"(Wak.u,X[,,"u"],I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),I_B=list(c=integer(0),p=c("m","hrmis"),q=integer(0)))
+Y_census_AK.u<-arrayproduct::"%.%"(Wak.u,X[,,"u"],I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),I_B=list(c=integer(0),p=c("m","hrmis"),q=integer(0)))
 ```
 
 ```
@@ -385,7 +385,7 @@ and the estimates total of employed, unemployed and not in the labor force are o
 
 
 ```r
-Y_census_AK<-TensorDB::"%.%"(Wak,X,I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),I_B=list(c=integer(0),p=c("m","hrmis"),q="employmentstatus"))
+Y_census_AK<-arrayproduct::"%.%"(Wak,X,I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),I_B=list(c=integer(0),p=c("m","hrmis"),q="employmentstatus"))
 ```
 
 ```
@@ -435,7 +435,7 @@ The next code provides the <img src="/tex/cbfb1b2a33b28eab8a3e59464768e810.svg?i
  Xplus<-CPS_Xplus_array(months=list(m=paste(200501:200504)),
              vars=list(y=c("e","u","n")),
              rgs=list(hrmis=paste(1:8)),1/2)
- TensorDB::"%.%"(Xplus,X,
+ arrayproduct::"%.%"(Xplus,X,
   I_A=list(c=integer(0),n=c("y2","m2"),p=c("y","hrmis","m")),
   I_B=list(c=integer(0),p=c("y","hrmis","m"),q=c("y2","m2")))
 ```
@@ -551,7 +551,7 @@ dimnames(beta)<-list(m=paste(200501:200504),y=c("e","u","n"))
  Xplus<-CPS_Xplus_array(months=list(m=paste(200501:200504)),
              vars=list(y=c("e","u","n")),
              rgs=list(hrmis=paste(1:8)),1/2)
- EY<-TensorDB::"%.%"(X,beta,I_A=list(c=integer(0),n=c("m","y","hrmis"),p=c("m2","y2")),I_B=list(c=integer(0),p=c("m","y"),q=integer(0)))
+ EY<-arrayproduct::"%.%"(X,beta,I_A=list(c=integer(0),n=c("m","y","hrmis"),p=c("m2","y2")),I_B=list(c=integer(0),p=c("m","y"),q=integer(0)))
  set.seed(1)
  Sigma=rWishart(1,length(EY),diag(length(EY)))
  Y<-array(mvrnorm(n = 100,mu = c(EY),Sigma = Sigma[,,1]),c(100,dim(EY)))
@@ -559,8 +559,8 @@ dimnames(beta)<-list(m=paste(200501:200504),y=c("e","u","n"))
  Sigma.A<-array(Sigma,c(dim(EY),dim(EY)))
  dimnames(Sigma.A)<-rep(dimnames(EY),2);names(dimnames(Sigma.A))[4:6]<-paste0(names(dimnames(Sigma.A))[4:6],"2")
  W<-CoeffGM.array(Sigma.A,X,Xplus)
- WY<-TensorDB::"%.%"(W,Y,I_A=list(c=integer(0),n=c("y2","m2"),p=c("m","y","hrmis")),I_B=list(c=integer(0),p=c("m","y","hrmis"),q=c("rep")))
- DY<-TensorDB::"%.%"(Xplus,Y,I_A=list(c=integer(0),n=c("y2","m2"),p=c("m","y","hrmis")),I_B=list(c=integer(0),p=c("m","y","hrmis"),q=c("rep")))
+ WY<-arrayproduct::"%.%"(W,Y,I_A=list(c=integer(0),n=c("y2","m2"),p=c("m","y","hrmis")),I_B=list(c=integer(0),p=c("m","y","hrmis"),q=c("rep")))
+ DY<-arrayproduct::"%.%"(Xplus,Y,I_A=list(c=integer(0),n=c("y2","m2"),p=c("m","y","hrmis")),I_B=list(c=integer(0),p=c("m","y","hrmis"),q=c("rep")))
  plot(c(beta),c(apply(DY,1:2,var)),col="red")
 ```
 

@@ -5,8 +5,8 @@
 #' @param id an identifier
 #' @param list.y: list of variables whose weighted sum needs to be computed. It can be factor or character variables.
 #' @param list.xMR list of variables used to compute proxy composite regression variable
-#' @param list.x1 list of auxiliary variables used in the cablibration, whose calibrated weighted total has to be equal to initially weithed total
-#' @param list.x2 id list of auxiliary variables used in the cablibration, whose calibrated weighted total has to be equal to initially weithed total 
+#' @param list.x1    list of auxiliary variables used in the cablibration, whose calibrated weighted total has to be equal to initially weithed total
+#' @param list.x2 id list of auxiliary variables used in the cablibration, whose calibrated weighted total has to be equal to values provided by list.dft.x2  
 #' @param list.dft.x2 id list of auxiliary variables used in the cablibration, whose calibrated weighted total has to be equal to initially weithed total 
 #' @param Alpha a vector of alpha values. if alpha="01", this will compute MR3
 #' @param theta a numerical value
@@ -16,7 +16,8 @@
 #' @param analyse a boolean
 #' @return a dataframe. 
 #' @examples
-#' MR(list.tables<-plyr::dlply(CRE_data,.variables=~time),w="Sampling.weight",list.xMR="Status",id="Identifier",list.y=c("Hobby","Status","State"))$dfEst;
+#' MR(list.tables<-
+#' plyr::dlply(CRE_data,.variables=~time),w="Sampling.weight",list.xMR="Status",id="Identifier",list.y=c("Hobby","Status","State"))$dfEst;
  
 
 MR <- function(list.tables,

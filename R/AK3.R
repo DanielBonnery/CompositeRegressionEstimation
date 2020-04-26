@@ -7,7 +7,7 @@
 #' @examples
 #' empirical.var()
 empirical.var<-function(A,MARGIN,n){
-  plyr::aaply(A,MARGIN,function(A.){TensorDB::m2a(var(TensorDB::a2m(A.,n)),dim(A.)[-(0:n)])})
+  plyr::aaply(A,MARGIN,function(A.){arrayproduct::m2a(var(arrayproduct::a2m(A.,n)),dim(A.)[-(0:n)])})
 }
 
 #' general AK weights as a function of a and k parameters.
@@ -112,7 +112,7 @@ AK_est<-function(Y,
                  groups=dimnames(Y)[[group]],
                  eta0=length(groups)/length(S),
                  eta1=eta0-1){
-  TensorDB::"%.%"(A=W.ak(months = dimnames(Y)[[month]],
+  arrayproduct::"%.%"(A=W.ak(months = dimnames(Y)[[month]],
                          groups = dimnames(Y)[[group]],
                          S,a,k,eta0,eta1),
                   B=Y,

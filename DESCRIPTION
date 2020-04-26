@@ -14,8 +14,8 @@ Imports: ggplot2,
 	filehash
 Suggests: 
 Description: Data
-Remotes: DanielBonnery/TensorDB
-Depends: TensorDB,
+Remotes: DanielBonnery/arrayproduct
+Depends: arrayproduct,
 	sampling,
 	abind,
 	optimx,
