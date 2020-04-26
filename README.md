@@ -118,24 +118,6 @@ The following code  creates the array `Y` of dimension <img src="/tex/941e0906d9
 
 ```r
 library(CompositeRegressionEstimation)
-```
-
-```
-## Loading required package: arrayproduct
-```
-
-```
-## 
-## Attaching package: 'arrayproduct'
-```
-
-```
-## The following objects are masked from 'package:TensorDB':
-## 
-##     %.%, A2M, extractA
-```
-
-```r
 Y<-CompositeRegressionEstimation::WSrg2(list.tables,rg = "hrmis",weight="pwsswgt",y = "employmentstatus")
 Umis<-plyr::aaply(Y[,,"e"],1:2,sum)/plyr::aaply(Y[,,c("e","u")],1:2,sum);
 library(ggplot2);ggplot(data=reshape2::melt(Umis),aes(x=m,y=value,color=mis))+geom_line()+
@@ -242,7 +224,7 @@ Yc2<-arrayproduct::"%.%"(Wrec,X,I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),I_
 ```
 
 ```
-## Error in FUN(X[[i]], ...): object 'X' not found
+## Error in aperm.default(A, c(n, p)): 'perm' is of wrong length 3 (!= 5)
 ```
 
 ```r
@@ -340,10 +322,6 @@ Wak.e<-W.ak(months=period,
             rescaled=F)
 ```
 
-```
-## Error in W.ak(months = period, groups = paste0("", 1:8), S = c(2:4, 6:8), : object 'W' not found
-```
-
 In the same way:
 
 ```r
@@ -357,10 +335,6 @@ Wak.u<-W.ak(months=period,
             rescaled=F)
 ```
 
-```
-## Error in W.ak(months = period, groups = paste0("", 1:8), S = c(2:4, 6:8), : object 'W' not found
-```
-
 
 The Census AK estimator of the total of employed and unemployed computed with the values of A and K used by the Census are:
 
@@ -370,7 +344,7 @@ Y_census_AK.e<-arrayproduct::"%.%"(Wak.e,X[,,"e"],I_A=list(c=integer(0),n="m2",p
 ```
 
 ```
-## Error in FUN(X[[i]], ...): object 'Wak.e' not found
+## Error in X[, , "e"]: incorrect number of dimensions
 ```
 
 ```r
@@ -378,7 +352,7 @@ Y_census_AK.u<-arrayproduct::"%.%"(Wak.u,X[,,"u"],I_A=list(c=integer(0),n="m2",p
 ```
 
 ```
-## Error in FUN(X[[i]], ...): object 'Wak.u' not found
+## Error in X[, , "u"]: incorrect number of dimensions
 ```
 The corresponding unemployment rate time series can be obtained by the ratio :
 
@@ -420,10 +394,6 @@ Wak<-W.multi.ak(months=period,
             ak=list(u=c(a=CPS_A_u(),k=CPS_K_u()),e=c(a=CPS_A_e(),k=CPS_K_e()),n=c(a=0,k=0)))
 ```
 
-```
-## Error in W.ak(months, groups, S, a = AK["a"], k = AK["k"], eta0 = eta0, : object 'W' not found
-```
-
 and the estimates total of employed, unemployed and not in the labor force are obtained with:
 
 
@@ -432,7 +402,7 @@ Y_census_AK<-arrayproduct::"%.%"(Wak,X,I_A=list(c=integer(0),n="m2",p=c("m1","rg
 ```
 
 ```
-## Error in FUN(X[[i]], ...): object 'Wak' not found
+## Error in aperm.default(A, c(n, p)): 'perm' is of wrong length 3 (!= 6)
 ```
 
 ```r
@@ -654,6 +624,35 @@ There are many issues with this approach:
 - the empirical best will be very sensitive to the values of <img src="/tex/813cd865c037c89fcdc609b25c465a05.svg?invert_in_darkmode&sanitize=true" align=middle width=11.87217899999999pt height=22.465723500000017pt/>.
 
 ## Modified regression (Singh, Fuller-Rao)
+
+
+
+The `MR` function allows to compute the general class of "modified regression" estimators  proposed by Singh, see: 
+* "Singh, A.~C., Kennedy, B., and Wu, S. (2001). Regression composite estimation for the Canadian Labour Force Survey: evaluation and implementation, Survey Methodology}, 27(1):33--44."
+* "Singh, A.~C., Kennedy, B., Wu, S., and Brisebois, F. (1997). Composite estimation for the Canadian Labour Force Survey. Proceedings of the Survey Research Methods Section, American
+  Statistical Association}, pages 300--305."
+* "Singh, A.~C. and Merkouris, P. (1995). 
+Composite estimation by modified regression for repeated surveys. Proceedings of the Survey Research Methods Section, American Statistical Association}, pages 420--425."
+
+Modified regression is  general approach that consists in calibrating on one or more proxies for "the previous month". Singh describes what properties the proxy variable has to follow, and proposes two diferent proxy variables (proxy 1, proxy 2), as well as using the two together. "Fuller, W.~A. and Rao, J. N.~K. (2001.  A regression composite estimator with application to the Canadian Labour Force Survey, Survey Methodology}, 27(1):45--51), use an estimator in the class described by Singh that where the proxy is an affine combination of proxy 1 and proxy 2. The coefficient of the combination is denoted <img src="/tex/c745b9b57c145ec5577b82542b2df546.svg?invert_in_darkmode&sanitize=true" align=middle width=10.57650494999999pt height=14.15524440000002pt/>.
+
+For  <img src="/tex/956cd791e512dfa01644376d1564b9f5.svg?invert_in_darkmode&sanitize=true" align=middle width=63.54438584999999pt height=24.65753399999998pt/>, the  regression composite estimator of <img src="/tex/9e4cfb65a7f38e06b6bc1ff329783f29.svg?invert_in_darkmode&sanitize=true" align=middle width=13.01570489999999pt height=20.221802699999984pt/>  is a calibration  estimator <img src="/tex/037d128c722d5b697093ed688ba4653a.svg?invert_in_darkmode&sanitize=true" align=middle width=75.11967044999999pt height=28.89761819999999pt/> defined as follows:
+provide calibration totals <img src="/tex/845aa45b15d6fadb66d30d7b011f0cbd.svg?invert_in_darkmode&sanitize=true" align=middle width=59.96210054999999pt height=27.94539330000001pt/> for the auxiliary variables (they can be equal to the true totals when known or estimated), then 
+define <img src="/tex/0d50084a9d74ec1dd07d1f84986a966d.svg?invert_in_darkmode&sanitize=true" align=middle width=172.64435924999998pt height=28.89761819999999pt/>  and  <img src="/tex/bcd48ccbe3dd432902443e762b7794c7.svg?invert_in_darkmode&sanitize=true" align=middle width=98.26159365pt height=31.525041899999984pt/> if <img src="/tex/edbaa580261d974cfc9e2b536943ee21.svg?invert_in_darkmode&sanitize=true" align=middle width=45.798972449999994pt height=22.831056599999986pt/>, 0 otherwise.
+For <img src="/tex/ddba494acdb7ba6fce5f72bfd88114c7.svg?invert_in_darkmode&sanitize=true" align=middle width=113.45099864999999pt height=24.65753399999998pt/>,  recursively define 
+
+<p align="center"><img src="/tex/aa7e53b4b54158a95ba8cc17a40125f8.svg?invert_in_darkmode&sanitize=true" align=middle width=639.0872581499999pt height=52.831521599999995pt/></p>
+where
+<img src="/tex/b70f471822c534fc5351f95109f16223.svg?invert_in_darkmode&sanitize=true" align=middle width=306.03585704999995pt height=44.51174640000002pt/>.
+Then the regression composite estimator of <img src="/tex/e250ee6fce46f0e5dbe7f54586d4bdf4.svg?invert_in_darkmode&sanitize=true" align=middle width=46.096124249999995pt height=24.65753399999998pt/> is given by
+<img src="/tex/949c347268f66c1bb2cd9e1b94d8498e.svg?invert_in_darkmode&sanitize=true" align=middle width=237.01945079999996pt height=31.525041899999984pt/>
+where
+<p align="center"><img src="/tex/0ec4f7756a1f256fbac9894d09f5a967.svg?invert_in_darkmode&sanitize=true" align=middle width=682.81477275pt height=49.409908349999995pt/></p>
+and
+<img src="/tex/f2230306459e2d0fc9f23e30b1c72dea.svg?invert_in_darkmode&sanitize=true" align=middle width=277.37910585pt height=31.525041899999984pt/>
+where <img src="/tex/d41cac0bf7b005c0f5503df4c721935b.svg?invert_in_darkmode&sanitize=true" align=middle width=102.87466859999998pt height=24.65753399999998pt/> if <img src="/tex/deced8d35d34aca6ba7d00f790906347.svg?invert_in_darkmode&sanitize=true" align=middle width=50.91127139999999pt height=24.65753399999998pt/> and <img src="/tex/29632a9bf827ce0200454dd32fc3be82.svg?invert_in_darkmode&sanitize=true" align=middle width=8.219209349999991pt height=21.18721440000001pt/> otherwise.
+
+
 
 
 
