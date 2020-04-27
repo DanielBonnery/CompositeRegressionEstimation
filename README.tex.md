@@ -125,6 +125,75 @@ The following code  creates the array `Y` of dimension $M\times 8\times 3$ (M mo
 
 ```r
 library(CompositeRegressionEstimation)
+```
+
+```
+## Loading required package: arrayproduct
+```
+
+```
+## Loading required package: sampling
+```
+
+```
+## Loading required package: abind
+```
+
+```
+## Loading required package: optimx
+```
+
+```
+## Loading required package: Hmisc
+```
+
+```
+## Loading required package: lattice
+```
+
+```
+## Loading required package: survival
+```
+
+```
+## 
+## Attaching package: 'survival'
+```
+
+```
+## The following objects are masked from 'package:sampling':
+## 
+##     cluster, strata
+```
+
+```
+## Loading required package: Formula
+```
+
+```
+## 
+## Attaching package: 'Hmisc'
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     format.pval, units
+```
+
+```
+## Loading required package: MASS
+```
+
+```
+## Loading required package: filehash
+```
+
+```
+## filehash: Simple Key-Value Database (2.4-2)
+```
+
+```r
 Y<-CompositeRegressionEstimation::WSrg2(list.tables,rg = "hrmis",weight="pwsswgt",y = "employmentstatus")
 Umis<-plyr::aaply(Y[,,"e"],1:2,sum)/plyr::aaply(Y[,,c("e","u")],1:2,sum);
 library(ggplot2);ggplot(data=reshape2::melt(Umis),aes(x=m,y=value,color=hrmis,group=hrmis))+geom_line()+
@@ -389,7 +458,7 @@ Y_census_AK<-arrayproduct::"%.%"(Wak,X,I_A=list(c=integer(0),n="m2",p=c("m1","rg
 ```
 
 ```
-## Error in aperm.default(A, c(n, p)): 'perm' is of wrong length 3 (!= 4)
+## Error in FUN(X[[i]], ...): object 'X' not found
 ```
 
 ```r
