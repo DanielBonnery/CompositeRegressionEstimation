@@ -11,7 +11,7 @@ CoeffGM.array(Sigma, X, Xplus = NULL)
 
 \item{X}{an  (p_1x...x p_P) x (n_1 x ...x n_N) array}
 
-\item{Xplus:}{a general inverse of X}
+\item{Xplus:}{a general inverse of X (if NULL, it will be computed by the program by Xplus<-MASS::ginv(X2) )}
 }
 \value{
 the coefficients matrix $W$ such that $WY$ is the best unbiased linear estimator of \code{\beta} where $E[Y]=X\beta$
