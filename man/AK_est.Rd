@@ -47,13 +47,26 @@ period=200501:200512
 list.tables<-lapply(data(list=paste0("cps",period),package="dataCPS"),get);
 names(list.tables)<-period
 Y<-WSrg(list.tables,weight="pwsswgt",list.y="pemlr",rg="hrmis")
-dimnames(Y);month="m";group="mis";variable="y";
-S=c(2:4,6:8);eta0=1.3;eta1=.3
-A=W.ak(months = dimnames(Y)[[month]],groups = dimnames(Y)[[group]],S=c(2:4,6:8),a=.5,k=.5,eta0,eta1)
-a=.5;
-k=.5;
-ngroup=dim(Y)[group];eta0=ngroup/length(S);eta1=eta0-1;
-AK_est(Y,month="m",group="mis",a=.5,k=.6,eta0,eta1) 
-
-
+dimnames(Y);
+month="m";
+group="mis";
+variable="y";
+A=W.ak(months = dimnames(Y)[[month]],
+       groups = dimnames(Y)[[group]],
+       S=c(2:4,6:8),
+       a=.5,
+       k=.5,
+       eta0=4/3,
+       eta1=1/3)
+ngroup=dim(Y)[group];
+eta1=eta0-1;
+eta0=ngroup/length(S)
+AK_est(Y=Y,
+       month="m",
+       group="mis",
+       S=c(2:4,6:8),
+       a=.5,
+       k=.6,
+       eta0=eta0,
+       eta1=eta0-1) 
 }

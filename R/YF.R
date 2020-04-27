@@ -86,7 +86,7 @@ CoeffGM<-function(Sigma,nmonth=dim(Sigma)[[1]]){
 #' @param Sigma a p x p matrix
 #' @param X an n x p  matrix
 #' @param Xplus: a general inverse of X array
-#' @return the coefficients matrix $W$ such that $WY$ is the best unbiased linear estimator of \code{\beta} where $E[Y]=X\beta$
+#' @return the coefficients matrix \code{W} such that \code{W\times Y} is the best unbiased linear estimator of \code{\beta} where \code{E[Y]=X\times\beta}
 #' @examples
 #' A=array(rnorm(prod(2:5)),2:5);M=a2m(A,2);dim(A);dim(M);dim(a2m(A))
 CoeffGM.matrix<-function(Sigma,X,Xplus=MASS::ginv(X)){

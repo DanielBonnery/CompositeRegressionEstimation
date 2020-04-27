@@ -91,8 +91,10 @@ W}
 #' list.tables<-lapply(data(list=paste0("cps",period),package="dataCPS"),get);
 #' names(list.tables)<-period
 #' Y<-WSrg(list.tables,weight="pwsswgt",list.y="pemlr",rg="hrmis")
-#' dimnames(Y);month="m";group="mis";variable="y";
-#' S=c(2:4,6:8);eta0=1.3;eta1=.3
+#' dimnames(Y);
+#' month="m";
+#' group="mis";
+#' variable="y";
 #' A=W.ak(months = dimnames(Y)[[month]],
 #'        groups = dimnames(Y)[[group]],
 #'        S=c(2:4,6:8),
@@ -100,12 +102,17 @@ W}
 #'        k=.5,
 #'        eta0=4/3,
 #'        eta1=1/3)
-#' a=.5;
-#' k=.5;
-#' ngroup=dim(Y)[group];eta0=ngroup/length(S);eta1=eta0-1;
-#' AK_est(Y,month="m",group="mis",a=.5,k=.6,eta0,eta1) 
-#' 
-#' 
+#' ngroup=dim(Y)[group];
+#' eta1=eta0-1;
+#' eta0=ngroup/length(S)
+#' AK_est(Y=Y,
+#'        month="m",
+#'        group="mis",
+#'        S=c(2:4,6:8),
+#'        a=.5,
+#'        k=.6,
+#'        eta0=eta0,
+#'        eta1=eta0-1) 
 
 AK_est<-function(Y,
                  month=names(dimnames(Y))[1],
@@ -118,12 +125,13 @@ AK_est<-function(Y,
                  groups=dimnames(Y)[[group]],
                  eta0=length(groups)/length(S),
                  eta1=eta0-1){
-  arrayproduct::"%.%"(A=W.ak(months = dimnames(Y)[[month]],
-                         groups = dimnames(Y)[[group]],
-                         S,a,k,eta0,eta1),
-                  B=Y,
-                  I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),
-                  I_B=list(c=integer(0),p=c(month,group),q=variable),requiresameindices=F)}
+  arrayproduct::"%.%"(
+    A=W.ak(months = dimnames(Y)[[month]],
+           groups = dimnames(Y)[[group]],
+           S,a,k,eta0,eta1),
+    B=Y,
+    I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),
+    I_B=list(c=integer(0),p=c(month,group),q=variable),requiresameindices=F)}
 
 
 
