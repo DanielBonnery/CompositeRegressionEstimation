@@ -330,16 +330,18 @@ The Census AK estimator of the total of employed and unemployed computed with th
 
 ```r
 Y_census_AK.e<-arrayproduct::"%.%"(Wak.e,Y[,,"e"],
-           I_A=list(c=integer(0),n=c("y2","m2",p=c("m1","rg1")),
+           I_A=list(c=integer(0),n=c("y2","m2"),p=c("m1","rg1")),
            I_B=list(c=integer(0),p=c("m","hrmis"),q=integer(0)))
-Y_census_AK.u<-arrayproduct::"%.%"(Wak.u,Y[,,"u"],I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),I_B=list(c=integer(0),p=c("m","hrmis"),q=integer(0)))
 ```
 
 ```
-## Error: <text>:4:1: unexpected symbol
-## 3:            I_B=list(c=integer(0),p=c("m","hrmis"),q=integer(0)))
-## 4: Y_census_AK.u
-##    ^
+## Error in aperm.default(A, c(n, p)): 'perm' is of wrong length 4 (!= 3)
+```
+
+```r
+Y_census_AK.u<-arrayproduct::"%.%"(Wak.u,Y[,,"u"],
+                                   I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),
+                                   I_B=list(c=integer(0),p=c("m","hrmis"),q=integer(0)))
 ```
 The corresponding unemployment rate time series can be obtained by the ratio :
 
@@ -389,7 +391,7 @@ Y_census_AK<-arrayproduct::"%.%"(Wak,X,I_A=list(c=integer(0),n="m2",p=c("m1","rg
 ```
 
 ```
-## Error in FUN(X[[i]], ...): object 'X' not found
+## Error in aperm.default(A, c(n, p)): 'perm' is of wrong length 3 (!= 4)
 ```
 
 ```r
