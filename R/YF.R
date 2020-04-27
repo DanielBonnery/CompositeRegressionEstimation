@@ -11,7 +11,7 @@ CPS_X_matrix<-function(nmonth,nvar,nrg,alpha=1){
   XX<-t(matrix(rep(diag(nvar),nrg),nvar,nvar*nrg))
   X<-alpha*as.matrix(Matrix::.bdiag(lapply(1:nmonth,function(i){XX})))}
 
-#' Compute the Moore penrose general inverse of a the Yansaneh Fuller X matrix for CPS
+#' Compute the Moore penrose general inverse of a the X matrix for CPS
 #'
 #' @param nmonth an integer, the number of months
 #' @param nvar an integer, the number of variables
@@ -43,7 +43,8 @@ A<-array(CPS_X_matrix(nmonth,nvar,nrg,alpha),c(nvar,nrg,nmonth,nvar,nmonth))
 dimnames(A)<-c(vars,rgs,months,vars,months)
 names(dimnames(A))[4:5]<-paste0(names(dimnames(A))[4:5],2)
 A}
-#' Compute the Moore penrose general inverse of a the Yansaneh Fuller X matrix for CPS, array version
+
+#' Compute the Moore penrose general inverse of a the X matrix for CPS, array version
 #'
 #' @param months a named list with one element, this element being a character string vector 
 #' @param vars a named list with one element, this element being a character string vector 

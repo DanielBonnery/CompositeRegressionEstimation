@@ -6,21 +6,21 @@
 #' * "Singh, A.~C. and Merkouris, P. (1995). Composite estimation by modified regression for repeated surveys. Proceedings of the Survey Research Methods Section, American Statistical Association}, pages 420--425."
 #' Modified regression is  general approach that consists in calibrating on one or more proxies for "the previous month". Singh describes what properties the proxy variable has to follow, and proposes two diferent proxy variables (proxy 1, proxy 2), as well as using the two together. The estimator obtained with proxy 1 is called "MR1", the estimator obtained with proxy 2 is called "MR2"" and the estimator obtained with both proxy 1 and proxy 2 in the model is called MR3. 
 #' Fuller, W.~A. and Rao, J. N.~K. (2001) " A regression composite estimator with application to the Canadian Labour Force Survey, Survey Methodology, 27(1):45--51)", use an estimator in the class described by Singh that with a proxy chosen to be an affine combination of proxy 1 and proxy 2. 
-#' The coefficient of the combination is denoted \code{\alpha} and the Modified Regression estimator obtained is called by the authors Regression Composite estimator. 
-#' \code{\alpha=0} gives MR1 and \code{\alpha=1} gives MR2.
+#' The coefficient of the combination is denoted \eqn{\alpha} and the Modified Regression estimator obtained is called by the authors Regression Composite estimator. 
+#' \eqn{\alpha=0} gives MR1 and \eqn{\alpha=1} gives MR2.
 
-#' For  \code{\alpha\in[0,1]}, the  regression composite estimator of \code{t_{y}}  is a calibration  estimator \code\left(\hat{t}^{\text{MR},\alpha}_y\right)_{m,.}} defined as follows: 
-#' provide calibration totals \code{\left(t^{adj}_{x}\right)_{m,.}} for the auxiliary variables (they can be equal to the true totals when known or estimated), 
-#' then  define \code{ \left(\hat{t}^{\text{MR} ,\alpha}_z\right)_{1,.}=\left(\hat{t}^{\text{Direct}}_z\right)_{1,.},}  
-#' and \code{w_{1,{k}}^{{\text{MR}} ,\alpha}=w_{1,{k}}} if \code{k\in S_1}, 0 otherwise. 
-#' For \code{m \in \{2,\ldots, M\}},  recursively define 
-#' \code{z^\star[(\alpha)]_{m,{k},.}=\left|\begin{array}{ll}     \alpha\left(\tau_m^{-1}         \left(z_{m-1,{k},.}-z_{m,{k},.}\right) +z_{m,{k},.}\right)     +(1-\alpha)~z_{m-1,{k},.} & \text{if }k\in S_{m}\cap S_{m-1},\\ \alpha~ z_{m,{k},.} +(1-\alpha)~\left(\sum_{k\in S_{m-1}}w_{m-1,{k}}^{{\text{MR}} ,\alpha}\right)^{-1}\left(\hat{t}_y ^{\mathrm{c}}\right)_{m-1,.} & \text{if }k\in S_{m}\setminus S_{m-1},\end{array}\right.}
-#' where \code{\tau_m=\left(\sum_{k\in S_m\cap S_{m-1}}w_{m,{k}}\right)^{-1}\sum_{k\in S_m}w_{m,{k}}}.
-#' Then the regression composite estimator of \code{\left(t_{y}\right)_{m,.}} is given by \code{\left(\hat{t}^{{\text{MR}},\alpha}_y\right)_{m,.}=\sum_{k\in S_m}w^{{\text{MR}},\alpha}_{m,{k}}y_{m,{k}},}
+#' For  \eqn{\alpha\in[0,1]}, the  regression composite estimator of \eqn{t_{y}}  is a calibration  estimator \eqn\left(\hat{t}^{\text{MR},\alpha}_y\right)_{m,.}} defined as follows: 
+#' provide calibration totals \eqn{\left(t^{adj}_{x}\right)_{m,.}} for the auxiliary variables (they can be equal to the true totals when known or estimated), 
+#' then  define \eqn{ \left(\hat{t}^{\text{MR} ,\alpha}_z\right)_{1,.}=\left(\hat{t}^{\text{Direct}}_z\right)_{1,.},}  
+#' and \eqn{w_{1,{k}}^{{\text{MR}} ,\alpha}=w_{1,{k}}} if \eqn{k\in S_1}, 0 otherwise. 
+#' For \eqn{m \in \{2,\ldots, M\}},  recursively define 
+#' \eqn{z^\star[(\alpha)]_{m,{k},.}=\left|\begin{array}{ll}     \alpha\left(\tau_m^{-1}         \left(z_{m-1,{k},.}-z_{m,{k},.}\right) +z_{m,{k},.}\right)     +(1-\alpha)~z_{m-1,{k},.} & \text{if }k\in S_{m}\cap S_{m-1},\\ \alpha~ z_{m,{k},.} +(1-\alpha)~\left(\sum_{k\in S_{m-1}}w_{m-1,{k}}^{{\text{MR}} ,\alpha}\right)^{-1}\left(\hat{t}_y ^{\mathrm{c}}\right)_{m-1,.} & \text{if }k\in S_{m}\setminus S_{m-1},\end{array}\right.}
+#' where \eqn{\tau_m=\left(\sum_{k\in S_m\cap S_{m-1}}w_{m,{k}}\right)^{-1}\sum_{k\in S_m}w_{m,{k}}}.
+#' Then the regression composite estimator of \eqn{\left(t_{y}\right)_{m,.}} is given by \eqn{\left(\hat{t}^{{\text{MR}},\alpha}_y\right)_{m,.}=\sum_{k\in S_m}w^{{\text{MR}},\alpha}_{m,{k}}y_{m,{k}},}
 #' where 
-#' \code{\left(w^{{\text{MR}},\alpha}_{m,.}\right)\!=\!\arg\min\left\{\sum_{k\in U}\frac{ \left(w^\star_{k}-w_{m,{k}}\right)^2}{1(k\notin S_m)+w_{m,{k}}}\left|w^\star\in\mathbb{R}^{U},\!\!\!\begin{array}{l}\sum_{k\in S_m} w^\star_{k}{z^\star}[(\alpha)]_{m,{k},.}\!=\!\left(\hat{t}^{{\text{MR}},\alpha}_z\right)_{m-1,.}\\\sum_{k\in S_m} w^\star_{k}x_{m,{k},.}=\left(t^{adj}_{x}\right)_{m,.}\end{array}\right.\right\},}
-#' and \code{\left(\hat{t}^{{\text{MR}},\alpha}_z\right)_{m,.}= \sum_{k\in S_m}w^{{\text{MR}},\alpha}_{m,{k}}{z^\star}[(\alpha)]_{m,{k}},} where \code{1(k\notin S_m)=1} if \code{k\notin S_m} and \code{0} otherwise.
-#' The following code allows to compute the Regression composite estimation (MR1 corresponds to \code{\alpha=0}, MR2 corresponds to \code{\alpha=1}, and MR3 to 'Singh=TRUE') In this example we compute MR1, MR2, MR3 and regression composite for \code{\alpha=.5,.75,} and  \code.95}.
+#' \eqn{\left(w^{{\text{MR}},\alpha}_{m,.}\right)\!=\!\arg\min\left\{\sum_{k\in U}\frac{ \left(w^\star_{k}-w_{m,{k}}\right)^2}{1(k\notin S_m)+w_{m,{k}}}\left|w^\star\in\mathbb{R}^{U},\!\!\!\begin{array}{l}\sum_{k\in S_m} w^\star_{k}{z^\star}[(\alpha)]_{m,{k},.}\!=\!\left(\hat{t}^{{\text{MR}},\alpha}_z\right)_{m-1,.}\\\sum_{k\in S_m} w^\star_{k}x_{m,{k},.}=\left(t^{adj}_{x}\right)_{m,.}\end{array}\right.\right\},}
+#' and \eqn{\left(\hat{t}^{{\text{MR}},\alpha}_z\right)_{m,.}= \sum_{k\in S_m}w^{{\text{MR}},\alpha}_{m,{k}}{z^\star}[(\alpha)]_{m,{k}},} where \eqn{1(k\notin S_m)=1} if \eqn{k\notin S_m} and \eqn{0} otherwise.
+#' The following code allows to compute the Regression composite estimation (MR1 corresponds to \eqn{\alpha=0}, MR2 corresponds to \eqn{\alpha=1}, and MR3 to 'Singh=TRUE') In this example we compute MR1, MR2, MR3 and regression composite for \eqn{\alpha=.5,.75,} and  \eqn{.95}.
 #' @param list.tables A list of dataframes
 #' @param w either a real number of a character string indicating the name of the weight variable.
 #' @param id an identifier
