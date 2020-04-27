@@ -98,13 +98,20 @@ data(cps200501,cps200502,cps200503,cps200504,
 list.tables<-list(cps200501,cps200502,cps200503,cps200504,
                   cps200505)
 w="pwsswgt";id=c("hrhhid","pulineno");groupvar=NULL;list.y="pemlr";dft0.y=NULL;
-groups_1=NULL;groups0=NULL;Coef=c(alpha_1=0,alpha0=1,beta_1=0,beta0=0,gamma_1=0)
+groups_1=NULL;
+groups0=NULL;
+Coef=c(alpha_1=0,alpha0=1,beta_1=0,beta0=0,gamma_1=0)
 AK(list.tables,w=w,list.y="pemlr",id=id,groupvar=groupvar)
-##With the default choice of parameters for \code{A},\code{K},\code{eta0},\code{eta1} the composite is  equal to the direct estimator: we check
+
+## With the default choice of parameters for A,K,eta0,eta1
+## the composite is  equal to the direct estimator: we check
 WS(list.tables = list.tables,weight = w,list.y = list.y)  
+
 ## Example of use of a group variable. 
 w="pwsswgt";id=NULL;groupvar="hrmis";list.y="pemlr";dft0.y=NULL;
-groups_1=c(1:3,5:7);groups0=c(2:4,6:8);Coef=c(alpha0=1,alpha_1=0,beta_1=0,beta0=0,gamma_1=0)
+groups_1=c(1:3,5:7);
+groups0=c(2:4,6:8);
+Coef=c(alpha0=1,alpha_1=0,beta_1=0,beta0=0,gamma_1=0)
 AK(list.tables,w=w,list.y="pemlr",id=id,groupvar="hrmis")  
 }
 \references{

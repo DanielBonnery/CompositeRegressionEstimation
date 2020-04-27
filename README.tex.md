@@ -585,7 +585,7 @@ There are many issues with this approach:
 - No study to my knowledge was done to show how good this estimation of $\Sigma$ was.
 - the empirical best will be very sensitive to the values of $\Sigma$.
 
-## Modified regression (Singh, Fuller-Rao)
+## Modified Regression Estimators (Singh) including Regression Composite Estimator, Fuller-Rao)
 
 
 
@@ -593,10 +593,9 @@ The `MR` function allows to compute the general class of "modified regression" e
 * "Singh, A.~C., Kennedy, B., and Wu, S. (2001). Regression composite estimation for the Canadian Labour Force Survey: evaluation and implementation, Survey Methodology}, 27(1):33--44."
 * "Singh, A.~C., Kennedy, B., Wu, S., and Brisebois, F. (1997). Composite estimation for the Canadian Labour Force Survey. Proceedings of the Survey Research Methods Section, American
   Statistical Association}, pages 300--305."
-* "Singh, A.~C. and Merkouris, P. (1995). 
-Composite estimation by modified regression for repeated surveys. Proceedings of the Survey Research Methods Section, American Statistical Association}, pages 420--425."
+* "Singh, A.~C. and Merkouris, P. (1995). Composite estimation by modified regression for repeated surveys. Proceedings of the Survey Research Methods Section, American Statistical Association}, pages 420--425."
 
-Modified regression is  general approach that consists in calibrating on one or more proxies for "the previous month". Singh describes what properties the proxy variable has to follow, and proposes two diferent proxy variables (proxy 1, proxy 2), as well as using the two together. "Fuller, W.~A. and Rao, J. N.~K. (2001.  A regression composite estimator with application to the Canadian Labour Force Survey, Survey Methodology}, 27(1):45--51), use an estimator in the class described by Singh that where the proxy is an affine combination of proxy 1 and proxy 2. The coefficient of the combination is denoted $\alpha$.
+Modified regression is  general approach that consists in calibrating on one or more proxies for "the previous month". Singh describes what properties the proxy variable has to follow, and proposes two diferent proxy variables (proxy 1, proxy 2), as well as using the two together. The estimator obtained with proxy 1 is called "MR1", the estimator obtained with proxy 2 is called "MR2"" and the estimator obtained with both proxy 1 and proxy 2 in the model is called MR3. "Fuller, W.~A. and Rao, J. N.~K. (2001).  A regression composite estimator with application to the Canadian Labour Force Survey, Survey Methodology}, 27(1):45--51), use an estimator in the class described by Singh that with a proxy chosen to be an affine combination of proxy 1 and proxy 2. The coefficient of the combination is denoted $\alpha$ and the Modified Regression estimator obtained is called by the authors Regression Composite estimator. $\alpha=0$ gives MR1 and $\alpha=1$ gives MR2.
 
 For  $\alpha\in[0,1]$, the  regression composite estimator of $t_{y}$  is a calibration  estimator $\left(\hat{t}^{\text{MR},\alpha}_y\right)_{m,.}$ defined as follows:
 provide calibration totals $\left(t^{adj}_{x}\right)_{m,.}$ for the auxiliary variables (they can be equal to the true totals when known or estimated), then  define $ \left(\hat{t}^{\text{MR} ,\alpha}_z\right)_{1,.}=\left(\hat{t}^{\text{Direct}}_z\right)_{1,.},$  and $w_{1,{k}}^{{\text{MR}} ,\alpha}=w_{1,{k}}$ if $k\in S_1$, 0 otherwise. 
@@ -637,14 +636,14 @@ YMR<-MR(list.tables,
    Alpha=c(0,.5,.75,.95,1),
    list.y=c("employmentstatus"))$dfEst;
    UMR<-YMR[,"employmentstatus_ne",]/(YMR[,"employmentstatus_ne",]+YMR[,"employmentstatus_nu",])
-   ggplot(data=reshape2::melt(cbind(Direct=U,Composite=UMR)),aes(x=as.Date(paste0(Var1,"01"),"%Y%m%d"),y=value,group=Var2,color=Var2))+geom_line()+xlab("")+ylab("")+ggtitle("Direct and Modified Regression estimates")
+   ggplot(data=reshape2::melt(cbind(Direct=U,Composite=UMR)),aes(x=as.Date(paste0(Var1,"01"),"%Y%m%d"),y=value,group=Var2,color=Var2))+geom_line()+xlab("")+ylab("")+ggtitle("Direct and Modified Regression Estimates")
 ```
 
-![plot of chunk unnamed-chunk-21](figure/unnamed-chunk-21-1.png)
+<img src="figure/unnamed-chunk-21-1.png" title="plot of chunk unnamed-chunk-21" alt="plot of chunk unnamed-chunk-21" width="100%" />
 
 ```r
    diffUMR<-cbind(Direct=U,Composite=UMR)[-1,]-cbind(Direct=U,Composite=UMR)[-12,]
    ggplot(data=reshape2::melt(cbind(diffUMR)),aes(x=as.Date(paste0(Var1,"01"),"%Y%m%d"),y=value,group=Var2,color=Var2))+geom_line()+xlab("")+ylab("")+ggtitle("Direct and MOdified REgression estimates for month to month change")
 ```
 
-![plot of chunk unnamed-chunk-21](figure/unnamed-chunk-21-2.png)
+<img src="figure/unnamed-chunk-21-2.png" title="plot of chunk unnamed-chunk-21" alt="plot of chunk unnamed-chunk-21" width="100%" />

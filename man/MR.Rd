@@ -58,6 +58,9 @@ a dataframe.
 \description{
 Regression Composite estimation
 }
+\details{
+
+}
 \examples{
 MR(list.tables<-
 plyr::dlply(CRE_data,.variables=~time),w="Sampling.weight",list.xMR="Status",id="Identifier",list.y=c("Hobby","Status","State"))$dfEst;

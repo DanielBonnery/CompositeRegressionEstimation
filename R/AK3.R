@@ -93,7 +93,13 @@ W}
 #' Y<-WSrg(list.tables,weight="pwsswgt",list.y="pemlr",rg="hrmis")
 #' dimnames(Y);month="m";group="mis";variable="y";
 #' S=c(2:4,6:8);eta0=1.3;eta1=.3
-#' A=W.ak(months = dimnames(Y)[[month]],groups = dimnames(Y)[[group]],S=c(2:4,6:8),a=.5,k=.5,eta0,eta1)
+#' A=W.ak(months = dimnames(Y)[[month]],
+#'        groups = dimnames(Y)[[group]],
+#'        S=c(2:4,6:8),
+#'        a=.5,
+#'        k=.5,
+#'        eta0=4/3,
+#'        eta1=1/3)
 #' a=.5;
 #' k=.5;
 #' ngroup=dim(Y)[group];eta0=ngroup/length(S);eta1=eta0-1;
