@@ -330,15 +330,8 @@ The Census AK estimator of the total of employed and unemployed computed with th
 
 ```r
 Y_census_AK.e<-arrayproduct::"%.%"(Wak.e,Y[,,"e"],
-           I_A=list(c=integer(0),n=c("y2","m2"),p=c("m1","rg1")),
+           I_A=list(c=integer(0),n=c("m2"),p=c("m1","rg1")),
            I_B=list(c=integer(0),p=c("m","hrmis"),q=integer(0)))
-```
-
-```
-## Error in aperm.default(A, c(n, p)): 'perm' is of wrong length 4 (!= 3)
-```
-
-```r
 Y_census_AK.u<-arrayproduct::"%.%"(Wak.u,Y[,,"u"],
                                    I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),
                                    I_B=list(c=integer(0),p=c("m","hrmis"),q=integer(0)))
@@ -348,10 +341,6 @@ The corresponding unemployment rate time series can be obtained by the ratio :
 
 ```r
 U_census_AK<-Y_census_AK.e/(Y_census_AK.e+Y_census_AK.u)
-```
-
-```
-## Error in eval(expr, envir, enclos): object 'Y_census_AK.e' not found
 ```
 
 
@@ -365,9 +354,7 @@ We plot the Direct estimate vs the AK estimate:
 ggplot(data=reshape2::melt(cbind(Direct=U,Composite=U_census_AK)),aes(x=as.Date(paste0(Var1,"01"),"%Y%m%d"),y=value,group=Var2,color=Var2))+geom_line()+xlab("")+ylab("")+ggtitle("Direct and Composite estimates")
 ```
 
-```
-## Error in cbind(Direct = U, Composite = U_census_AK): object 'U_census_AK' not found
-```
+![plot of chunk unnamed-chunk-15](figure/unnamed-chunk-15-1.png)
 
 If we want to get the whole $W$ matrix, we can use the function
 'W.multi.ak':
@@ -387,20 +374,13 @@ and the estimates total of employed, unemployed and not in the labor force are o
 
 
 ```r
-Y_census_AK<-arrayproduct::"%.%"(Wak,X,I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),I_B=list(c=integer(0),p=c("m","hrmis"),q="employmentstatus"))
-```
-
-```
-## Error in aperm.default(A, c(n, p)): 'perm' is of wrong length 3 (!= 4)
-```
-
-```r
+Y_census_AK<-arrayproduct::"%.%"(Wak,Y,I_A=list(c="ak",n=c("m2"),p=c("m1","rg1")),I_B=list(c="employmentstatus",p=c("m","hrmis"),q=integer(0)))
 U_census_AK2<-Yc2[,"e"]/(Yc2[,"e"]+Yc2[,"u"])
 any(abs(U_census_AK-U_census_AK)>1e-3)
 ```
 
 ```
-## Error in eval(expr, envir, enclos): object 'U_census_AK' not found
+## [1] FALSE
 ```
 
 
