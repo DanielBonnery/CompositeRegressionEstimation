@@ -2,7 +2,7 @@
 % Please edit documentation in R/YF.R
 \name{CPS_Xplus_array}
 \alias{CPS_Xplus_array}
-\title{Compute the Moore penrose general inverse of a the Yansaneh Fuller X matrix for CPS, array version}
+\title{Compute the Moore penrose general inverse of a the X matrix for CPS, array version}
 \usage{
 CPS_Xplus_array(months, vars, rgs, alpha = 1/length(rgs[[1]]))
 }
@@ -19,7 +19,7 @@ CPS_Xplus_array(months, vars, rgs, alpha = 1/length(rgs[[1]]))
 an array.
 }
 \description{
-Compute the Moore penrose general inverse of a the Yansaneh Fuller X matrix for CPS, array version
+Compute the Moore penrose general inverse of a the X matrix for CPS, array version
 }
 \examples{
 X<-CPS_X_array(months=list(m=paste(200501:200504)),

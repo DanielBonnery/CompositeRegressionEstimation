@@ -2,7 +2,7 @@
 % Please edit documentation in R/YF.R
 \name{CPS_Xplus_matrix}
 \alias{CPS_Xplus_matrix}
-\title{Compute the Moore penrose general inverse of a the Yansaneh Fuller X matrix for CPS}
+\title{Compute the Moore penrose general inverse of a the X matrix for CPS}
 \usage{
 CPS_Xplus_matrix(X)
 }
@@ -19,7 +19,7 @@ CPS_Xplus_matrix(X)
 a matrix.
 }
 \description{
-Compute the Moore penrose general inverse of a the Yansaneh Fuller X matrix for CPS
+Compute the Moore penrose general inverse of a the X matrix for CPS
 }
 \examples{
 CPS_Xplus_matrix(10)

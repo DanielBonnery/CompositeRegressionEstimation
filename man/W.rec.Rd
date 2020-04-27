@@ -37,10 +37,16 @@ general month in sample estimates weights for recursive linear combinaison of mi
 alpha0=runif(1);
 W<-W.rec(months=1:3,
          groups=1:8,
-         Coef=c(alpha_1=1-alpha0,alpha0=alpha0,beta0=runif(1),beta_1=runif(1),gamma0=runif(1)))
+         Coef=c(alpha_1=1-alpha0,
+                alpha0=alpha0,
+                beta0=runif(1),
+                beta_1=runif(1),
+                gamma0=runif(1)))
 dimnames(W) 
 W<-W.ak(months=2:4,groups=letters[1:8],a=.2,k=.5);dimnames(W);
 Y<-WSrg(list.tables,weight="pwsswgt",list.y="pemlr",rg="hrmis")
 dimnames(Y);month="m";group="mis";variable="y";
-A=W.rec(months = dimnames(Y)[[month]],groups = dimnames(Y)[[group]],S=c(2:4,6:8),a=.5,k=.5)
+A=W.rec(months = dimnames(Y)[[month]],
+        groups = dimnames(Y)[[group]],
+        S=c(2:4,6:8),a=.5,k=.5)
 }
