@@ -34,7 +34,7 @@ MR(
 
 \item{list.x1}{list of auxiliary variables used in the cablibration, whose calibrated weighted total has to be equal to initially weithed total}
 
-\item{list.x2}{id list of auxiliary variables used in the cablibration, whose calibrated weighted total has to be equal to initially weithed total}
+\item{list.x2}{id list of auxiliary variables used in the cablibration, whose calibrated weighted total has to be equal to values provided by list.dft.x2}
 
 \item{Alpha}{a vector of alpha values. if alpha="01", this will compute MR3}
 
@@ -59,5 +59,6 @@ a dataframe.
 Regression Composite estimation
 }
 \examples{
-MR(list.tables<-plyr::dlply(CRE_data,.variables=~time),w="Sampling.weight",list.xMR="Status",id="Identifier",list.y=c("Hobby","Status","State"))$dfEst;
+MR(list.tables<-
+plyr::dlply(CRE_data,.variables=~time),w="Sampling.weight",list.xMR="Status",id="Identifier",list.y=c("Hobby","Status","State"))$dfEst;
 }

@@ -4,7 +4,7 @@
 \alias{WS}
 \title{Compute weighted sums}
 \usage{
-WS(list.tables, weight = 1, list.y = NULL, sep = "_n")
+WS(list.tables, weight = 1, list.y = NULL, sep = "_n", dimname1 = "m")
 }
 \arguments{
 \item{list.tables}{A list of dataframes}

@@ -7,7 +7,13 @@
 CPS_Xplus_matrix(X)
 }
 \arguments{
-\item{nmonth}{an integer}
+\item{nmonth}{an integer, the number of months}
+
+\item{nvar}{an integer, the number of variables}
+
+\item{nrg}{an integer, the number of rotation groups}
+
+\item{alpha}{a coefficient}
 }
 \value{
 a matrix.

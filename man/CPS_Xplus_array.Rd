@@ -4,17 +4,31 @@
 \alias{CPS_Xplus_array}
 \title{Compute the Moore penrose general inverse of a the Yansaneh Fuller X matrix for CPS, array version}
 \usage{
-CPS_Xplus_array(X)
+CPS_Xplus_array(months, vars, rgs, alpha = 1/length(rgs[[1]]))
 }
 \arguments{
-\item{nmonth}{an integer}
+\item{months}{a named list with one element, this element being a character string vector}
+
+\item{vars}{a named list with one element, this element being a character string vector}
+
+\item{rgs}{a named list with one element, this element being a character string vector}
+
+\item{alpha}{a numeric value}
 }
 \value{
-a matrix.
+an array.
 }
 \description{
 Compute the Moore penrose general inverse of a the Yansaneh Fuller X matrix for CPS, array version
 }
 \examples{
-CPS_Xplus_matrix(10)
+X<-CPS_X_array(months=list(m=paste(200501:200504)),
+            vars=list(y=c("e","u","n")),
+            rgs=list(hrmis=paste(1:8)),1/2)
+Xplus<-CPS_Xplus_array(months=list(m=paste(200501:200504)),
+            vars=list(y=c("e","u","n")),
+            rgs=list(hrmis=paste(1:8)),1/2)
+arrayproduct::"\%.\%"(Xplus,X,
+ I_A=list(c=integer(0),n=c("y2","m2"),p=c("y","hrmis","m")),
+ I_B=list(c=integer(0),p=c("y","hrmis","m"),q=c("y2","m2")))       
 }

@@ -2,19 +2,28 @@
 % Please edit documentation in R/YF.R
 \name{CPS_X_array}
 \alias{CPS_X_array}
-\title{Compute Yansaneh-Fuller X matrix for CPS, array version}
+\title{Compute X matrix for CPS, array version}
 \usage{
-CPS_X_array(nmonth)
+CPS_X_array(months, vars, rgs, alpha = 1/length(rgs[[1]]))
 }
 \arguments{
-\item{nmonth}{an integer}
+\item{months}{a named list with one element, this element being a character string vector}
+
+\item{vars}{a named list with one element, this element being a character string vector}
+
+\item{rgs}{a named list with one element, this element being a character string vector}
+
+\item{alpha}{(default 1/length(rgs[[1]])) a numeric value}
 }
 \value{
-a matrix.
+an array.
 }
 \description{
-Compute Yansaneh-Fuller X matrix for CPS, array version
+Compute X matrix for CPS, array version
 }
 \examples{
-CPS_X_matrix(10)
+X<-CPS_X_array(months=list(m=paste(200501:200504)),
+            vars=list(y=c("e","u","n")),
+            rgs=list(hrmis=paste(1:8)))
+dimnames(X)
 }

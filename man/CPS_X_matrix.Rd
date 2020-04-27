@@ -2,19 +2,25 @@
 % Please edit documentation in R/YF.R
 \name{CPS_X_matrix}
 \alias{CPS_X_matrix}
-\title{Compute Yansaneh-Fuller X matrix for CPS}
+\title{X matrix for the simple month in sample model}
 \usage{
-CPS_X_matrix(nmonth)
+CPS_X_matrix(nmonth, nvar, nrg, alpha = 1)
 }
 \arguments{
-\item{nmonth}{an integer}
+\item{nmonth}{an integer, the number of months}
+
+\item{nvar}{an integer, the number of variables}
+
+\item{nrg}{an integer, the number of rotation groups}
+
+\item{alpha=1/nrg}{a coefficient}
 }
 \value{
 a matrix.
 }
 \description{
-Compute Yansaneh-Fuller X matrix for CPS
+X matrix for the simple month in sample model
 }
 \examples{
-CPS_X_matrix(10)
+CPS_X_matrix(10,3,8,1/8)
 }

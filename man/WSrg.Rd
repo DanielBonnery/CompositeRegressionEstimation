@@ -4,7 +4,14 @@
 \alias{WSrg}
 \title{Weighted sums by rotation groups}
 \usage{
-WSrg(list.tables, weight = 1, list.y = NULL, rg = "hrmis", rescale = F)
+WSrg(
+  list.tables,
+  weight = 1,
+  list.y = NULL,
+  rg = "hrmis",
+  rescale = F,
+  dimname1 = "m"
+)
 }
 \arguments{
 \item{list.tables}{a named list of data frames}
@@ -28,8 +35,8 @@ list.tables<-lapply(data(list=paste0("cps",period),package="dataCPS"),get);
 names(list.tables)<-period
 Y<-WSrg(list.tables,"pwsswgt",list.y="pemlr",rg="hrmis")
 dimnames(Y);dim(Y)
-Y<-plyr::daply(plyr::ldply(list.tables,function(L){L[c("pemlr","pwsswgt","hrmis")]}),
-~.id+pemlr+hrmis,function(d){data.frame(y=sum(d$pwsswgt))})[names(list.tables),,]
+Y<-plyr::daply(plyr::ldply(list.tables,function(L){L[c("pemlr","pwsswgt","hrmis")]},.id="m"),
+~m+pemlr+hrmis,function(d){data.frame(y=sum(d$pwsswgt))})[names(list.tables),,]
 dimnames(Y);dim(Y)
 system.time(plyr::daply(plyr::ldply(list.tables,,function(L){L[c("pemlr","pwsswgt","hrmis")]}),
 ~.id+pemlr+hrmis,function(d){data.frame(y=sum(d$pwsswgt))}))

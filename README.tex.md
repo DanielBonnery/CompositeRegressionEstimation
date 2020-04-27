@@ -389,7 +389,7 @@ Y_census_AK<-arrayproduct::"%.%"(Wak,X,I_A=list(c=integer(0),n="m2",p=c("m1","rg
 ```
 
 ```
-## Error in aperm.default(A, c(n, p)): 'perm' is of wrong length 3 (!= 4)
+## Error in FUN(X[[i]], ...): object 'X' not found
 ```
 
 ```r
