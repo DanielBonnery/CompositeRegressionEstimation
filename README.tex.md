@@ -311,6 +311,10 @@ Wak.e<-W.ak(months=period,
             rescaled=F)
 ```
 
+```
+## Error in W.rec(months, groups, S, S_1, Coef = c(alpha_1 = K, alpha0 = 1 - : object 'K' not found
+```
+
 In the same way:
 
 ```r
@@ -324,24 +328,26 @@ Wak.u<-W.ak(months=period,
             rescaled=F)
 ```
 
+```
+## Error in W.rec(months, groups, S, S_1, Coef = c(alpha_1 = K, alpha0 = 1 - : object 'K' not found
+```
+
 
 The Census AK estimator of the total of employed and unemployed computed with the values of A and K used by the Census are:
 
 
 ```r
-Y_census_AK.e<-arrayproduct::"%.%"(Wak.e,X[,,"e"],I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),I_B=list(c=integer(0),p=c("m","hrmis"),q=integer(0)))
+Y_census_AK.e<-arrayproduct::"%.%"(Wak.e,Y[,,"e"],
+           I_A=list(c=integer(0),n=c("y2","m2",p=c("m1","rg1")),
+           I_B=list(c=integer(0),p=c("m","hrmis"),q=integer(0)))
+Y_census_AK.u<-arrayproduct::"%.%"(Wak.u,Y[,,"u"],I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),I_B=list(c=integer(0),p=c("m","hrmis"),q=integer(0)))
 ```
 
 ```
-## Error in X[, , "e"]: incorrect number of dimensions
-```
-
-```r
-Y_census_AK.u<-arrayproduct::"%.%"(Wak.u,X[,,"u"],I_A=list(c=integer(0),n="m2",p=c("m1","rg1")),I_B=list(c=integer(0),p=c("m","hrmis"),q=integer(0)))
-```
-
-```
-## Error in X[, , "u"]: incorrect number of dimensions
+## Error: <text>:4:1: unexpected symbol
+## 3:            I_B=list(c=integer(0),p=c("m","hrmis"),q=integer(0)))
+## 4: Y_census_AK.u
+##    ^
 ```
 The corresponding unemployment rate time series can be obtained by the ratio :
 
@@ -381,6 +387,10 @@ Wak<-W.multi.ak(months=period,
             S = c(2:4,6:8),
             S_1=c(1:3,5:7),
             ak=list(u=c(a=CPS_A_u(),k=CPS_K_u()),e=c(a=CPS_A_e(),k=CPS_K_e()),n=c(a=0,k=0)))
+```
+
+```
+## Error in W.rec(months, groups, S, S_1, Coef = c(alpha_1 = K, alpha0 = 1 - : object 'K' not found
 ```
 
 and the estimates total of employed, unemployed and not in the labor force are obtained with:

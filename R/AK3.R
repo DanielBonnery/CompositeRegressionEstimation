@@ -37,7 +37,7 @@ W.ak<-function(months,
                eta0=length(groups)/length(S),
                eta1=eta0-1,
                rescaled=F){
-  W.rec<-function(months,
+  W<-W.rec(months,
                   groups,
                   S,
                   S_1,
