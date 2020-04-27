@@ -41,11 +41,11 @@ W.ak<-function(months,
                   groups,
                   S,
                   S_1,
-                  Coef=c(alpha_1 = K,
-                         alpha0 = 1-K,
-                         beta_1  = -K*eta0,
-                         beta0  = K*eta0-A*eta1,
-                         gamma0 = A))
+                  Coef=c(alpha_1 = k,
+                         alpha0 = 1-k,
+                         beta_1  = -k*eta0,
+                         beta0  = k*eta0-a*eta1,
+                         gamma0 = a))
   if(rescaled){W<-W/ngroup}
   return(W)}
 

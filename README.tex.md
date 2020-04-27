@@ -311,10 +311,6 @@ Wak.e<-W.ak(months=period,
             rescaled=F)
 ```
 
-```
-## Error in W.rec(months, groups, S, S_1, Coef = c(alpha_1 = K, alpha0 = 1 - : object 'K' not found
-```
-
 In the same way:
 
 ```r
@@ -326,10 +322,6 @@ Wak.u<-W.ak(months=period,
             eta0=4/3,
             eta1=1/3,
             rescaled=F)
-```
-
-```
-## Error in W.rec(months, groups, S, S_1, Coef = c(alpha_1 = K, alpha0 = 1 - : object 'K' not found
 ```
 
 
@@ -389,10 +381,6 @@ Wak<-W.multi.ak(months=period,
             ak=list(u=c(a=CPS_A_u(),k=CPS_K_u()),e=c(a=CPS_A_e(),k=CPS_K_e()),n=c(a=0,k=0)))
 ```
 
-```
-## Error in W.rec(months, groups, S, S_1, Coef = c(alpha_1 = K, alpha0 = 1 - : object 'K' not found
-```
-
 and the estimates total of employed, unemployed and not in the labor force are obtained with:
 
 
@@ -401,7 +389,7 @@ Y_census_AK<-arrayproduct::"%.%"(Wak,X,I_A=list(c=integer(0),n="m2",p=c("m1","rg
 ```
 
 ```
-## Error in aperm.default(A, c(n, p)): 'perm' is of wrong length 3 (!= 6)
+## Error in aperm.default(A, c(n, p)): 'perm' is of wrong length 3 (!= 4)
 ```
 
 ```r
