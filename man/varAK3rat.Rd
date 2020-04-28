@@ -20,5 +20,6 @@ The variance of the the unemployment rate estimates derived from the AK estimato
 Gives the variance of the unemployment rate estimates derived from  AK estimators from the A,K coefficients and the variance covariance matrix of the month in sample estimates
 }
 \examples{
-varAK3rat(ak=c(a1=.3,a2=.4,a3=0,k1=.4,k2=.7,k3=0), Sigma=array(drop(stats::rWishart(1,df=3*10*8,diag(3*10*8))),rep(c(10,8,3),2)))
+varAK3rat(ak=c(a1=.3,a2=.4,a3=0,k1=.4,k2=.7,k3=0), 
+         Sigma=array(drop(stats::rWishart(1,df=3*10*8,diag(3*10*8))),rep(c(10,8,3),2)))
 }

@@ -163,23 +163,40 @@ CPS_AK<-function(){c(a1=CPS_A_u(),a2=CPS_A_e(),a3=0,k1=CPS_K_u(),k2=CPS_K_e(),k3
 
 #' Gives the variance of the AK estimators from the A,K coefficients and the variance covariance matrix of the month in sample estimates
 #' 
-#' @param mistotals An array of dimension  nmonth x 8 x 3. mistotals[i,j,k] is the month in sample direct estimate for month i, month in sample j rotation group, and variable k.
-#' @param coeff An array of coefficients W[ak,y2,m2,y1,mis1,m1] such that AK estimate for coefficients ak, month m2 and employment status y2 is sum(W[ak,y2,m2,,,])*Y[,,]) where mistotals[y1,mis1,m1] is direct estimate on mis mis1 for emp stat y1 at month m1.
+#' @param Y A named array of dimension  nmonth x 3 x 8. mistotals[m,e,g] is the month in sample direct estimate for month m, month in sample  rotation group g, and variable e. \code{dimnames(y)[[month]]} must necessarily be equal to \code{dimnames(W)["ak"]} ("u","e","n" by default)
 #' @param ak: an ak coefficients vector or a  list of ak coefficients.
+#' @param W (optional) if already computed, the array \code{W} of coefficients W[ak,y2,m2,y1,mis1,m1] such that AK estimate for coefficients ak, month m2 and employment status y2 is sum(W[ak,y2,m2,,,])*Y[,,]) where mistotals[y1,mis1,m1] is direct estimate on mis mis1 for emp stat y1 at month m1.
 #' @return The variance of the AK estimators from the A,K coefficients and the variance covariance matrix .
 #' @examples
-#' varAK3(ak=c(a1=.3,a2=.4,a3=0,k1=.4,k2=.7,k3=0), Sigma=array(drop(stats::rWishart(1,df=3*10*8,diag(3*10*8))),rep(c(10,8,3),2)))
+#' library(dataCPS)
+#' period=200501:200512
+#' list.tables<-lapply(data(list=paste0("cps",period),package="dataCPS"),get);
+#' names(list.tables)<-period
+#' Y<-WSrg(list.tables,weight="pwsswgt",list.y="pemlr",rg="hrmis")
+#' dimnames(Y);
+#' month="m";
+#' group="mis";
+#' variable="y";
+#' CPS_AK_est(Y) 
 CPS_AK_est <-
-  function(mistotals,
-           coeff=CPS_AK_coeff.array.fl(dim(mistotals)[1],ak,simplify=FALSE),
-           ak=CPS_AK()){
-    #mistotals<-WSrg(list.tables,weight="pwsswgt",list.y="pumlr")
-      if(!is.list(ak)){ak<-list(ak)}
-    Estimates_AK = abind::adrop(plyr::aaply(coeff, 1:3, function(m2) {sum(aperm(mistotals,3:1) * m2)},.drop=FALSE),drop=4)
-    #
-    dimnames(Estimates_AK)[[1]]<-if(is.null(names(ak))){sapply(ak,function(x){paste0("AK3","-",paste(x[c(1:2,4:5)],collapse=","))})}else{names(ak)}
-    Hmisc::label(Estimates_AK)<-"AK estimates for coeffs ak, employment status y2, month m2." 
-    return(aperm(Estimates_AK,c(1,3,2)))}
+  function(Y,
+           month="m",
+           mis="hrmis",
+           y="employmentstatus",
+           W=W.multi.ak(months=dimnames(Y)[[month]],
+                        groups =dimnames(Y)[[mis]],
+                        S = c(2:4,6:8),
+                        S_1=c(1:3,5:7),
+                        ak=list(u=c(a=CPS_A_u(),k=CPS_K_u()),
+                                e=c(a=CPS_A_e(),k=CPS_K_e()),
+                                n=c(a=0,        k=0)))){
+    Y_census_AK<-arrayproduct::"%.%"(
+      Wak,
+      Y,
+      I_A=list(c="ak",n=c("m2"),p=c("m1","rg1")),
+      I_B=list(c=y,p=c(month,mis),q=integer(0)))
+    Hmisc::label(Yhat)<-"AK estimates for coeffs ak, employment status y2, month m2." 
+    return(Yhat)}
 
 #' Empirical variance of a collection of arrays.
 #' 
@@ -291,7 +308,8 @@ varAK3diff<-function(ak,Sigma){
 #' @param Sigma An array of dimension 3 x 8 (number of rotation groups) x number of months x 3 x 8 (number of rotation groups) x number of months.
 #' @return The variance of the the unemployment rate estimates derived from the AK estimators from the A,K coefficients and the variance covariance matrix .
 #' @examples
-#' varAK3rat(ak=c(a1=.3,a2=.4,a3=0,k1=.4,k2=.7,k3=0), Sigma=array(drop(stats::rWishart(1,df=3*10*8,diag(3*10*8))),rep(c(10,8,3),2)))
+#' varAK3rat(ak=c(a1=.3,a2=.4,a3=0,k1=.4,k2=.7,k3=0), 
+#'          Sigma=array(drop(stats::rWishart(1,df=3*10*8,diag(3*10*8))),rep(c(10,8,3),2)))
 
 varAK3rat<-function(ak,Sigma,Scomppop,what=c(unemployed="0",employed="1")){
   nmonth<-dim(Sigma)[1]
