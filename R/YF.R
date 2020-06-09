@@ -99,7 +99,7 @@ CoeffGM.matrix<-function(Sigma,X,Xplus=MASS::ginv(X)){
 #' @param Sigma a (p_1x...x p_P) x (p_1x...x p_P) array
 #' @param X an  (p_1x...x p_P) x (n_1 x ...x n_N) array
 #' @param Xplus: a general inverse of X (if NULL, it will be computed by the program by Xplus<-MASS::ginv(X2) )
-#' @return the coefficients matrix \eqn{W} such that $WY$ is the best unbiased linear estimator of \eqn{\beta} where $E[Y]=X\beta$
+#' @return the coefficients matrix \eqn{W} such that $WY$ is the best unbiased linear estimator of \eqn{\beta} where \eqn{E[Y]=X\beta}
 #' @examples
 #' beta= matrix(rchisq(12,1),4,3)
 #' dimnames(beta)<-list(m=paste(200501:200504),y=c("e","u","n"))
@@ -149,7 +149,7 @@ CoeffGM.array<-function(Sigma,X,Xplus=NULL){
 #' @param Sigma a p x p matrix
 #' @param X an n x p  matrix
 #' @param Xplus: a general inverse of X
-#' @return the coefficients matrix $W$ such that $WY$ is the best unbiased linear estimator of \eqn{\beta} where $E[Y]=X\beta$
+#' @return the coefficients matrix $W$ such that $WY$ is the best unbiased linear estimator of \eqn{\beta} where \eqn{E[Y]=X\beta}
 #' @examples
 #' A=array(rnorm(prod(2:5)),2:5);M=a2m(A,2);dim(A);dim(M);dim(a2m(A))
 
