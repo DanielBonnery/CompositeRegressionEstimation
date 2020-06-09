@@ -191,7 +191,7 @@ CPS_AK_est <-
                                 e=c(a=CPS_A_e(),k=CPS_K_e()),
                                 n=c(a=0,        k=0)))){
     Y_census_AK<-arrayproduct::"%.%"(
-      Wak,
+      W,
       Y,
       I_A=list(c="ak",n=c("m2"),p=c("m1","rg1")),
       I_B=list(c=y,p=c(month,mis),q=integer(0)))
