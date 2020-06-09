@@ -64,7 +64,7 @@ WSrg <-
     L<-lapply(L,function(df){df[variables2,variables1]})
     
     dfEstT<- do.call("abind", c(L,along=0))
-    names(dimnames(dfEstT))<-c(dimnames1,rg,"y")
+    names(dimnames(dfEstT))<-c(dimname1,rg,"y")
     #rownames(dfEstT)<-names(list.tables)
     #names(dfEstT)<-c("T",fdf$apasconvertir,fdf$nfdf)
     if(rescale){dfEstT<-dfEstT*dim(dfEstT)[2]}
