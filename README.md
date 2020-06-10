@@ -118,22 +118,13 @@ Direct.est<-CompositeRegressionEstimation::WS(list.tables,weight="pwsswgt",list.
 ```r
 U<-with(as.data.frame(Direct.est),
         (employmentstatus_ne)/(employmentstatus_ne+employmentstatus_nu))
-```
-
-```
-## Error in as.data.frame(Direct.est): object 'Direct.est' not found
-```
-
-```r
 library(ggplot2);
 ggplot(data=data.frame(period=period,E=U),aes(x=period,y=U))+geom_line()+
   ggtitle("Direct estimate of the monthly employment rate from the CPS public microdata in 2005")+
   scale_x_continuous(breaks=200501:200512,labels=month.abb)+xlab("")+ylab("")
 ```
 
-```
-## Error in data.frame(period = period, E = U): object 'U' not found
-```
+<img src="figure/unnamed-chunk-2-1.png" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" width="100%" />
 
 #### Month in sample estimate
 
@@ -161,7 +152,7 @@ Umis<-plyr::aaply(Y[,,"e"],1:2,sum)/plyr::aaply(Y[,,c("e","u")],1:2,sum);
 ```
 
 ```
-## Error in amv_dim(x): object 'Y' not found
+## Error in Y[, , "e"]: subscript out of bounds
 ```
 
 ```r
@@ -172,9 +163,7 @@ library(ggplot2);ggplot(data=reshape2::melt(Umis),aes(x=m,y=value,color=hrmis,gr
        caption = "Computed from CPS public anonymized microdata.")
 ```
 
-```
-## Error in reshape2::melt(Umis): object 'Umis' not found
-```
+<img src="figure/unnamed-chunk-3-1.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" width="100%" />
 
 #### Linear combinaisons of the month-in-sample estimates
 
@@ -188,36 +177,18 @@ print(reshape2::melt(Y[,,]))
 
 
 ```
-## Error in reshape2::melt(Y): object 'Y' not found
+## Error in `[.data.frame`(toto, c("RowNumber", "m", "hrmis", "employmentstatus", : undefined columns selected
 ```
 
-```
-## Error in eval(expr, envir, enclos): object 'tt' not found
-```
 
-```
-## Error in nrow(tt): object 'tt' not found
-```
 
-```
-## Error in lapply(toto, as.character): object 'toto' not found
-```
-
-```
-## Error in ncol(toto): object 'toto' not found
-```
-
-```
-## Error in eval(expr, envir, enclos): object 'toto' not found
-```
-
-```
-## Error in names(toto) <- c("Row number", "Month", "Month in sample group", : object 'toto' not found
-```
-
-```
-## Error in knitr::kable(toto): object 'toto' not found
-```
+|Row number |Month  |Month in sample group |Employment status |<img src="/tex/91aac9730317276af725abd8cef04ca9.svg?invert_in_darkmode&sanitize=true" align=middle width=13.19638649999999pt height=22.465723500000017pt/> |
+|:----------|:------|:---------------------|:-----------------|:---|
+|200501     |hrmis1 |pemlr_n_1             |7690421.65970029  |1   |
+|200502     |hrmis1 |pemlr_n_1             |7511407.32250029  |2   |
+|200503     |hrmis1 |pemlr_n_1             |7951299.48890034  |3   |
+|...        |...    |...                   |...               |... |
+|200512     |hrmis8 |pemlr_n7              |4336648.869       |768 |
 
 Let <img src="/tex/91aac9730317276af725abd8cef04ca9.svg?invert_in_darkmode&sanitize=true" align=middle width=13.19638649999999pt height=22.465723500000017pt/> be the vector of values in the data.frame.
 Elements of <img src="/tex/91aac9730317276af725abd8cef04ca9.svg?invert_in_darkmode&sanitize=true" align=middle width=13.19638649999999pt height=22.465723500000017pt/> can be refered to by the line number or by a combinaison of month, rotation group, and employment status, as for example : <img src="/tex/fb0a7c5c30dbaeff34cd1afcac885a47.svg?invert_in_darkmode&sanitize=true" align=middle width=156.81184199999998pt height=22.465723500000017pt/>, or by a line number <img src="/tex/8fb799df5f9c1f6f7fdaa744372bd533.svg?invert_in_darkmode&sanitize=true" align=middle width=21.941076299999988pt height=41.64378900000001pt/>.
