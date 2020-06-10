@@ -23,6 +23,9 @@ empirical.var<-function(A,MARGIN,n){
 #' @param rescaled a boolean (default FALSE) indicating whether these AK coefficient are to be applied to rescaled or not rescaled month in sample weighted sums 
 #' @return an array of AK coefficients  W[m2,m1,mis1] such that Ak estimate for month m2  is sum(W[y2,,])*Y) where Y[m1,mis1] is direct estimate on mis mis1 for emp stat y1 at month m1.
 #' @examples
+#' library(dataCPS)
+#' period=200501:200512
+#' list.tables<-lapply(data(list=paste0("cps",period),package="dataCPS"),get);
 #' W<-W.ak(months=1:3,groups=1:8,a=.2,k=.5);dimnames(W) 
 #' W<-W.ak(months=2:4,groups=letters[1:8],a=.2,k=.5);dimnames(W);
 #' Y<-WSrg(list.tables,weight="pwsswgt",list.y="pemlr",rg="hrmis")
@@ -31,9 +34,18 @@ empirical.var<-function(A,MARGIN,n){
 #' W<-W.ak(months = months,
 #'      groups = dimnames(Y)[[group]],
 #'      S=c(2:4,6:8),
-#'      a=.5,k=.5)
+#'      a=.5,k=.3)
+#' a=.5;k=.3
 #' dimnames(W)
-#' W[1,1,]     
+#' W[1,1,]  #should be all 1s   
+#' m<-sample(2:length(months),1)
+#' if(all(abs(W[m,m,c(1,5)]-(1-k+a))<1e-10)){"this part is fine"}else{"there is a problem"}    
+#' if(all(abs(W[m,m,c(2:4,6:8)]-(1-k+4*k/3-a/3))<1e-10)){"this part is fine"}else{"there is a problem"}    
+#' if(all(abs(W[m,m-1,c(1:3,5:7)]-(k*W[m-1,m-1,c(1:3,5:7)]-4*k/3))<1e-10)){"this part is fine"}else{"there is a problem"}    
+#' if(all(abs(W[m-1,m,c(1:3,5:7)]-(k*W[m-1,m-1,c(1:3,5:7)+1]-4*k/3))<1e-10)){"this part is fine"}else{"there is a problem"}    
+#' W[2,1,]     
+#' W[2,2,c(1,5)];((1-k)+a)  #Should be equal     
+
 
 W.ak<-function(months,
                groups=1:8,

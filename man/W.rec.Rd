@@ -35,25 +35,30 @@ general month in sample estimates weights for recursive linear combinaison of mi
 }
 \examples{
 alpha0=runif(1);
+alpha_1=1-alpha0;
+beta0=runif(1)
+beta_1=runif(1)
+gamma0=runif(1)
 W<-W.rec(months=1:3,
          groups=1:8,
-         Coef=c(alpha_1=1-alpha0,
+         Coef=c(alpha_1=alpha_1,
                 alpha0=alpha0,
-                beta0=runif(1),
-                beta_1=runif(1),
-                gamma0=runif(1)))
+                beta0=beta0,
+                beta_1=beta_1,
+                gamma0=gamma0))
 dimnames(W) 
+if(all(W[1,1,]==1)){"this part is fine"}else{"there is a problem"}    
+m<-sample(2:3,1)
+if(all(abs(W[m,m,c(1,5)]-(alpha0+gamma0))<1e-10)){"this part is fine"}else{"there is a problem"}    
+if(all(abs(W[m,m,c(2:4,6:8)]-(alpha0+beta0))<1e-10)){"this part is fine"}else{"there is a problem"}    
+if(all(abs(W[m,m-1,c(1:3,5:7)]-(alpha_0*W[m-1,m-1,c(1:3,5:7)]+beta_1))<1e-10)){"this part is fine"}else{"there is a problem"}    
+if(all(abs(W[m,m-1,c(4,8)]-(alpha_0*W[m-1,m-1,c(4,8)]))<1e-10)){"this part is fine"}else{"there is a problem"}    
 W<-W.ak(months=2:4,groups=letters[1:8],a=.2,k=.5);dimnames(W);
 Y<-WSrg(list.tables,weight="pwsswgt",list.y="pemlr",rg="hrmis")
 dimnames(Y);month="m";group="hrmis";variable="y";
 Coef=c(alpha_1=0,alpha0=1,beta_1=0,beta0=0,gamma0=0)
-months = dimnames(Y)[[month]]
-groups = dimnames(Y)[[group]]
-S=c(2:4,6:8)
-S_1=S-1
-A=W.rec(months = dimnames(Y)[[month]],
+W=W.rec(months = dimnames(Y)[[month]],
         groups = dimnames(Y)[[group]],
         S=c(2:4,6:8),Coef=c(alpha_1=0,alpha0=1,beta_1=0,beta0=0,gamma0=0))
-dimnames(A)
-A[1,1,]         
+W
 }
