@@ -168,10 +168,17 @@ composite <-
 #' dimnames(W) 
 #' W<-W.ak(months=2:4,groups=letters[1:8],a=.2,k=.5);dimnames(W);
 #' Y<-WSrg(list.tables,weight="pwsswgt",list.y="pemlr",rg="hrmis")
-#' dimnames(Y);month="m";group="mis";variable="y";
+#' dimnames(Y);month="m";group="hrmis";variable="y";
+#' Coef=c(alpha_1=0,alpha0=1,beta_1=0,beta0=0,gamma0=0)
+#' months = dimnames(Y)[[month]]
+#' groups = dimnames(Y)[[group]]
+#' S=c(2:4,6:8)
+#' S_1=S-1
 #' A=W.rec(months = dimnames(Y)[[month]],
 #'         groups = dimnames(Y)[[group]],
-#'         S=c(2:4,6:8),a=.5,k=.5)
+#'         S=c(2:4,6:8),Coef=c(alpha_1=0,alpha0=1,beta_1=0,beta0=0,gamma0=0))
+#' dimnames(A)
+#' A[1,1,]         
 
 W.rec<-function(months,
                groups,
@@ -184,7 +191,7 @@ W.rec<-function(months,
   dimnames(W)<-list(m2=months,m1=months,rg1=groups)
   Hmisc::label(W)<-"Coefficient matrix W[m2,m1,mis1] such that Ak estimate for month m2  is sum(W[y2,,])*Y) where Y[m1,mis1] is direct estimate on mis mis1 for emp stat y1 at month m1"
   Sbar<-setdiff(1:ngroup,S)
-  W[1,,1]<-1
+  W[1,1,]<-1
   for(i in 2:nmonth){
     W[i,,]<-W[(i-1),,]*Coef["alpha_1"]
     W[i,i,]<-Coef["alpha0"]

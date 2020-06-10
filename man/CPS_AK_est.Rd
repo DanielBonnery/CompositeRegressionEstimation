@@ -34,8 +34,11 @@ list.tables<-lapply(data(list=paste0("cps",period),package="dataCPS"),get);
 names(list.tables)<-period
 Y<-WSrg(list.tables,weight="pwsswgt",list.y="pemlr",rg="hrmis")
 dimnames(Y);
+Y<-plyr::aaply(Y,1:2,function(x){c(n=sum(x[c(1,6:8)]),u=sum(x[4:5]),e=sum(x[2:3]))})
+names(dimnames(Y))[3]<-"y";
+dimnames(Y)
 month="m";
-group="mis";
-variable="y";
-CPS_AK_est(Y) 
+mis="hrmis";
+y="y";
+CPS_AK_est(Y,y=y,mis=mis) 
 }

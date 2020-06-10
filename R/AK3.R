@@ -27,13 +27,16 @@ empirical.var<-function(A,MARGIN,n){
 #' W<-W.ak(months=2:4,groups=letters[1:8],a=.2,k=.5);dimnames(W);
 #' Y<-WSrg(list.tables,weight="pwsswgt",list.y="pemlr",rg="hrmis")
 #' dimnames(Y);month="m";group="hrmis";variable="y";
-#' W<-W.ak(months = dimnames(Y)[[month]],
+#' months = dimnames(Y)[[month]]
+#' W<-W.ak(months = months,
 #'      groups = dimnames(Y)[[group]],
 #'      S=c(2:4,6:8),
 #'      a=.5,k=.5)
+#' dimnames(W)
+#' W[1,1,]     
 
 W.ak<-function(months,
-               groups,
+               groups=1:8,
                S=c(2:4,6:8),
                S_1=S-1,
                a,k,

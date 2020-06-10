@@ -45,8 +45,15 @@ W<-W.rec(months=1:3,
 dimnames(W) 
 W<-W.ak(months=2:4,groups=letters[1:8],a=.2,k=.5);dimnames(W);
 Y<-WSrg(list.tables,weight="pwsswgt",list.y="pemlr",rg="hrmis")
-dimnames(Y);month="m";group="mis";variable="y";
+dimnames(Y);month="m";group="hrmis";variable="y";
+Coef=c(alpha_1=0,alpha0=1,beta_1=0,beta0=0,gamma0=0)
+months = dimnames(Y)[[month]]
+groups = dimnames(Y)[[group]]
+S=c(2:4,6:8)
+S_1=S-1
 A=W.rec(months = dimnames(Y)[[month]],
         groups = dimnames(Y)[[group]],
-        S=c(2:4,6:8),a=.5,k=.5)
+        S=c(2:4,6:8),Coef=c(alpha_1=0,alpha0=1,beta_1=0,beta0=0,gamma0=0))
+dimnames(A)
+A[1,1,]         
 }

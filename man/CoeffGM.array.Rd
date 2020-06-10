@@ -14,7 +14,7 @@ CoeffGM.array(Sigma, X, Xplus = NULL)
 \item{Xplus:}{a general inverse of X (if NULL, it will be computed by the program by Xplus<-MASS::ginv(X2) )}
 }
 \value{
-the coefficients matrix \eqn{W} such that $WY$ is the best unbiased linear estimator of \eqn{\beta} where $E[Y]=X\beta$
+the coefficients matrix \eqn{W} such that $WY$ is the best unbiased linear estimator of \eqn{\beta} where \eqn{E[Y]=X\beta}
 }
 \description{
 Compute the Gauss Markov coefficients for Multivariate Blue

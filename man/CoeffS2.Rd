@@ -14,7 +14,7 @@ CoeffS2(nmonth)
 \item{Xplus:}{a general inverse of X}
 }
 \value{
-the coefficients matrix $W$ such that $WY$ is the best unbiased linear estimator of \eqn{\beta} where $E[Y]=X\beta$
+the coefficients matrix $W$ such that $WY$ is the best unbiased linear estimator of \eqn{\beta} where \eqn{E[Y]=X\beta}
 }
 \description{
 Compute the coefficients for Direct
