@@ -127,11 +127,15 @@ The following code  creates the array `Y` of dimension $M\times 8\times 3$ (M mo
 library(CompositeRegressionEstimation)
 Y<-CompositeRegressionEstimation::WSrg2(list.tables,rg = "hrmis",weight="pwsswgt",y = "employmentstatus")
 Umis<-plyr::aaply(Y[,,"e"],1:2,sum)/plyr::aaply(Y[,,c("e","u")],1:2,sum);
-library(ggplot2);ggplot(data=reshape2::melt(Umis),aes(x=m,y=value,color=hrmis,group=hrmis))+geom_line()+
+
+  mycolors <- rainbow(8) 
+library(ggplot2);ggplot(data=reshape2::melt(Umis),aes(x=m,y=value,color=factor(hrmis),group=hrmis))+geom_line()+
   scale_x_continuous(breaks=200501:200512,labels=month.abb)+xlab("")+ylab("")+ 
   labs(title = "Month-in-sample estimates", 
        subtitle = "Monthly employment rate, year 2005", 
-       caption = "Computed from CPS public anonymized microdata.")
+       caption = "Computed from CPS public anonymized microdata.")+
+scale_colour_manual(values = mycolors)+
+guides(colour=guide_legend(title="m.i.s."))
 ```
 
 <img src="figure/unnamed-chunk-3-1.png" title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" width="100%" />
