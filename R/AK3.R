@@ -26,8 +26,11 @@ empirical.var<-function(A,MARGIN,n){
 #' W<-W.ak(months=1:3,groups=1:8,a=.2,k=.5);dimnames(W) 
 #' W<-W.ak(months=2:4,groups=letters[1:8],a=.2,k=.5);dimnames(W);
 #' Y<-WSrg(list.tables,weight="pwsswgt",list.y="pemlr",rg="hrmis")
-#' dimnames(Y);month="m";group="mis";variable="y";
-#' A=W.ak(months = dimnames(Y)[[month]],groups = dimnames(Y)[[group]],S=c(2:4,6:8),a=.5,k=.5)
+#' dimnames(Y);month="m";group="hrmis";variable="y";
+#' W<-W.ak(months = dimnames(Y)[[month]],
+#'      groups = dimnames(Y)[[group]],
+#'      S=c(2:4,6:8),
+#'      a=.5,k=.5)
 
 W.ak<-function(months,
                groups,
@@ -37,6 +40,8 @@ W.ak<-function(months,
                eta0=length(groups)/length(S),
                eta1=eta0-1,
                rescaled=F){
+  k<-unname(k)
+  a<-unname(a)
   W<-W.rec(months,
                   groups,
                   S,
@@ -67,7 +72,14 @@ W.multi.ak<-function(months,
                      rescaled=F){
   
   W<-plyr::laply(ak,function(AK){
-    W.ak(months,groups,S,a=AK["a"],k=AK["k"],eta0=eta0,eta1=eta1)
+    W.ak(months=months,
+         groups=groups,
+         S=S,
+         a=AK["a"],
+         k=AK["k"],
+         eta0=eta0,
+         eta1=eta1,
+         rescaled=rescaled)
   })
 names(dimnames(W))[1]<-"ak"
 dimnames(W)[[1]]<-if(is.null(names(ak))){1:length(ak)}else{names(ak)}
@@ -174,10 +186,13 @@ CPS_AK<-function(){c(a1=CPS_A_u(),a2=CPS_A_e(),a3=0,k1=CPS_K_u(),k2=CPS_K_e(),k3
 #' names(list.tables)<-period
 #' Y<-WSrg(list.tables,weight="pwsswgt",list.y="pemlr",rg="hrmis")
 #' dimnames(Y);
+#' Y<-plyr::aaply(Y,1:2,function(x){c(n=sum(x[c(1,6:8)]),u=sum(x[4:5]),e=sum(x[2:3]))})
+#' names(dimnames(Y))[3]<-"y";
+#' dimnames(Y)
 #' month="m";
-#' group="mis";
-#' variable="y";
-#' CPS_AK_est(Y) 
+#' mis="hrmis";
+#' y="y";
+#' CPS_AK_est(Y,y=y,mis=mis) 
 CPS_AK_est <-
   function(Y,
            month="m",
@@ -195,8 +210,8 @@ CPS_AK_est <-
       Y,
       I_A=list(c="ak",n=c("m2"),p=c("m1","rg1")),
       I_B=list(c=y,p=c(month,mis),q=integer(0)))
-    Hmisc::label(Yhat)<-"AK estimates for coeffs ak, employment status y2, month m2." 
-    return(Yhat)}
+    Hmisc::label(Y_census_AK)<-"AK estimates for coeffs ak, employment status y2, month m2." 
+    return(Y_census_AK)}
 
 #' Empirical variance of a collection of arrays.
 #' 
