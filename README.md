@@ -1,8 +1,4 @@
----
-title: "Composite Regression for Repeated Surveys"
-author: Daniel Bonnery
----
-
+<h1> Composite Regression for Repeated Surveys </h1>
 <p align="center">
   <img width="128" src="logo/logo_4.4.png" />
 </p>
