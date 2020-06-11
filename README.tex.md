@@ -165,7 +165,7 @@ print(reshape2::melt(Y[,,]))
 |288        |200512 |8                     |u                 |846918.8885   |
 
 Let $Y$ be the vector of values in the data.frame.
-Elements of $Y$ can be refered to by the line number or by a combinaison of month, rotation group, and employment status, as for example : $Y_{200501,group 3,employed]$, or by a line number $\overrightarrow{Y}_\ell$.
+Elements of $Y$ can be refered to by the line number or by a combinaison of month, rotation group, and employment status, as for example : $Y_{200501,group 3,employed}$, or by a line number $\overrightarrow{Y}_\ell$.
 We use $\overrightarrow{Y}$ to designate the vector and $Y$ to designate the array.
 
 The values to estimate are the elements of the $M\times 3$-sized array $Y=(t_{y_{m,e}})_{m\in\{1,\ldots,M\},e\in\{"employed","unemployed","nilf"\}}=\sum_{k\in U} (y_{k,m,e}))_{m\in\{1,\ldots,M\},e\in\{"employed","unemployed","nilf"\}}$. We denote by $\overrightarrow{Y}$ the vectorisation of the array $Y$.
@@ -413,7 +413,7 @@ $$W^\star=X  ^+ (X    X  ^+)  \left(I-\Sigma ((I-X    X  ^+)^+ \Sigma  (I-X    X
 
 where the $^+$ operator designates the Moore Penrose pseudo inversion, $I$ is the
 identity matrix. Here the minimisation is with respect to the order on symmetric positive definite matrices: $M_1\leq M_2 \Leftrightarrow M_2-M_1$ is positive. It can be shown that $X  ^+=X^\mathrm{T}$ in our case and that $X  ^+X =I$. 
-The estimator $W^\starY$ is the Best Linear Unbiased Estimator under this model.
+The estimator $W^\star Y$ is the Best Linear Unbiased Estimator under this model.
 
 
 The next code provides the $X$ and $X^+$ matrices:
