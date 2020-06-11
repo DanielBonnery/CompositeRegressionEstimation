@@ -184,7 +184,7 @@ where ${\overrightarrow{W}}$ is a matrix of dimension $(\mathrm{dim}(\overrighta
 Which is equivalent to estimators of the form $W\times X$ where the $W$ is a $(\mathrm{dim}(Y))\times(\mathrm{dim}(X))$ matrix, where an element $W_{p,q}$ of $W$ is indexed by two vector $p$ and $q$ and of length the number of dimensions of the array $Y$ and the dimensions of the array $X$ respectively. 
 
 The function `arrayproduct::"%.%"` of the 'arrayproduct' allows to perform the array multiplication as described above.
-The package uses named arrays with names dimensions (`names(dimnames(A))` is not `NULL`).
+The package uses named arrays with named dimensions (`names(dimnames(A))` is not `NULL`).
 
 ### Recursive linear estimates
 
