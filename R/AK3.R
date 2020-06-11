@@ -39,12 +39,12 @@ empirical.var<-function(A,MARGIN,n){
 #' dimnames(W)
 #' W[1,1,]  #should be all 1s   
 #' m<-sample(2:length(months),1)
+#' m.<-sample(2:(m-1),1)
 #' if(all(abs(W[m,m,c(1,5)]-(1-k+a))<1e-10)){"this part is fine"}else{"there is a problem"}    
 #' if(all(abs(W[m,m,c(2:4,6:8)]-(1-k+4*k/3-a/3))<1e-10)){"this part is fine"}else{"there is a problem"}    
 #' if(all(abs(W[m,m-1,c(1:3,5:7)]-(k*W[m-1,m-1,c(1:3,5:7)]-4*k/3))<1e-10)){"this part is fine"}else{"there is a problem"}    
-#' if(all(abs(W[m-1,m,c(1:3,5:7)]-(k*W[m-1,m-1,c(1:3,5:7)+1]-4*k/3))<1e-10)){"this part is fine"}else{"there is a problem"}    
-#' W[2,1,]     
-#' W[2,2,c(1,5)];((1-k)+a)  #Should be equal     
+#' if(all(abs(W[m,m-1,c(4,8)]-(k*W[m-1,m-1,c(4,8)]))<1e-10)){"this part is fine"}else{"there is a problem"}    
+#' if(all(abs(W[m,m.,]-(k*W[m-1,m.,]))<1e-10)){"this part is fine"}else{"there is a problem"}    
 
 
 W.ak<-function(months,

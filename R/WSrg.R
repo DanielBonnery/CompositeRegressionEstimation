@@ -27,6 +27,7 @@ WSrg <-
     if(is.null(names(list.tables))){names(list.tables)=1:length(list.tables)}
     L<-lapply(list.tables,function(df){
       #procedure
+      
       list.y2<-list.y
       if(is.null(list.y)){list.y2<-names(df)[sapply(df,is.numeric)]}
       list.y2<-intersect(list.y2,names(df))

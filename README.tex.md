@@ -197,7 +197,7 @@ This is a special case of a linear combination of the month-in-sample estimates.
 
 Computing the estimators recursively is not very efficient. At the end, we get a linear combinaison of month in sample estimates.
  
-The following code computes a recursive estimator with parameters $\alpha_{(-1)}=\alpha_{0}=\frac{1}/2$, $\beta_{(-1)}=\beta_0=\gamma_0=0$.
+The following code computes a recursive estimator with parameters $\alpha_{(-1)}=\alpha_{0}=\frac{1}2$, $\beta_{(-1)}=\beta_0=\gamma_0=0$.
 
 
 ```r

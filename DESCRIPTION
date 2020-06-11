@@ -2,7 +2,7 @@ Package: CompositeRegressionEstimation
 Type: Package
 Title: X
 Version: 1.0
-Date: 2020-06-10
+Date: 2020-06-11
 Author: D. Bonnery
 Maintainer: D. Bonnery  <dbonnery@umd.edu>
 Imports: ggplot2,

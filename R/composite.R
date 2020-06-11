@@ -41,6 +41,7 @@
 #' @seealso CompositeRegressionEstimation::AK
 #' @examples
 #' library(dataCPS)
+#' 
 #' data(cps200501,cps200502,cps200503,cps200504,
 #'      cps200505,package="dataCPS") 
 #' list.tables<-list(cps200501,cps200502,cps200503,cps200504,
@@ -53,7 +54,35 @@
 #' ## Example of use of a group variable. 
 #' w="pwsswgt";id=NULL;groupvar="hrmis";list.y="pemlr";dft0.y=NULL;
 #' groups_1=c(1:3,5:7);groups0=c(2:4,6:8);Coef=c(alpha0=1,alpha_1=0,beta_1=0,beta0=0,gamma0=0)
-#' composite(list.tables,w=w,list.y="pemlr",id=id,groupvar=groupvar)  
+#' composite(list.tables,w=w,list.y="pemlr",id=id,groupvar="hrmis")  
+#' 
+#' ## Check we get the same results with two different methods.
+#' x=expand.grid(mis=paste0(1:8),k=1:10)
+#' list.tables<-plyr::llply(1:5,function(m){dplyr::mutate(x,w=1,y1=mis*10^(m-1),y2=1)})
+#' Y<-WSrg(list.tables,weight="w",list.y=c("y1","y2"),rg="mis",dimname1="m")
+#' 
+#' alpha0=runif(1);
+#' alpha_1=1-alpha0;
+#' beta0=runif(1)
+#' beta_1=runif(1)
+#' gamma0=runif(1)
+#' Coef=c(alpha_1=alpha_1,
+#'                 alpha0=alpha0,
+#'                 beta0=beta0,
+#'                 beta_1=beta_1,
+#'                 gamma0=gamma0)
+#' W<-W.rec(months=dimnames(Y)$m,
+#'          groups=dimnames(Y)$mis,
+#'          Coef=Coef)
+#' CC1<-arrayproduct::`%.%`(W,Y,list(c=character(0),n="m2",p=c("m1","rg1")),list(c=character(0),p=c("m","mis"),q="y"))
+#' w="w";id=NULLgroupvar="mis";list.y=c("y1","y2");dft0.y=NULL;
+#' groups_1=paste0(c(1:3,5:7));groups0=paste0(c(2:4,6:8));
+#' CC2<-composite(list.tables,w=w,list.y=c("y1","y2"),groupvar="mis",groups_1=groups_1,groups0=groups0,Coef=Coef)  
+#' Y[,,1];CC1[,1];CC2[,1]
+#' W[1,1,];W[2,1,];sum(W[2,,])
+#' 
+
+
 composite <-
   function(list.tables,
            w,
@@ -125,13 +154,13 @@ composite <-
       
       #TotEstimate_1     <-as.matrix(WS(list(df_1)            ,weight=w,list.y=listtot.y)[listtot.y])
       TotEstimate0      <-WS(list(df0)            ,weight=w,list.y=listtot.y)[,listtot.y]
-      inter2<-is.element(df0[[groupvar]],groups0)
-      inter1<-is.element(df_1[[groupvar]],groups_1)
-      TotEstimateIntert0<-WS(list(df0[inter2,]),weight=w,list.y=listtot.y)[,listtot.y]
-      TotEstimateIntert_1<-WS(list(df_1[inter1,]),weight=w,list.y=listtot.y)[,listtot.y]
-      TotEstimateDiff_0  <-WS(list(df0[!inter2,]),weight=w,list.y=listtot.y)[,listtot.y]
+      inter0<-is.element(df0[[groupvar]],groups0)
+      inter_1<-is.element(df_1[[groupvar]],groups_1)
+      TotEstimateIntert0<-WS(list(df0[inter0,]),weight=w,list.y=listtot.y)[,listtot.y]
+      TotEstimateIntert_1<-WS(list(df_1[inter_1,]),weight=w,list.y=listtot.y)[,listtot.y]
+      TotEstimateDiff0  <-WS(list(df0[!inter0,]),weight=w,list.y=listtot.y)[,listtot.y]
       
-      dft.y<-t(cbind(dft.y[,listtot.y],TotEstimate0,TotEstimateIntert_1,TotEstimateIntert0,TotEstimateDiff_0)%*%
+      dft.y<-t(cbind(dft.y[,listtot.y],TotEstimate0,TotEstimateIntert_1,TotEstimateIntert0,TotEstimateDiff0)%*%
                  Coef[c("alpha_1","alpha0","beta_1","beta0","gamma0")])
       
       colnames(dft.y)<-listtot.y
@@ -166,25 +195,37 @@ composite <-
 #'          groups=1:8,
 #'          Coef=c(alpha_1=alpha_1,
 #'                 alpha0=alpha0,
-#'                 beta0=beta0,
 #'                 beta_1=beta_1,
+#'                 beta0=beta0,
 #'                 gamma0=gamma0))
 #' dimnames(W) 
 #' if(all(W[1,1,]==1)){"this part is fine"}else{"there is a problem"}    
 #' m<-sample(2:3,1)
 #' if(all(abs(W[m,m,c(1,5)]-(alpha0+gamma0))<1e-10)){"this part is fine"}else{"there is a problem"}    
 #' if(all(abs(W[m,m,c(2:4,6:8)]-(alpha0+beta0))<1e-10)){"this part is fine"}else{"there is a problem"}    
-#' if(all(abs(W[m,m-1,c(1:3,5:7)]-(alpha_0*W[m-1,m-1,c(1:3,5:7)]+beta_1))<1e-10)){"this part is fine"}else{"there is a problem"}    
-#' if(all(abs(W[m,m-1,c(4,8)]-(alpha_0*W[m-1,m-1,c(4,8)]))<1e-10)){"this part is fine"}else{"there is a problem"}    
+#' if(all(abs(W[m,m-1,c(1:3,5:7)]-(alpha_1*W[m-1,m-1,c(1:3,5:7)]+beta_1))<1e-10)){"this part is fine"}else{"there is a problem"}    
+#' if(all(abs(W[m,m-1,c(4,8)]-(alpha_1*W[m-1,m-1,c(4,8)]))<1e-10)){"this part is fine"}else{"there is a problem"}    
 
-#' W<-W.ak(months=2:4,groups=letters[1:8],a=.2,k=.5);dimnames(W);
-#' Y<-WSrg(list.tables,weight="pwsswgt",list.y="pemlr",rg="hrmis")
-#' dimnames(Y);month="m";group="hrmis";variable="y";
-#' Coef=c(alpha_1=0,alpha0=1,beta_1=0,beta0=0,gamma0=0)
-#' W=W.rec(months = dimnames(Y)[[month]],
-#'         groups = dimnames(Y)[[group]],
-#'         S=c(2:4,6:8),Coef=c(alpha_1=0,alpha0=1,beta_1=0,beta0=0,gamma0=0))
-#' W
+#' x=expand.grid(mis=paste0(1:8),k=1:10)
+#' list.tables<-plyr::llply(1:5,function(m){dplyr::mutate(x,w=1,y1=strtoi(mis)*10^(m-1),y2=1)})
+#' Y<-WSrg(list.tables,weight="w",list.y=c("y1","y2"),rg="mis",dimname1="m")
+#' 
+#' xx<-function(Coef){
+#' W=W.rec(months = dimnames(Y)[["m"]],
+#'         groups = dimnames(Y)[["mis"]],
+#'         S=c(2:4,6:8),Coef=Coef)
+#' #plyr::aaply(1:dim(W)[1],1,function(i){plyr::aaply(W[i,,],1,sum)})
+#' CC1<-arrayproduct::`%.%`(W,Y,list(c=character(0),n="m2",p=c("m1","rg1")),list(c=character(0),p=c("m","mis"),q="y"))
+#' w="w";id=NULL;groupvar="mis";list.y=c("y1","y2");dft0.y=NULL;
+#' groups_1=paste0(c(1:3,5:7));groups0=paste0(c(2:4,6:8));
+#' CC2<-composite(list.tables,w=w,list.y=c("y1","y2"),id=id,groupvar=groupvar,groups_1=groups_1,groups0=groups0,Coef=Coef)  
+#' a=sample(5,1)
+#' c(w=CC1[a,1],r=CC2[a,1])}
+#' xx(c(alpha_1=0,alpha0=1,beta_1=0,beta0=0,gamma0=0))
+#' xx(Coef=c(alpha_1=runif(1),alpha0=runif(1),beta_1=runif(1),beta0=runif(1),gamma0=runif(1)))
+
+
+
 
 
 W.rec<-function(months,
